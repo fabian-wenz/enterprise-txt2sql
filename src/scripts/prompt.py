@@ -20,28 +20,29 @@ from src.scripts.constants import *
 # def detect_primary_keys():
 #  for
 
-def create_table_statement(table_name: str, path_to_schema: str = f'/data/{db_id}/schema/'):
+def create_table_statement(table_name: str, path_to_schema: str = f'/data/{db_id}/schema{DB_DBID}/'):
   # TODO: Maybe add here desc, primary_keys
-  schema_file = prefix + path_to_schema + table_name + '.csv'
+  if db_id == 'tig':
+    table_name = table_name.lower()
+  schema_file = PREFIX + path_to_schema + table_name + '.csv'
   if os.path.isfile(schema_file):
     df_t = pd.read_csv(schema_file)
     _schema_info, additional_info = '', ''
     schema_info = "CREATE TABLE " + table_name + "(\n"
     for i in range(len(df_t)):
-      if type(df_t['KEY_TYPE'][i]) == str and PRIM_KEYS_ACTIVE:
-        if 'PRIMARY KEY' == df_t['KEY_TYPE'][i]:
-          _schema_info += f'  {df_t["COLUMN_NAME"][i]} {df_t["DATA_TYPE"][i]} {df_t["KEY_TYPE"][i]},\n'
-        else:
-          additional_info += f'FOREIGN KEY({df_t["COLUMN_NAME"][i]}) REFERENCES {df_t["KEY_TYPE"][i][12:]})\n'
-          _schema_info += f'  {df_t["COLUMN_NAME"][i]} {df_t["DATA_TYPE"][i]},\n'
-      else:
-        _schema_info += f'  {df_t["COLUMN_NAME"][i]} {df_t["DATA_TYPE"][i]},\n'
+      if PRIM_KEYS_ACTIVE and type(df_t['PKEY'][i]) == str and 'PRIMARY KEY' == df_t['PKEY'][i]:
+          additional_info = f'  PRIMARY KEY ({df_t["COLUMN_NAME"][i]}),\n' + additional_info
+      if PRIM_KEYS_ACTIVE and type(df_t['FKEY'][i]) == str and 'FOREIGN KEY' in df_t['FKEY'][i]:
+          additional_info += f'  FOREIGN KEY({df_t["COLUMN_NAME"][i]}){df_t["FKEY"][i][12:]}\n'
+      _schema_info += f'  {df_t["COLUMN_NAME"][i]} {df_t["DATA_TYPE"][i]},\n'
     if len(additional_info) > 0:
       schema_info += _schema_info + additional_info[:-1]
     else:
       schema_info += _schema_info[:-2]
     schema_info += '\n)\n\n'
     return schema_info
+  else:
+    raise Exception("File does not exist!")
 
 
 '''
@@ -79,7 +80,7 @@ class ExamplePrompt:
     self.query: str = query_
     self.involved_tables: List[str] = Parser(self.query.upper()).tables
 
-  def to_string(self, example_num: int) -> str:
+  def to_string(self) -> str:
     # prompt = " ** PSEUDO EXAMPLE NR. {0} ** \n".format(example_num)
     prompt = ''
     for table in self.involved_tables:
@@ -105,7 +106,7 @@ class Prompt:
       #prompt += " ** {0}-SHOT PSEUDO_EXAMPLE ** \n".format(len(example_indices))
       for i in range(len(example_indices)):
         if self.examples[example_indices[i]].query != query:
-          prompt += self.examples[example_indices[i]].to_string(i + 1)
+          prompt += self.examples[example_indices[i]].to_string()
       prompt += "\n"
     if len(top_k_tables) > 0:
       #prompt += " ** TOP {0} MOST RELEVANT TABLES ** \n".format(len(top_k_tables))

@@ -31,15 +31,15 @@ TIMEOUT_DURATION: int = 30  # Adjust this as needed
 
 
 prefix = str(os.path.dirname(os.path.abspath(__file__)))
-prefix = prefix.replace('/src/scripts', '')
+PREFIX = prefix.replace('/src/scripts', '')
 
 SPIDER_DB_ID = 'student_transcripts_tracking'
 
 MODELS = ['gpt-3.5-turbo-0125', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-1106-preview']
 model = MODELS[0]
-EVALUATION_TYPE = EvaluationType.TABLE_NAME_EXTRACTION
+EVALUATION_TYPE = EvaluationType.VALUE_EXTRACTION
 PRIM_KEYS_ACTIVE = True
-DATE_STRING = "2024-06-11"
+DATE_STRING = ""#"2024-06-11"
 if DATE_STRING is None:
   # Get the current date and time
   CURRENT_DATETIME = datetime.now()
@@ -54,6 +54,9 @@ else:
 DB_FILE = f'{db_id}.sqlite3'
 if db_id == "spider":
   DB_FILE = 'student_transcripts_tracking/student_transcripts_tracking.sqlite'
-
+if db_id == "bird":
+  DB_FILE = 'student_transcripts_tracking/student_transcripts_tracking.sqlite'
+DB_DBID = ''
 with open(prefix + '/config.json') as f:
   CONFIG = json.load(f)
+ERROR = False
