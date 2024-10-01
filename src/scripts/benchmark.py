@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 
 import pandas as pd
@@ -7,7 +8,7 @@ from openai import OpenAI
 from typing import List
 import os
 import pyperclip
-import tiktoken
+# import tiktoken
 import numpy as np
 
 import os
@@ -27,17 +28,17 @@ def get_gpt_preds(dataset: str, debug: bool, focus_q_idx: int | None, example_nu
   )
 
   resp_dict = []
-  #gpt_pred_fn = f'{}/model_preds/mit/{model}.json'
-#
-  #if not debug:
-  #  if os.path.isfile(gpt_pred_fn):
-  #    with open(gpt_pred_fn, 'r') as f:
-  #      resp_dict = json.load(f)
+  '''gpt_pred_fn = f'./model_preds/mit/{model}.json'
 
-  with open(f'{prefix}/data/{dataset}/queries.json') as f:
+  if not debug:
+    if os.path.isfile(gpt_pred_fn):
+      with open(gpt_pred_fn, 'r') as f:
+        resp_dict = json.load(f)'''
+
+  with open(f'{PREFIX}/data/{dataset}/queries.json') as f:
     qs = json.load(f)
 
-  with open(f'{prefix}/data/{dataset}/examples.json') as f:
+  with open(f'{PREFIX}/data/{dataset}/examples.json') as f:
     examples = json.load(f)
 
   prompt = Prompt([x['question'] for x in qs], [x['sql'] for x in qs], examples)
@@ -49,11 +50,21 @@ def get_gpt_preds(dataset: str, debug: bool, focus_q_idx: int | None, example_nu
     if f'{q_idx}' in resp_dict:
       continue
 
-    p = prompt.get_prompt(q['question'], set(top_k(dataset, q_idx, K)), list(range(example_num)))
+    if DB_DBID == 'csail_stata_nova':
+      top_k_ = []
+      for tk in top_k(dataset, q_idx, 20):
+        if tk[:4] != 'api-':
+          top_k_.append(tk)
+      top_k_ = top_k_[:10]
+
+      p = prompt.get_prompt(q['question'], set(top_k_), list(range(example_num)))
+    else:
+      p = prompt.get_prompt(q['question'], set(top_k(dataset, q_idx, K)), list(range(example_num)))
+    #print(p)
     # len(p)
     #print(q_idx)
-    tokenizer = tiktoken.get_encoding("cl100k_base")
-    print(len(tokenizer.encode(p)))
+    #tokenizer = tiktoken.get_encoding("cl100k_base")
+    #print(len(tokenizer.encode(p)))
     #print('__________')
     #print(p)
     #print('__________')
@@ -73,7 +84,25 @@ def get_gpt_preds(dataset: str, debug: bool, focus_q_idx: int | None, example_nu
       )
 
       resp_content = resp.choices[0].message.content
-      # print(resp_content)
+      print(resp_content)
+      if ERROR and q_idx != 31:
+        print(q_idx)
+        db = DBConnection({'type': db_type, 'db_file': DB_FILE})
+        try:
+          db.execute_query(resp_content, set(Parser(resp_content).tables))
+        except Exception as e:
+          print(e)
+          p = prompt.get_prompt(q['question'], set(top_k(dataset, q_idx, K)), [])
+          resp = client.chat.completions.create(
+            model=model,
+            temperature=0,
+            top_p=1.0,
+            seed=42,
+            messages=[
+              {'role': 'user', 'content': p + f"\n\nIn the first attempt it got for the following SQL:\n{resp_content}\n\nThe following error:{str(e)}\n Please correct the SQL and state only the new correct SQL-statement."}
+            ]
+          )
+          resp_content = resp.choices[0].message.content
 
       # resp_dict[q_idx] = resp_content
       resp_dict.append(resp_content)
@@ -87,12 +116,10 @@ def get_gpt_preds(dataset: str, debug: bool, focus_q_idx: int | None, example_nu
     df = pd.DataFrame(
       data={'question': [x['question'] for x in qs], 'prediction': resp_dict, 'answer': [x['sql'] for x in qs]})
     run_index = 0
-    resulting_file_name = prefix + '/results/gpt-results/{5}_results_{0}_top{1}_tables_samples_{2}_run_{3}_{4}{6}.csv'. \
-      format(dataset, K, example_num, run_index, model, DATE_STRING, key_active_string)
+    resulting_file_name = PREFIX + f"/data/results/{DB_DBID[:]}{DATE_STRING}_results_{dataset}_top{K}_tables_samples_{example_num}_run_{run_index}_{model}{key_active_string}{'_ERROR' if ERROR else ''}.csv"
     while os.path.isfile(resulting_file_name):
       run_index += 1
-      resulting_file_name = prefix + '/results/gpt-results//{5}_results_{0}_top{1}_tables_samples_{2}_run_{3}_{4}{6}.csv'. \
-        format(dataset, K, example_num, run_index, model, DATE_STRING, key_active_string)
+      resulting_file_name = PREFIX +  f"/data/results/{DATE_STRING}_results_{dataset}_top{K}_tables_samples_{example_num}_run_{run_index}_{model}{key_active_string}{'_ERROR' if ERROR else ''}.csv"
     df.to_csv(resulting_file_name, index=False)
     print(df['prediction'])
 
@@ -104,8 +131,10 @@ def get_evaluation(dataset: str, example_num: int, num_of_avg_runs: int):
     key_active_string = '_(PRIM_KEYS_ACTIVE)'
   for run_index in range(num_of_avg_runs):
     df_s.append(pd.read_csv(
-      prefix + '/results/gpt-results/{5}_results_{0}_top{1}_tables_samples_{2}_run_{3}_{4}{6}.csv'.
-      format(dataset, K, example_num, run_index, model, DATE_STRING, key_active_string)))
+      PREFIX +  f"/data/results/{DB_DBID[:]}{DATE_STRING}_results_{dataset}_top{K}_tables_samples_{example_num}_run_{run_index}_{model}{key_active_string}{'_ERROR' if ERROR else ''}.csv"))
+    #df_s.append(pd.read_csv(
+    #  PREFIX + '/data/results/{5}_results_{0}_top{1}_tables_samples_{2}_run_{3}_{4}{6}.csv'. \
+    #  format(dataset, K, example_num, run_index, model, DATE_STRING, key_active_string)))
 
   majority_predicted = []
   for i in range(len(df_s[0])):
@@ -120,15 +149,24 @@ def get_evaluation(dataset: str, example_num: int, num_of_avg_runs: int):
     majority_predicted.append(first_key)
 
   df_majority = pd.DataFrame(
-    data={'question': df_s[0]['question'], 'prediction': majority_predicted, 'answer': df_s[0]['answer']})
+    data={'question': df_s[0]['question'][:], 'prediction': majority_predicted[:], 'answer': df_s[0]['answer'][:]}).reset_index(drop=True)
 
-  eval = Evaluator(len(df_majority), {'type': db_type, 'database_file': DB_FILE})
+  eval = Evaluator(len(df_majority), {'type': db_type, 'db_file': DB_FILE})
 
   eval.initialize(EVALUATION_TYPE, gold_queries=df_majority['answer'],
                   gpt_queries=df_majority['prediction'])
   metric_res = eval.get_metric_summary(EVALUATION_TYPE)
   print(eval.get_metric_summary(EVALUATION_TYPE))
-  df = pd.read_json(prefix + '/results/metric-results.json')
+
+  if os.path.isfile(PREFIX + '/data/metric-results.json'):
+    with open(PREFIX + '/data/metric-results.json') as f:
+      df = json.load(f)
+  else:
+    df = []
+
+  pk = 'Y' if PRIM_KEYS_ACTIVE else 'N'
+  pk += 'Y' if ERROR else 'N'
+
   new_row = {
     'date': DATE_STRING,
     'db_id': db_id,
@@ -141,18 +179,23 @@ def get_evaluation(dataset: str, example_num: int, num_of_avg_runs: int):
     'precision': metric_res[2],
     'f1-score': metric_res[3],
     'num-of-runs':num_of_avg_runs,
-    'prim-and-freign-keys': 'Y' if PRIM_KEYS_ACTIVE else 'N'
+    'prim-and-freign-keys': pk
   }
-  new_row_df = pd.DataFrame([new_row])
+  print(new_row)
+  df.append(new_row)
 
-  # Concatenate the new row with the existing DataFrame
-  df = pd.concat([df, new_row_df], ignore_index=True)
-  df.to_json(prefix + '/results/metric-results.json', orient='records')
+  with open(PREFIX + '/data/metric-results.json', 'w') as f:
+    json.dump(df, f, indent=2)
 
 
 if __name__ == '__main__':
+  #parser = argparse.ArgumentParser()
+  #parser.add_argument("--database", type=str, choices=["spider", "mit", "bird", "fiben", ], default="spider")
+  #parser.add_argument("--split", type=str, choices=["train", "test"], default="test",  required=True)
+  #parser.add_argument("--k_shot", type=int, default=0, help="Number of examples")
+  #args = parser.parse_args()
   #for i_ in [0, 1, 2, 4, 5]:
-  get_gpt_preds(db_id, debug=False, focus_q_idx=None, example_num=1)
+  # get_gpt_preds(db_id, debug=False, focus_q_idx=None, example_num=1)
   #K = 5
   #for i_ in [0, 1, 2, 4, 5]:
   #  get_gpt_preds(db_id, debug=False, focus_q_idx=None, example_num=1)
@@ -174,11 +217,12 @@ if __name__ == '__main__':
   # for i_ in [0, 1, 2, 4, 5]:
   #  get_gpt_preds(db_id, debug=False, focus_q_idx=None, example_num=5)
   #K=10
-  #get_evaluation(db_id, 1, 5)
-  #K=5
-  #get_evaluation(db_id, 1, 5)
-  #K=0
-  #get_evaluation(db_id, 1, 5)
+  #get_gpt_preds(db_id, debug=False, focus_q_idx=None, example_num=1)
+  get_evaluation(db_id, 1, 1)
+  # K=5
+  # get_evaluation(db_id, 1, 5)
+  # K=0
+  # get_evaluation(db_id, 1, 5)
   # K += 5
   # get_evaluation(db_id)
   # K += 5
