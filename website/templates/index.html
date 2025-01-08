@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Popup Content -->
+    <div id="popupForm" class="popup">
+        <button class="close" onclick="closePopup()">&times;</button>
+        <h2 style="text-align: center;">Submit Your Details</h2>
+        <form action="/submit" method="POST" enctype="multipart/form-data">
+            <label for="api_key">API Key:</label>
+            <input type="text" id="api_key" name="api_key" required>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="sql_file">SQL File:</label>
+            <input type="file" id="sql_file" name="sql_file" accept=".sql" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Show the popup when the page loads
+        window.onload = function() {
+            document.getElementById("popupForm").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        };
+
+        // Close the popup and overlay
+        function closePopup() {
+            document.getElementById("popupForm").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
+
+
+
+    <h2>Welcome to the Annotator</h2>
+    <p>Use this tool to annotate SQL queries and columns and map api calls.</p>
+    <a href="{{ url_for('column_annotation', annotation_id=1) }}">Go to Column Annotation<br></a>
+    <a href="{{ url_for('sql_annotation', annotation_id=1) }}">Go to SQL Annotation<br></a>
+    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to NL Annotation<br></a>
+    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to SQL Creation<br></a>
+    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to NL Creation<br></a>
+    <a href="{{ url_for('verification', annotation_id=1) }}?type=verification">Go to Verification</a>
+
+{% endblock %}

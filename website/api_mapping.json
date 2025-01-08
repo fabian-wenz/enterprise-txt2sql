@@ -1,0 +1,1643 @@
+[
+    {
+        "annotation": {
+            "local_user": {
+                "adjusted": false,
+                "api": " /v3/credentials/{credential_id} Show credential details ",
+                "comment": ""
+            },
+            "password": {
+                "comment": ""
+            },
+            "user": {
+                "comment": ""
+            }
+        },
+        "comment": "",
+        "extracted_tables": {
+            "local_user": [
+                "user_id",
+                "id"
+            ],
+            "password": [
+                "id",
+                "password",
+                "local_user_id"
+            ],
+            "user": [
+                "id"
+            ]
+        },
+        "matching_apis": {
+            "local_user": [
+                " /v3/credentials Create credential ",
+                " /v3/credentials List credentials ",
+                " /v3/credentials/{credential_id} Show credential details ",
+                " /v3/credentials/{credential_id} Update credential "
+            ]
+        },
+        "sql": "SELECT password.id AS password_id, password.local_user_id AS password_local_user_id, password.password AS password_password, local_user_1.id AS local_user_1_id \nFROM (SELECT user.id AS user_id \nFROM user \nWHERE user.id = 'ccbbd0bdf0104ea68a37483b13b14be2') AS anon_1 INNER JOIN local_user AS local_user_1 ON anon_1.user_id = local_user_1.user_id INNER JOIN password ON local_user_1.id = password.local_user_id ORDER BY local_user_1.id",
+        "tables_not_mapped": [
+            "password",
+            "user"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "subnets": [
+                "network_id",
+                "id"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ],
+            "subnets": [
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/segments/{segment_id} Show segment details ",
+                " /v2.0/segments/{segment_id} Update segment ",
+                " /v2.0/segments List segments ",
+                " /v2.0/segments Create segment ",
+                " /v2.0/routers/{router_id}/add_router_interface Add interface to router ",
+                " /v2.0/routers/{router_id}/remove_router_interface Remove interface from router ",
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/local_ips List Local IPs ",
+                " /v2.0/local_ips Create Local IP ",
+                " /v2.0/local_ips/{local_ip_id} Show Local IP details ",
+                " /v2.0/local_ips/{local_ip_id} Update Local IP ",
+                " /v2.0/bgpvpn/bgpvpns/{bgpvpn_id}/network_associations List Network Associations ",
+                " /v2.0/bgpvpn/bgpvpns/{bgpvpn_id}/network_associations Create Network Association ",
+                " /v2.0/bgpvpn/bgpvpns/{bgpvpn_id}/network_associations/{network_association_id} Show Network Association details "
+            ]
+        },
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, anon_1.subnets_network_id AS anon_1_subnets_network_id \nFROM (SELECT DISTINCT subnets.network_id AS subnets_network_id \nFROM subnets \nWHERE subnets.id IN ('e8da8ec5-364b-4a31-afaf-f68a206b7846')) AS anon_1 INNER JOIN networkrbacs ON anon_1.subnets_network_id = networkrbacs.object_id ORDER BY anon_1.subnets_network_id",
+        "tables_not_mapped": []
+    },
+    {
+        "extracted_tables": {
+            "externalnetworks": [
+                "network_id"
+            ],
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ]
+        },
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, anon_1.networks_id AS anon_1_networks_id \nFROM (SELECT networks.id AS networks_id \nFROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id \nWHERE networks.id IN ('b3d6c27a-a9bb-4521-b5de-4d65eb7490dc')) AS anon_1 INNER JOIN networkrbacs ON anon_1.networks_id = networkrbacs.object_id ORDER BY anon_1.networks_id",
+        "tables_not_mapped": [
+            "externalnetworks",
+            "networks"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "allocations": [
+                "used",
+                "resource_provider_id",
+                "resource_class_id"
+            ],
+            "compute_nodes": [
+                "memory_mb",
+                "extra_resources",
+                "id",
+                "supported_instances",
+                "current_workload",
+                "pci_stats",
+                "metrics",
+                "vcpus_used",
+                "updated_at",
+                "hypervisor_version",
+                "local_gb_used",
+                "host",
+                "service_id",
+                "deleted",
+                "disk_allocation_ratio",
+                "free_disk_gb",
+                "numa_topology",
+                "free_ram_mb",
+                "memory_mb_used",
+                "stats",
+                "cpu_allocation_ratio",
+                "deleted_at",
+                "running_vms",
+                "disk_available_least",
+                "uuid",
+                "cpu_info",
+                "vcpus",
+                "ram_allocation_ratio",
+                "created_at",
+                "hypervisor_hostname",
+                "host_ip",
+                "local_gb",
+                "hypervisor_type"
+            ],
+            "inventories": [
+                "reserved",
+                "resource_class_id",
+                "resource_provider_id",
+                "allocation_ratio",
+                "total"
+            ],
+            "resource_providers": [
+                "uuid",
+                "id"
+            ]
+        },
+        "matching_apis": {
+            "compute_nodes": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-hypervisors/detail List Hypervisors Details ",
+                " /os-hypervisors/statistics Show Hypervisor Statistics (DEPRECATED) ",
+                " /os-hypervisors/{hypervisor_id} Show Hypervisor Details ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details "
+            ],
+            "resource_providers": [
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details "
+            ]
+        },
+        "sql": "SELECT cn.created_at, cn.updated_at, cn.deleted_at, cn.deleted, cn.id, cn.service_id, cn.host, cn.uuid, cn.vcpus, cn.memory_mb, cn.local_gb, cn.vcpus_used, cn.memory_mb_used, cn.local_gb_used, cn.hypervisor_type, cn.hypervisor_version, cn.hypervisor_hostname, cn.free_ram_mb, cn.free_disk_gb, cn.current_workload, cn.running_vms, cn.cpu_info, cn.disk_available_least, cn.host_ip, cn.supported_instances, cn.metrics, cn.pci_stats, cn.extra_resources, cn.stats, cn.numa_topology, cn.ram_allocation_ratio, cn.cpu_allocation_ratio, cn.disk_allocation_ratio, ram_inv.total AS inv_memory_mb, ram_inv.reserved AS inv_memory_mb_reserved, ram_inv.allocation_ratio AS inv_ram_allocation_ratio, ram_usage.used AS inv_memory_mb_used, cpu_inv.total AS inv_vcpus, cpu_inv.allocation_ratio AS inv_cpu_allocation_ratio, cpu_usage.used AS inv_vcpus_used, disk_inv.total AS inv_local_gb, disk_inv.reserved AS inv_local_gb_reserved, disk_inv.allocation_ratio AS inv_disk_allocation_ratio, disk_usage.used AS inv_local_gb_used \nFROM compute_nodes AS cn LEFT OUTER JOIN resource_providers AS rp ON cn.uuid = rp.uuid LEFT OUTER JOIN inventories AS ram_inv ON rp.id = ram_inv.resource_provider_id AND ram_inv.resource_class_id = 1 LEFT OUTER JOIN (SELECT allocations.resource_provider_id AS resource_provider_id, sum(allocations.used) AS used \nFROM allocations \nWHERE allocations.resource_class_id = 1 GROUP BY allocations.resource_provider_id) AS ram_usage ON ram_inv.resource_provider_id = ram_usage.resource_provider_id LEFT OUTER JOIN inventories AS cpu_inv ON rp.id = cpu_inv.resource_provider_id AND cpu_inv.resource_class_id = 0 LEFT OUTER JOIN (SELECT allocations.resource_provider_id AS resource_provider_id, sum(allocations.used) AS used \nFROM allocations \nWHERE allocations.resource_class_id = 0 GROUP BY allocations.resource_provider_id) AS cpu_usage ON cpu_inv.resource_provider_id = cpu_usage.resource_provider_id LEFT OUTER JOIN inventories AS disk_inv ON rp.id = disk_inv.resource_provider_id AND disk_inv.resource_class_id = 2 LEFT OUTER JOIN (SELECT allocations.resource_provider_id AS resource_provider_id, sum(allocations.used) AS used \nFROM allocations \nWHERE allocations.resource_class_id = 2 GROUP BY allocations.resource_provider_id) AS disk_usage ON disk_inv.resource_provider_id = disk_usage.resource_provider_id \nWHERE cn.deleted = 0 AND cn.host = 'kvmgen4-4-1'",
+        "tables_not_mapped": [
+            "inventories",
+            "allocations"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "dnsnameservers": [
+                "subnet_id",
+                "order",
+                "address"
+            ],
+            "externalnetworks": [
+                "network_id"
+            ],
+            "ipallocationpools": [
+                "subnet_id",
+                "last_ip",
+                "id",
+                "first_ip"
+            ],
+            "networkrbacs": [
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ],
+            "standardattributes": [
+                "description",
+                "id",
+                "resource_type",
+                "created_at",
+                "updated_at"
+            ],
+            "subnetpoolprefixes": [
+                "subnetpool_id",
+                "cidr"
+            ],
+            "subnetpools": [
+                "hash",
+                "name",
+                "default_prefixlen",
+                "min_prefixlen",
+                "default_quota",
+                "id",
+                "shared",
+                "tenant_id",
+                "address_scope_id",
+                "standard_attr_id",
+                "max_prefixlen",
+                "ip_version",
+                "is_default"
+            ],
+            "subnetroutes": [
+                "subnet_id",
+                "destination",
+                "nexthop"
+            ],
+            "subnets": [
+                "network_id",
+                "ipv6_ra_mode",
+                "gateway_ip",
+                "tenant_id",
+                "standard_attr_id",
+                "subnetpool_id",
+                "id",
+                "ip_version",
+                "ipv6_address_mode",
+                "name",
+                "cidr",
+                "enable_dhcp"
+            ],
+            "tags": [
+                "standard_attr_id",
+                "tag"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ],
+            "standardattributes": [
+                " /v2.0/networks/{network_id} Show network details ",
+                " /v2.0/networks/{network_id} Update network ",
+                " /v2.0/networks List networks ",
+                " /v2.0/networks Create network ",
+                " /v2.0/networks Bulk create networks ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Show network segment range details ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Update network segment range ",
+                " /v2.0/network_segment_ranges List network segment ranges ",
+                " /v2.0/network_segment_ranges Create network segment range ",
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/segments/{segment_id} Show segment details ",
+                " /v2.0/segments/{segment_id} Update segment ",
+                " /v2.0/segments List segments ",
+                " /v2.0/segments Create segment ",
+                " /v2.0/trunks List trunks ",
+                " /v2.0/trunks Create trunk ",
+                " /v2.0/trunks/{trunk_id}/add_subports Add subports to trunk ",
+                " /v2.0/trunks/{trunk_id}/remove_subports Delete subports from trunk ",
+                " /v2.0/trunks/{trunk_id} Update trunk ",
+                " /v2.0/trunks/{trunk_id} Show trunk ",
+                " /v2.0/floatingips List floating IPs ",
+                " /v2.0/floatingips Create floating IP ",
+                " /v2.0/floatingips/{floatingip_id} Show floating IP details ",
+                " /v2.0/floatingips/{floatingip_id} Update floating IP ",
+                " /v2.0/routers List routers ",
+                " /v2.0/routers Create router ",
+                " /v2.0/routers/{router_id} Show router details ",
+                " /v2.0/routers/{router_id} Update router ",
+                " /v2.0/ndp_proxies List ndp proxies ",
+                " /v2.0/ndp_proxies/{ndp_proxy_id} Show ndp proxy details ",
+                " /v2.0/ndp_proxies/{ndp_proxy_id} Update a ndp proxy ",
+                " /v2.0/ndp_proxies Create ndp proxy ",
+                " /v2.0/subnetpools/{subnetpool_id} Show subnet pool ",
+                " /v2.0/subnetpools/{subnetpool_id} Update subnet pool ",
+                " /v2.0/subnetpools List subnet pools ",
+                " /v2.0/subnetpools Create subnet pool ",
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/local_ips List Local IPs ",
+                " /v2.0/local_ips Create Local IP ",
+                " /v2.0/local_ips/{local_ip_id} Show Local IP details ",
+                " /v2.0/local_ips/{local_ip_id} Update Local IP ",
+                " /v2.0/security-group-rules List security group rules ",
+                " /v2.0/security-group-rules Create security group rule ",
+                " /v2.0/security-group-rules Bulk create security group rule ",
+                " /v2.0/security-group-rules/{security_group_rule_id} Show security group rule ",
+                " /v2.0/security-groups List security groups ",
+                " /v2.0/security-groups Create security group ",
+                " /v2.0/security-groups/{security_group_id} Show security group ",
+                " /v2.0/security-groups/{security_group_id} Update security group ",
+                " /v2.0/qos/policies List QoS policies ",
+                " /v2.0/qos/policies Create QoS policy ",
+                " /v2.0/qos/policies/{policy_id} Show QoS policy details ",
+                " /v2.0/qos/policies/{policy_id} Update QoS policy ",
+                " /v2.0/log/logs List logs ",
+                " /v2.0/log/logs Create log ",
+                " /v2.0/log/logs/{log_id} Show log ",
+                " /v2.0/log/logs/{log_id} Update log ",
+                " /v2.0/agents/{agent_id}/dhcp-networks List networks hosted by a DHCP agent "
+            ],
+            "subnetpoolprefixes": [
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/subnetpools/{subnetpool_id}/onboard_network_subnets Onboard subnets "
+            ],
+            "subnetpools": [
+                " /v2.0/networks/{network_id} Show network details ",
+                " /v2.0/networks/{network_id} Update network ",
+                " /v2.0/networks List networks ",
+                " /v2.0/networks Create network ",
+                " /v2.0/networks Bulk create networks ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Show network segment range details ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Update network segment range ",
+                " /v2.0/network_segment_ranges List network segment ranges ",
+                " /v2.0/network_segment_ranges Create network segment range ",
+                " /v2.0/address-scopes/{address_scope_id} Show address scope ",
+                " /v2.0/address-scopes/{address_scope_id} Update an address scope ",
+                " /v2.0/address-scopes List address scopes ",
+                " /v2.0/address-scopes Create address scope ",
+                " /v2.0/subnetpools/{subnetpool_id} Show subnet pool ",
+                " /v2.0/subnetpools/{subnetpool_id} Update subnet pool ",
+                " /v2.0/subnetpools List subnet pools ",
+                " /v2.0/subnetpools Create subnet pool ",
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/fwaas/firewall_groups List firewall groups ",
+                " /v2.0/fwaas/firewall_groups/{firewall_group_id} Show firewall group details ",
+                " /v2.0/fwaas/firewall_groups Create firewall group ",
+                " /v2.0/fwaas/firewall_groups/{firewall_group_id} Update firewall group ",
+                " /v2.0/fwaas/firewall_policies List firewall policies ",
+                " /v2.0/fwaas/firewall_policies/{firewall_policy_id} Show firewall policy details ",
+                " /v2.0/fwaas/firewall_policies Create firewall policy ",
+                " /v2.0/fwaas/firewall_policies/{firewall_policy_id} Update firewall policy ",
+                " /v2.0/fwaas/firewall_rules List firewall rules ",
+                " /v2.0/fwaas/firewall_rules/{firewall_rule_id} Show firewall rule details ",
+                " /v2.0/fwaas/firewall_rules Create firewall rule ",
+                " /v2.0/fwaas/firewall_rules/{firewall_rule_id} Update firewall rule ",
+                " /v2.0/fwaas/firewall_policies/{firewall_policy_id}/insert_rule Insert rule into a firewall policy ",
+                " /v2.0/fwaas/firewall_policies/{firewall_policy_id}/remove_rule Remove rule from firewall policy ",
+                " /v2.0/security-groups List security groups ",
+                " /v2.0/security-groups Create security group ",
+                " /v2.0/security-groups/{security_group_id} Show security group ",
+                " /v2.0/security-groups/{security_group_id} Update security group ",
+                " /v2.0/metering/metering-labels List metering labels ",
+                " /v2.0/metering/metering-labels Create metering label ",
+                " /v2.0/metering/metering-labels/{metering_label_id} Show metering label details ",
+                " /v2.0/qos/policies List QoS policies ",
+                " /v2.0/qos/policies Create QoS policy ",
+                " /v2.0/qos/policies/{policy_id} Show QoS policy details ",
+                " /v2.0/qos/policies/{policy_id} Update QoS policy ",
+                " /v2.0/bgp-speakers List BGP Speakers ",
+                " /v2.0/bgp-speakers/{bgp-speaker-id} Show BGP Speaker details ",
+                " /v2.0/bgp-speakers Create BGP Speaker ",
+                " /v2.0/agents/{agent_id}/dhcp-networks List networks hosted by a DHCP agent "
+            ],
+            "subnets": [
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/address-scopes/{address_scope_id} Show address scope ",
+                " /v2.0/address-scopes/{address_scope_id} Update an address scope ",
+                " /v2.0/address-scopes List address scopes ",
+                " /v2.0/address-scopes Create address scope ",
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/fwaas/firewall_rules List firewall rules ",
+                " /v2.0/fwaas/firewall_rules/{firewall_rule_id} Show firewall rule details ",
+                " /v2.0/fwaas/firewall_rules Create firewall rule ",
+                " /v2.0/fwaas/firewall_rules/{firewall_rule_id} Update firewall rule ",
+                " /v2.0/network-ip-availabilities/{network_id} Show Network IP Availability ",
+                " /v2.0/network-ip-availabilities List Network IP Availability ",
+                " /v2.0/bgp-speakers List BGP Speakers ",
+                " /v2.0/bgp-speakers/{bgp-speaker-id} Show BGP Speaker details ",
+                " /v2.0/bgp-speakers Create BGP Speaker "
+            ]
+        },
+        "sql": "SELECT subnets.tenant_id AS subnets_tenant_id, subnets.id AS subnets_id, subnets.name AS subnets_name, subnets.network_id AS subnets_network_id, subnets.subnetpool_id AS subnets_subnetpool_id, subnets.ip_version AS subnets_ip_version, subnets.cidr AS subnets_cidr, subnets.gateway_ip AS subnets_gateway_ip, subnets.enable_dhcp AS subnets_enable_dhcp, subnets.ipv6_ra_mode AS subnets_ipv6_ra_mode, subnets.ipv6_address_mode AS subnets_ipv6_address_mode, subnets.standard_attr_id AS subnets_standard_attr_id, anon_1.networks_id AS anon_1_networks_id, subnetpoolprefixes_1.cidr AS subnetpoolprefixes_1_cidr, subnetpoolprefixes_1.subnetpool_id AS subnetpoolprefixes_1_subnetpool_id, standardattributes_1.created_at AS standardattributes_1_created_at, standardattributes_1.updated_at AS standardattributes_1_updated_at, standardattributes_1.id AS standardattributes_1_id, standardattributes_1.resource_type AS standardattributes_1_resource_type, standardattributes_1.description AS standardattributes_1_description, tags_1.standard_attr_id AS tags_1_standard_attr_id, tags_1.tag AS tags_1_tag, subnetpools_1.tenant_id AS subnetpools_1_tenant_id, subnetpools_1.id AS subnetpools_1_id, subnetpools_1.name AS subnetpools_1_name, subnetpools_1.ip_version AS subnetpools_1_ip_version, subnetpools_1.default_prefixlen AS subnetpools_1_default_prefixlen, subnetpools_1.min_prefixlen AS subnetpools_1_min_prefixlen, subnetpools_1.max_prefixlen AS subnetpools_1_max_prefixlen, subnetpools_1.shared AS subnetpools_1_shared, subnetpools_1.is_default AS subnetpools_1_is_default, subnetpools_1.default_quota AS subnetpools_1_default_quota, subnetpools_1.hash AS subnetpools_1_hash, subnetpools_1.address_scope_id AS subnetpools_1_address_scope_id, subnetpools_1.standard_attr_id AS subnetpools_1_standard_attr_id, ipallocationpools_1.id AS ipallocationpools_1_id, ipallocationpools_1.subnet_id AS ipallocationpools_1_subnet_id, ipallocationpools_1.first_ip AS ipallocationpools_1_first_ip, ipallocationpools_1.last_ip AS ipallocationpools_1_last_ip, dnsnameservers_1.address AS dnsnameservers_1_address, dnsnameservers_1.subnet_id AS dnsnameservers_1_subnet_id, dnsnameservers_1.`order` AS dnsnameservers_1_order, subnetroutes_1.destination AS subnetroutes_1_destination, subnetroutes_1.nexthop AS subnetroutes_1_nexthop, subnetroutes_1.subnet_id AS subnetroutes_1_subnet_id, standardattributes_2.created_at AS standardattributes_2_created_at, standardattributes_2.updated_at AS standardattributes_2_updated_at, standardattributes_2.id AS standardattributes_2_id, standardattributes_2.resource_type AS standardattributes_2_resource_type, standardattributes_2.description AS standardattributes_2_description, tags_2.standard_attr_id AS tags_2_standard_attr_id, tags_2.tag AS tags_2_tag \nFROM (SELECT networks.id AS networks_id \nFROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id LEFT OUTER JOIN networkrbacs ON networks.id = networkrbacs.object_id \nWHERE networkrbacs.action = 'access_as_shared' AND (networkrbacs.target_tenant = '*' OR networkrbacs.target_tenant = '9f13bf11e06e4d81b44c8c3e62d4362b')) AS anon_1 INNER JOIN subnets ON anon_1.networks_id = subnets.network_id LEFT OUTER JOIN subnetpools AS subnetpools_1 ON subnets.subnetpool_id = subnetpools_1.id LEFT OUTER JOIN subnetpoolprefixes AS subnetpoolprefixes_1 ON subnetpools_1.id = subnetpoolprefixes_1.subnetpool_id LEFT OUTER JOIN standardattributes AS standardattributes_1 ON standardattributes_1.id = subnetpools_1.standard_attr_id LEFT OUTER JOIN tags AS tags_1 ON standardattributes_1.id = tags_1.standard_attr_id LEFT OUTER JOIN ipallocationpools AS ipallocationpools_1 ON subnets.id = ipallocationpools_1.subnet_id LEFT OUTER JOIN dnsnameservers AS dnsnameservers_1 ON subnets.id = dnsnameservers_1.subnet_id LEFT OUTER JOIN subnetroutes AS subnetroutes_1 ON subnets.id = subnetroutes_1.subnet_id LEFT OUTER JOIN standardattributes AS standardattributes_2 ON standardattributes_2.id = subnets.standard_attr_id LEFT OUTER JOIN tags AS tags_2 ON standardattributes_2.id = tags_2.standard_attr_id ORDER BY anon_1.networks_id, dnsnameservers_1.`order`",
+        "tables_not_mapped": [
+            "tags",
+            "externalnetworks",
+            "ipallocationpools",
+            "networks",
+            "dnsnameservers",
+            "subnetroutes"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "instance_extra": [
+                "instance_uuid",
+                "flavor",
+                "deleted",
+                "id",
+                "deleted_at",
+                "updated_at",
+                "created_at"
+            ],
+            "instance_info_caches": [
+                "updated_at",
+                "deleted_at",
+                "created_at",
+                "id",
+                "network_info",
+                "deleted",
+                "instance_uuid"
+            ],
+            "instance_system_metadata": [
+                "deleted",
+                "instance_uuid",
+                "value",
+                "key",
+                "deleted_at",
+                "id",
+                "updated_at",
+                "created_at"
+            ],
+            "instances": [
+                "progress",
+                "display_description",
+                "locked",
+                "vcpus",
+                "root_device_name",
+                "default_ephemeral_device",
+                "availability_zone",
+                "updated_at",
+                "disable_terminate",
+                "root_gb",
+                "default_swap_device",
+                "key_data",
+                "deleted_at",
+                "hostname",
+                "access_ip_v6",
+                "power_state",
+                "key_name",
+                "uuid",
+                "user_id",
+                "vm_mode",
+                "shutdown_terminate",
+                "project_id",
+                "os_type",
+                "ephemeral_gb",
+                "reservation_id",
+                "memory_mb",
+                "vm_state",
+                "kernel_id",
+                "launched_on",
+                "cell_name",
+                "host",
+                "cleaned",
+                "deleted",
+                "terminated_at",
+                "image_ref",
+                "launched_at",
+                "ephemeral_key_uuid",
+                "display_name",
+                "instance_type_id",
+                "node",
+                "config_drive",
+                "architecture",
+                "auto_disk_config",
+                "created_at",
+                "access_ip_v4",
+                "launch_index",
+                "internal_id",
+                "id",
+                "ramdisk_id",
+                "locked_by",
+                "user_data",
+                "task_state"
+            ],
+            "security_group_instance_association": [
+                "deleted",
+                "instance_uuid",
+                "security_group_id"
+            ],
+            "security_group_rules": [
+                "cidr",
+                "to_port",
+                "protocol",
+                "deleted",
+                "from_port",
+                "created_at",
+                "group_id",
+                "deleted_at",
+                "id",
+                "parent_group_id",
+                "updated_at"
+            ],
+            "security_groups": [
+                "deleted_at",
+                "name",
+                "project_id",
+                "id",
+                "user_id",
+                "updated_at",
+                "deleted",
+                "description",
+                "created_at"
+            ]
+        },
+        "matching_apis": {
+            "instance_extra": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instance_info_caches": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instance_system_metadata": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instances": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-baremetal-nodes List Bare Metal Nodes ",
+                " /os-baremetal-nodes/{node_id} Show Bare Metal Node Details "
+            ],
+            "security_group_rules": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-security-group-rules Create Security Group Rule "
+            ],
+            "security_groups": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-server-groups List Server Groups ",
+                " /os-server-groups Create Server Group ",
+                " /os-server-groups/{server_group_id} Show Server Group Details "
+            ]
+        },
+        "sql": "SELECT anon_1.instances_created_at AS anon_1_instances_created_at, anon_1.instances_updated_at AS anon_1_instances_updated_at, anon_1.instances_deleted_at AS anon_1_instances_deleted_at, anon_1.instances_deleted AS anon_1_instances_deleted, anon_1.instances_id AS anon_1_instances_id, anon_1.instances_user_id AS anon_1_instances_user_id, anon_1.instances_project_id AS anon_1_instances_project_id, anon_1.instances_image_ref AS anon_1_instances_image_ref, anon_1.instances_kernel_id AS anon_1_instances_kernel_id, anon_1.instances_ramdisk_id AS anon_1_instances_ramdisk_id, anon_1.instances_hostname AS anon_1_instances_hostname, anon_1.instances_launch_index AS anon_1_instances_launch_index, anon_1.instances_key_name AS anon_1_instances_key_name, anon_1.instances_key_data AS anon_1_instances_key_data, anon_1.instances_power_state AS anon_1_instances_power_state, anon_1.instances_vm_state AS anon_1_instances_vm_state, anon_1.instances_task_state AS anon_1_instances_task_state, anon_1.instances_memory_mb AS anon_1_instances_memory_mb, anon_1.instances_vcpus AS anon_1_instances_vcpus, anon_1.instances_root_gb AS anon_1_instances_root_gb, anon_1.instances_ephemeral_gb AS anon_1_instances_ephemeral_gb, anon_1.instances_ephemeral_key_uuid AS anon_1_instances_ephemeral_key_uuid, anon_1.instances_host AS anon_1_instances_host, anon_1.instances_node AS anon_1_instances_node, anon_1.instances_instance_type_id AS anon_1_instances_instance_type_id, anon_1.instances_user_data AS anon_1_instances_user_data, anon_1.instances_reservation_id AS anon_1_instances_reservation_id, anon_1.instances_launched_at AS anon_1_instances_launched_at, anon_1.instances_terminated_at AS anon_1_instances_terminated_at, anon_1.instances_availability_zone AS anon_1_instances_availability_zone, anon_1.instances_display_name AS anon_1_instances_display_name, anon_1.instances_display_description AS anon_1_instances_display_description, anon_1.instances_launched_on AS anon_1_instances_launched_on, anon_1.instances_locked AS anon_1_instances_locked, anon_1.instances_locked_by AS anon_1_instances_locked_by, anon_1.instances_os_type AS anon_1_instances_os_type, anon_1.instances_architecture AS anon_1_instances_architecture, anon_1.instances_vm_mode AS anon_1_instances_vm_mode, anon_1.instances_uuid AS anon_1_instances_uuid, anon_1.instances_root_device_name AS anon_1_instances_root_device_name, anon_1.instances_default_ephemeral_device AS anon_1_instances_default_ephemeral_device, anon_1.instances_default_swap_device AS anon_1_instances_default_swap_device, anon_1.instances_config_drive AS anon_1_instances_config_drive, anon_1.instances_access_ip_v4 AS anon_1_instances_access_ip_v4, anon_1.instances_access_ip_v6 AS anon_1_instances_access_ip_v6, anon_1.instances_auto_disk_config AS anon_1_instances_auto_disk_config, anon_1.instances_progress AS anon_1_instances_progress, anon_1.instances_shutdown_terminate AS anon_1_instances_shutdown_terminate, anon_1.instances_disable_terminate AS anon_1_instances_disable_terminate, anon_1.instances_cell_name AS anon_1_instances_cell_name, anon_1.instances_internal_id AS anon_1_instances_internal_id, anon_1.instances_cleaned AS anon_1_instances_cleaned, instance_info_caches_1.created_at AS instance_info_caches_1_created_at, instance_info_caches_1.updated_at AS instance_info_caches_1_updated_at, instance_info_caches_1.deleted_at AS instance_info_caches_1_deleted_at, instance_info_caches_1.deleted AS instance_info_caches_1_deleted, instance_info_caches_1.id AS instance_info_caches_1_id, instance_info_caches_1.network_info AS instance_info_caches_1_network_info, instance_info_caches_1.instance_uuid AS instance_info_caches_1_instance_uuid, security_groups_1.created_at AS security_groups_1_created_at, security_groups_1.updated_at AS security_groups_1_updated_at, security_groups_1.deleted_at AS security_groups_1_deleted_at, security_groups_1.deleted AS security_groups_1_deleted, security_groups_1.id AS security_groups_1_id, security_groups_1.name AS security_groups_1_name, security_groups_1.description AS security_groups_1_description, security_groups_1.user_id AS security_groups_1_user_id, security_groups_1.project_id AS security_groups_1_project_id, security_group_rules_1.created_at AS security_group_rules_1_created_at, security_group_rules_1.updated_at AS security_group_rules_1_updated_at, security_group_rules_1.deleted_at AS security_group_rules_1_deleted_at, security_group_rules_1.deleted AS security_group_rules_1_deleted, security_group_rules_1.id AS security_group_rules_1_id, security_group_rules_1.parent_group_id AS security_group_rules_1_parent_group_id, security_group_rules_1.protocol AS security_group_rules_1_protocol, security_group_rules_1.from_port AS security_group_rules_1_from_port, security_group_rules_1.to_port AS security_group_rules_1_to_port, security_group_rules_1.cidr AS security_group_rules_1_cidr, security_group_rules_1.group_id AS security_group_rules_1_group_id, instance_system_metadata_1.created_at AS instance_system_metadata_1_created_at, instance_system_metadata_1.updated_at AS instance_system_metadata_1_updated_at, instance_system_metadata_1.deleted_at AS instance_system_metadata_1_deleted_at, instance_system_metadata_1.deleted AS instance_system_metadata_1_deleted, instance_system_metadata_1.id AS instance_system_metadata_1_id, instance_system_metadata_1.`key` AS instance_system_metadata_1_key, instance_system_metadata_1.value AS instance_system_metadata_1_value, instance_system_metadata_1.instance_uuid AS instance_system_metadata_1_instance_uuid, instance_extra_1.flavor AS instance_extra_1_flavor, instance_extra_1.created_at AS instance_extra_1_created_at, instance_extra_1.updated_at AS instance_extra_1_updated_at, instance_extra_1.deleted_at AS instance_extra_1_deleted_at, instance_extra_1.deleted AS instance_extra_1_deleted, instance_extra_1.id AS instance_extra_1_id, instance_extra_1.instance_uuid AS instance_extra_1_instance_uuid \nFROM (SELECT instances.created_at AS instances_created_at, instances.updated_at AS instances_updated_at, instances.deleted_at AS instances_deleted_at, instances.deleted AS instances_deleted, instances.id AS instances_id, instances.user_id AS instances_user_id, instances.project_id AS instances_project_id, instances.image_ref AS instances_image_ref, instances.kernel_id AS instances_kernel_id, instances.ramdisk_id AS instances_ramdisk_id, instances.hostname AS instances_hostname, instances.launch_index AS instances_launch_index, instances.key_name AS instances_key_name, instances.key_data AS instances_key_data, instances.power_state AS instances_power_state, instances.vm_state AS instances_vm_state, instances.task_state AS instances_task_state, instances.memory_mb AS instances_memory_mb, instances.vcpus AS instances_vcpus, instances.root_gb AS instances_root_gb, instances.ephemeral_gb AS instances_ephemeral_gb, instances.ephemeral_key_uuid AS instances_ephemeral_key_uuid, instances.host AS instances_host, instances.node AS instances_node, instances.instance_type_id AS instances_instance_type_id, instances.user_data AS instances_user_data, instances.reservation_id AS instances_reservation_id, instances.launched_at AS instances_launched_at, instances.terminated_at AS instances_terminated_at, instances.availability_zone AS instances_availability_zone, instances.display_name AS instances_display_name, instances.display_description AS instances_display_description, instances.launched_on AS instances_launched_on, instances.locked AS instances_locked, instances.locked_by AS instances_locked_by, instances.os_type AS instances_os_type, instances.architecture AS instances_architecture, instances.vm_mode AS instances_vm_mode, instances.uuid AS instances_uuid, instances.root_device_name AS instances_root_device_name, instances.default_ephemeral_device AS instances_default_ephemeral_device, instances.default_swap_device AS instances_default_swap_device, instances.config_drive AS instances_config_drive, instances.access_ip_v4 AS instances_access_ip_v4, instances.access_ip_v6 AS instances_access_ip_v6, instances.auto_disk_config AS instances_auto_disk_config, instances.progress AS instances_progress, instances.shutdown_terminate AS instances_shutdown_terminate, instances.disable_terminate AS instances_disable_terminate, instances.cell_name AS instances_cell_name, instances.internal_id AS instances_internal_id, instances.cleaned AS instances_cleaned \nFROM instances \nWHERE instances.deleted = 0 AND instances.uuid = '36cc0a85-c3ef-4ed4-8883-369c87aa96e9' \n LIMIT 1) AS anon_1 LEFT OUTER JOIN instance_info_caches AS instance_info_caches_1 ON instance_info_caches_1.instance_uuid = anon_1.instances_uuid LEFT OUTER JOIN (security_group_instance_association AS security_group_instance_association_1 INNER JOIN security_groups AS security_groups_1 ON security_groups_1.id = security_group_instance_association_1.security_group_id AND security_group_instance_association_1.deleted = 0 AND security_groups_1.deleted = 0) ON security_group_instance_association_1.instance_uuid = anon_1.instances_uuid AND anon_1.instances_deleted = 0 LEFT OUTER JOIN security_group_rules AS security_group_rules_1 ON security_group_rules_1.parent_group_id = security_groups_1.id AND security_group_rules_1.deleted = 0 LEFT OUTER JOIN instance_system_metadata AS instance_system_metadata_1 ON anon_1.instances_uuid = instance_system_metadata_1.instance_uuid LEFT OUTER JOIN instance_extra AS instance_extra_1 ON instance_extra_1.instance_uuid = anon_1.instances_uuid",
+        "tables_not_mapped": [
+            "security_group_instance_association"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "externalnetworks": [
+                "network_id"
+            ],
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ],
+            "subnets": [
+                "network_id"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ]
+        },
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, subnets_1.network_id AS subnets_1_network_id \nFROM (SELECT networks.id AS networks_id \nFROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id LEFT OUTER JOIN networkrbacs ON networks.id = networkrbacs.object_id \nWHERE networkrbacs.action = 'access_as_shared' AND (networkrbacs.target_tenant = '*' OR networkrbacs.target_tenant = '9f13bf11e06e4d81b44c8c3e62d4362b')) AS anon_1 INNER JOIN subnets AS subnets_1 ON anon_1.networks_id = subnets_1.network_id INNER JOIN networkrbacs ON subnets_1.network_id = networkrbacs.object_id ORDER BY subnets_1.network_id",
+        "tables_not_mapped": [
+            "externalnetworks",
+            "subnets",
+            "networks"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "instance_info_caches": [
+                "updated_at",
+                "deleted_at",
+                "created_at",
+                "id",
+                "network_info",
+                "deleted",
+                "instance_uuid"
+            ],
+            "instances": [
+                "progress",
+                "display_description",
+                "locked",
+                "vcpus",
+                "root_device_name",
+                "default_ephemeral_device",
+                "availability_zone",
+                "updated_at",
+                "disable_terminate",
+                "root_gb",
+                "default_swap_device",
+                "key_data",
+                "deleted_at",
+                "hostname",
+                "access_ip_v6",
+                "power_state",
+                "key_name",
+                "uuid",
+                "user_id",
+                "vm_mode",
+                "shutdown_terminate",
+                "project_id",
+                "os_type",
+                "ephemeral_gb",
+                "reservation_id",
+                "memory_mb",
+                "vm_state",
+                "kernel_id",
+                "launched_on",
+                "cell_name",
+                "host",
+                "cleaned",
+                "deleted",
+                "terminated_at",
+                "image_ref",
+                "launched_at",
+                "ephemeral_key_uuid",
+                "display_name",
+                "instance_type_id",
+                "node",
+                "config_drive",
+                "architecture",
+                "auto_disk_config",
+                "created_at",
+                "access_ip_v4",
+                "launch_index",
+                "internal_id",
+                "id",
+                "ramdisk_id",
+                "locked_by",
+                "user_data",
+                "task_state"
+            ],
+            "security_group_instance_association": [
+                "deleted",
+                "instance_uuid",
+                "security_group_id"
+            ],
+            "security_group_rules": [
+                "cidr",
+                "to_port",
+                "protocol",
+                "deleted",
+                "from_port",
+                "created_at",
+                "group_id",
+                "deleted_at",
+                "id",
+                "parent_group_id",
+                "updated_at"
+            ],
+            "security_groups": [
+                "deleted_at",
+                "name",
+                "project_id",
+                "id",
+                "user_id",
+                "updated_at",
+                "deleted",
+                "description",
+                "created_at"
+            ]
+        },
+        "matching_apis": {
+            "instance_info_caches": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instances": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-baremetal-nodes List Bare Metal Nodes ",
+                " /os-baremetal-nodes/{node_id} Show Bare Metal Node Details "
+            ],
+            "security_group_rules": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-security-group-rules Create Security Group Rule "
+            ],
+            "security_groups": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-server-groups List Server Groups ",
+                " /os-server-groups Create Server Group ",
+                " /os-server-groups/{server_group_id} Show Server Group Details "
+            ]
+        },
+        "sql": "SELECT anon_1.instances_created_at AS anon_1_instances_created_at, anon_1.instances_updated_at AS anon_1_instances_updated_at, anon_1.instances_deleted_at AS anon_1_instances_deleted_at, anon_1.instances_deleted AS anon_1_instances_deleted, anon_1.instances_id AS anon_1_instances_id, anon_1.instances_user_id AS anon_1_instances_user_id, anon_1.instances_project_id AS anon_1_instances_project_id, anon_1.instances_image_ref AS anon_1_instances_image_ref, anon_1.instances_kernel_id AS anon_1_instances_kernel_id, anon_1.instances_ramdisk_id AS anon_1_instances_ramdisk_id, anon_1.instances_hostname AS anon_1_instances_hostname, anon_1.instances_launch_index AS anon_1_instances_launch_index, anon_1.instances_key_name AS anon_1_instances_key_name, anon_1.instances_key_data AS anon_1_instances_key_data, anon_1.instances_power_state AS anon_1_instances_power_state, anon_1.instances_vm_state AS anon_1_instances_vm_state, anon_1.instances_task_state AS anon_1_instances_task_state, anon_1.instances_memory_mb AS anon_1_instances_memory_mb, anon_1.instances_vcpus AS anon_1_instances_vcpus, anon_1.instances_root_gb AS anon_1_instances_root_gb, anon_1.instances_ephemeral_gb AS anon_1_instances_ephemeral_gb, anon_1.instances_ephemeral_key_uuid AS anon_1_instances_ephemeral_key_uuid, anon_1.instances_host AS anon_1_instances_host, anon_1.instances_node AS anon_1_instances_node, anon_1.instances_instance_type_id AS anon_1_instances_instance_type_id, anon_1.instances_user_data AS anon_1_instances_user_data, anon_1.instances_reservation_id AS anon_1_instances_reservation_id, anon_1.instances_launched_at AS anon_1_instances_launched_at, anon_1.instances_terminated_at AS anon_1_instances_terminated_at, anon_1.instances_availability_zone AS anon_1_instances_availability_zone, anon_1.instances_display_name AS anon_1_instances_display_name, anon_1.instances_display_description AS anon_1_instances_display_description, anon_1.instances_launched_on AS anon_1_instances_launched_on, anon_1.instances_locked AS anon_1_instances_locked, anon_1.instances_locked_by AS anon_1_instances_locked_by, anon_1.instances_os_type AS anon_1_instances_os_type, anon_1.instances_architecture AS anon_1_instances_architecture, anon_1.instances_vm_mode AS anon_1_instances_vm_mode, anon_1.instances_uuid AS anon_1_instances_uuid, anon_1.instances_root_device_name AS anon_1_instances_root_device_name, anon_1.instances_default_ephemeral_device AS anon_1_instances_default_ephemeral_device, anon_1.instances_default_swap_device AS anon_1_instances_default_swap_device, anon_1.instances_config_drive AS anon_1_instances_config_drive, anon_1.instances_access_ip_v4 AS anon_1_instances_access_ip_v4, anon_1.instances_access_ip_v6 AS anon_1_instances_access_ip_v6, anon_1.instances_auto_disk_config AS anon_1_instances_auto_disk_config, anon_1.instances_progress AS anon_1_instances_progress, anon_1.instances_shutdown_terminate AS anon_1_instances_shutdown_terminate, anon_1.instances_disable_terminate AS anon_1_instances_disable_terminate, anon_1.instances_cell_name AS anon_1_instances_cell_name, anon_1.instances_internal_id AS anon_1_instances_internal_id, anon_1.instances_cleaned AS anon_1_instances_cleaned, instance_info_caches_1.created_at AS instance_info_caches_1_created_at, instance_info_caches_1.updated_at AS instance_info_caches_1_updated_at, instance_info_caches_1.deleted_at AS instance_info_caches_1_deleted_at, instance_info_caches_1.deleted AS instance_info_caches_1_deleted, instance_info_caches_1.id AS instance_info_caches_1_id, instance_info_caches_1.network_info AS instance_info_caches_1_network_info, instance_info_caches_1.instance_uuid AS instance_info_caches_1_instance_uuid, security_groups_1.created_at AS security_groups_1_created_at, security_groups_1.updated_at AS security_groups_1_updated_at, security_groups_1.deleted_at AS security_groups_1_deleted_at, security_groups_1.deleted AS security_groups_1_deleted, security_groups_1.id AS security_groups_1_id, security_groups_1.name AS security_groups_1_name, security_groups_1.description AS security_groups_1_description, security_groups_1.user_id AS security_groups_1_user_id, security_groups_1.project_id AS security_groups_1_project_id, security_group_rules_1.created_at AS security_group_rules_1_created_at, security_group_rules_1.updated_at AS security_group_rules_1_updated_at, security_group_rules_1.deleted_at AS security_group_rules_1_deleted_at, security_group_rules_1.deleted AS security_group_rules_1_deleted, security_group_rules_1.id AS security_group_rules_1_id, security_group_rules_1.parent_group_id AS security_group_rules_1_parent_group_id, security_group_rules_1.protocol AS security_group_rules_1_protocol, security_group_rules_1.from_port AS security_group_rules_1_from_port, security_group_rules_1.to_port AS security_group_rules_1_to_port, security_group_rules_1.cidr AS security_group_rules_1_cidr, security_group_rules_1.group_id AS security_group_rules_1_group_id \nFROM (SELECT instances.created_at AS instances_created_at, instances.updated_at AS instances_updated_at, instances.deleted_at AS instances_deleted_at, instances.deleted AS instances_deleted, instances.id AS instances_id, instances.user_id AS instances_user_id, instances.project_id AS instances_project_id, instances.image_ref AS instances_image_ref, instances.kernel_id AS instances_kernel_id, instances.ramdisk_id AS instances_ramdisk_id, instances.hostname AS instances_hostname, instances.launch_index AS instances_launch_index, instances.key_name AS instances_key_name, instances.key_data AS instances_key_data, instances.power_state AS instances_power_state, instances.vm_state AS instances_vm_state, instances.task_state AS instances_task_state, instances.memory_mb AS instances_memory_mb, instances.vcpus AS instances_vcpus, instances.root_gb AS instances_root_gb, instances.ephemeral_gb AS instances_ephemeral_gb, instances.ephemeral_key_uuid AS instances_ephemeral_key_uuid, instances.host AS instances_host, instances.node AS instances_node, instances.instance_type_id AS instances_instance_type_id, instances.user_data AS instances_user_data, instances.reservation_id AS instances_reservation_id, instances.launched_at AS instances_launched_at, instances.terminated_at AS instances_terminated_at, instances.availability_zone AS instances_availability_zone, instances.display_name AS instances_display_name, instances.display_description AS instances_display_description, instances.launched_on AS instances_launched_on, instances.locked AS instances_locked, instances.locked_by AS instances_locked_by, instances.os_type AS instances_os_type, instances.architecture AS instances_architecture, instances.vm_mode AS instances_vm_mode, instances.uuid AS instances_uuid, instances.root_device_name AS instances_root_device_name, instances.default_ephemeral_device AS instances_default_ephemeral_device, instances.default_swap_device AS instances_default_swap_device, instances.config_drive AS instances_config_drive, instances.access_ip_v4 AS instances_access_ip_v4, instances.access_ip_v6 AS instances_access_ip_v6, instances.auto_disk_config AS instances_auto_disk_config, instances.progress AS instances_progress, instances.shutdown_terminate AS instances_shutdown_terminate, instances.disable_terminate AS instances_disable_terminate, instances.cell_name AS instances_cell_name, instances.internal_id AS instances_internal_id, instances.cleaned AS instances_cleaned \nFROM instances \nWHERE instances.deleted = 0 AND instances.uuid = '85aafec6-1b2e-423a-b834-d4a526068dec' \n LIMIT 1) AS anon_1 LEFT OUTER JOIN instance_info_caches AS instance_info_caches_1 ON instance_info_caches_1.instance_uuid = anon_1.instances_uuid LEFT OUTER JOIN (security_group_instance_association AS security_group_instance_association_1 INNER JOIN security_groups AS security_groups_1 ON security_groups_1.id = security_group_instance_association_1.security_group_id AND security_group_instance_association_1.deleted = 0 AND security_groups_1.deleted = 0) ON security_group_instance_association_1.instance_uuid = anon_1.instances_uuid AND anon_1.instances_deleted = 0 LEFT OUTER JOIN security_group_rules AS security_group_rules_1 ON security_group_rules_1.parent_group_id = security_groups_1.id AND security_group_rules_1.deleted = 0",
+        "tables_not_mapped": [
+            "security_group_instance_association"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "federated_user": [
+                "display_name",
+                "idp_id",
+                "id",
+                "user_id",
+                "unique_id",
+                "protocol_id"
+            ],
+            "local_user": [
+                "domain_id",
+                "user_id",
+                "name"
+            ],
+            "user": [
+                "id"
+            ]
+        },
+        "matching_apis": {},
+        "sql": "SELECT federated_user.id AS federated_user_id, federated_user.user_id AS federated_user_user_id, federated_user.idp_id AS federated_user_idp_id, federated_user.protocol_id AS federated_user_protocol_id, federated_user.unique_id AS federated_user_unique_id, federated_user.display_name AS federated_user_display_name, anon_1.user_id AS anon_1_user_id\nFROM (SELECT user.id AS user_id\nFROM user INNER JOIN local_user ON user.id = local_user.user_id\nWHERE local_user.name = 'neutron' AND local_user.domain_id = 'default') AS anon_1 INNER JOIN federated_user ON anon_1.user_id = federated_user.user_id ORDER BY anon_1.user_id",
+        "tables_not_mapped": [
+            "federated_user",
+            "local_user",
+            "user"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "local_user": [
+                "user_id",
+                "name",
+                "id",
+                "domain_id"
+            ],
+            "user": [
+                "id"
+            ]
+        },
+        "matching_apis": {},
+        "sql": "SELECT local_user.id AS local_user_id, local_user.user_id AS local_user_user_id, local_user.domain_id AS local_user_domain_id, local_user.name AS local_user_name, anon_1.user_id AS anon_1_user_id\nFROM (SELECT user.id AS user_id\nFROM user\nWHERE user.id = 'ccbbd0bdf0104ea68a37483b13b14be2') AS anon_1 INNER JOIN local_user ON anon_1.user_id = local_user.user_id ORDER BY anon_1.user_id",
+        "tables_not_mapped": [
+            "local_user",
+            "user"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "instance_extra": [
+                "instance_uuid",
+                "flavor",
+                "deleted",
+                "id",
+                "deleted_at",
+                "updated_at",
+                "created_at"
+            ],
+            "instance_info_caches": [
+                "updated_at",
+                "deleted_at",
+                "created_at",
+                "id",
+                "network_info",
+                "deleted",
+                "instance_uuid"
+            ],
+            "instance_metadata": [
+                "instance_uuid",
+                "key",
+                "created_at",
+                "updated_at",
+                "deleted",
+                "value",
+                "deleted_at",
+                "id"
+            ],
+            "instance_system_metadata": [
+                "deleted",
+                "instance_uuid",
+                "value",
+                "key",
+                "deleted_at",
+                "id",
+                "updated_at",
+                "created_at"
+            ],
+            "instances": [
+                "progress",
+                "display_description",
+                "locked",
+                "vcpus",
+                "root_device_name",
+                "default_ephemeral_device",
+                "availability_zone",
+                "updated_at",
+                "disable_terminate",
+                "root_gb",
+                "default_swap_device",
+                "key_data",
+                "deleted_at",
+                "hostname",
+                "access_ip_v6",
+                "power_state",
+                "key_name",
+                "uuid",
+                "user_id",
+                "vm_mode",
+                "shutdown_terminate",
+                "project_id",
+                "os_type",
+                "ephemeral_gb",
+                "reservation_id",
+                "memory_mb",
+                "vm_state",
+                "kernel_id",
+                "launched_on",
+                "cell_name",
+                "host",
+                "cleaned",
+                "deleted",
+                "terminated_at",
+                "image_ref",
+                "launched_at",
+                "ephemeral_key_uuid",
+                "display_name",
+                "instance_type_id",
+                "node",
+                "config_drive",
+                "architecture",
+                "auto_disk_config",
+                "created_at",
+                "access_ip_v4",
+                "launch_index",
+                "internal_id",
+                "id",
+                "ramdisk_id",
+                "locked_by",
+                "user_data",
+                "task_state"
+            ],
+            "security_group_instance_association": [
+                "deleted",
+                "instance_uuid",
+                "security_group_id"
+            ],
+            "security_group_rules": [
+                "cidr",
+                "to_port",
+                "protocol",
+                "deleted",
+                "from_port",
+                "created_at",
+                "group_id",
+                "deleted_at",
+                "id",
+                "parent_group_id",
+                "updated_at"
+            ],
+            "security_groups": [
+                "deleted_at",
+                "name",
+                "project_id",
+                "id",
+                "user_id",
+                "updated_at",
+                "deleted",
+                "description",
+                "created_at"
+            ]
+        },
+        "matching_apis": {
+            "instance_extra": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instance_info_caches": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instance_metadata": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instance_system_metadata": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instances": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-baremetal-nodes List Bare Metal Nodes ",
+                " /os-baremetal-nodes/{node_id} Show Bare Metal Node Details "
+            ],
+            "security_group_rules": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-security-group-rules Create Security Group Rule "
+            ],
+            "security_groups": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-server-groups List Server Groups ",
+                " /os-server-groups Create Server Group ",
+                " /os-server-groups/{server_group_id} Show Server Group Details "
+            ]
+        },
+        "sql": "SELECT anon_1.instances_created_at AS anon_1_instances_created_at, anon_1.instances_updated_at AS anon_1_instances_updated_at, anon_1.instances_deleted_at AS anon_1_instances_deleted_at, anon_1.instances_deleted AS anon_1_instances_deleted, anon_1.instances_id AS anon_1_instances_id, anon_1.instances_user_id AS anon_1_instances_user_id, anon_1.instances_project_id AS anon_1_instances_project_id, anon_1.instances_image_ref AS anon_1_instances_image_ref, anon_1.instances_kernel_id AS anon_1_instances_kernel_id, anon_1.instances_ramdisk_id AS anon_1_instances_ramdisk_id, anon_1.instances_hostname AS anon_1_instances_hostname, anon_1.instances_launch_index AS anon_1_instances_launch_index, anon_1.instances_key_name AS anon_1_instances_key_name, anon_1.instances_key_data AS anon_1_instances_key_data, anon_1.instances_power_state AS anon_1_instances_power_state, anon_1.instances_vm_state AS anon_1_instances_vm_state, anon_1.instances_task_state AS anon_1_instances_task_state, anon_1.instances_memory_mb AS anon_1_instances_memory_mb, anon_1.instances_vcpus AS anon_1_instances_vcpus, anon_1.instances_root_gb AS anon_1_instances_root_gb, anon_1.instances_ephemeral_gb AS anon_1_instances_ephemeral_gb, anon_1.instances_ephemeral_key_uuid AS anon_1_instances_ephemeral_key_uuid, anon_1.instances_host AS anon_1_instances_host, anon_1.instances_node AS anon_1_instances_node, anon_1.instances_instance_type_id AS anon_1_instances_instance_type_id, anon_1.instances_user_data AS anon_1_instances_user_data, anon_1.instances_reservation_id AS anon_1_instances_reservation_id, anon_1.instances_launched_at AS anon_1_instances_launched_at, anon_1.instances_terminated_at AS anon_1_instances_terminated_at, anon_1.instances_availability_zone AS anon_1_instances_availability_zone, anon_1.instances_display_name AS anon_1_instances_display_name, anon_1.instances_display_description AS anon_1_instances_display_description, anon_1.instances_launched_on AS anon_1_instances_launched_on, anon_1.instances_locked AS anon_1_instances_locked, anon_1.instances_locked_by AS anon_1_instances_locked_by, anon_1.instances_os_type AS anon_1_instances_os_type, anon_1.instances_architecture AS anon_1_instances_architecture, anon_1.instances_vm_mode AS anon_1_instances_vm_mode, anon_1.instances_uuid AS anon_1_instances_uuid, anon_1.instances_root_device_name AS anon_1_instances_root_device_name, anon_1.instances_default_ephemeral_device AS anon_1_instances_default_ephemeral_device, anon_1.instances_default_swap_device AS anon_1_instances_default_swap_device, anon_1.instances_config_drive AS anon_1_instances_config_drive, anon_1.instances_access_ip_v4 AS anon_1_instances_access_ip_v4, anon_1.instances_access_ip_v6 AS anon_1_instances_access_ip_v6, anon_1.instances_auto_disk_config AS anon_1_instances_auto_disk_config, anon_1.instances_progress AS anon_1_instances_progress, anon_1.instances_shutdown_terminate AS anon_1_instances_shutdown_terminate, anon_1.instances_disable_terminate AS anon_1_instances_disable_terminate, anon_1.instances_cell_name AS anon_1_instances_cell_name, anon_1.instances_internal_id AS anon_1_instances_internal_id, anon_1.instances_cleaned AS anon_1_instances_cleaned, security_groups_1.created_at AS security_groups_1_created_at, security_groups_1.updated_at AS security_groups_1_updated_at, security_groups_1.deleted_at AS security_groups_1_deleted_at, security_groups_1.deleted AS security_groups_1_deleted, security_groups_1.id AS security_groups_1_id, security_groups_1.name AS security_groups_1_name, security_groups_1.description AS security_groups_1_description, security_groups_1.user_id AS security_groups_1_user_id, security_groups_1.project_id AS security_groups_1_project_id, security_group_rules_1.created_at AS security_group_rules_1_created_at, security_group_rules_1.updated_at AS security_group_rules_1_updated_at, security_group_rules_1.deleted_at AS security_group_rules_1_deleted_at, security_group_rules_1.deleted AS security_group_rules_1_deleted, security_group_rules_1.id AS security_group_rules_1_id, security_group_rules_1.parent_group_id AS security_group_rules_1_parent_group_id, security_group_rules_1.protocol AS security_group_rules_1_protocol, security_group_rules_1.from_port AS security_group_rules_1_from_port, security_group_rules_1.to_port AS security_group_rules_1_to_port, security_group_rules_1.cidr AS security_group_rules_1_cidr, security_group_rules_1.group_id AS security_group_rules_1_group_id, instance_system_metadata_1.created_at AS instance_system_metadata_1_created_at, instance_system_metadata_1.updated_at AS instance_system_metadata_1_updated_at, instance_system_metadata_1.deleted_at AS instance_system_metadata_1_deleted_at, instance_system_metadata_1.deleted AS instance_system_metadata_1_deleted, instance_system_metadata_1.id AS instance_system_metadata_1_id, instance_system_metadata_1.`key` AS instance_system_metadata_1_key, instance_system_metadata_1.value AS instance_system_metadata_1_value, instance_system_metadata_1.instance_uuid AS instance_system_metadata_1_instance_uuid, instance_extra_1.flavor AS instance_extra_1_flavor, instance_extra_1.created_at AS instance_extra_1_created_at, instance_extra_1.updated_at AS instance_extra_1_updated_at, instance_extra_1.deleted_at AS instance_extra_1_deleted_at, instance_extra_1.deleted AS instance_extra_1_deleted, instance_extra_1.id AS instance_extra_1_id, instance_extra_1.instance_uuid AS instance_extra_1_instance_uuid, instance_metadata_1.created_at AS instance_metadata_1_created_at, instance_metadata_1.updated_at AS instance_metadata_1_updated_at, instance_metadata_1.deleted_at AS instance_metadata_1_deleted_at, instance_metadata_1.deleted AS instance_metadata_1_deleted, instance_metadata_1.id AS instance_metadata_1_id, instance_metadata_1.`key` AS instance_metadata_1_key, instance_metadata_1.value AS instance_metadata_1_value, instance_metadata_1.instance_uuid AS instance_metadata_1_instance_uuid, instance_info_caches_1.created_at AS instance_info_caches_1_created_at, instance_info_caches_1.updated_at AS instance_info_caches_1_updated_at, instance_info_caches_1.deleted_at AS instance_info_caches_1_deleted_at, instance_info_caches_1.deleted AS instance_info_caches_1_deleted, instance_info_caches_1.id AS instance_info_caches_1_id, instance_info_caches_1.network_info AS instance_info_caches_1_network_info, instance_info_caches_1.instance_uuid AS instance_info_caches_1_instance_uuid FROM (SELECT instances.created_at AS instances_created_at, instances.updated_at AS instances_updated_at, instances.deleted_at AS instances_deleted_at, instances.deleted AS instances_deleted, instances.id AS instances_id, instances.user_id AS instances_user_id, instances.project_id AS instances_project_id, instances.image_ref AS instances_image_ref, instances.kernel_id AS instances_kernel_id, instances.ramdisk_id AS instances_ramdisk_id, instances.hostname AS instances_hostname, instances.launch_index AS instances_launch_index, instances.key_name AS instances_key_name, instances.key_data AS instances_key_data, instances.power_state AS instances_power_state, instances.vm_state AS instances_vm_state, instances.task_state AS instances_task_state, instances.memory_mb AS instances_memory_mb, instances.vcpus AS instances_vcpus, instances.root_gb AS instances_root_gb, instances.ephemeral_gb AS instances_ephemeral_gb, instances.ephemeral_key_uuid AS instances_ephemeral_key_uuid, instances.host AS instances_host, instances.node AS instances_node, instances.instance_type_id AS instances_instance_type_id, instances.user_data AS instances_user_data, instances.reservation_id AS instances_reservation_id, instances.launched_at AS instances_launched_at, instances.terminated_at AS instances_terminated_at, instances.availability_zone AS instances_availability_zone, instances.display_name AS instances_display_name, instances.display_description AS instances_display_description, instances.launched_on AS instances_launched_on, instances.locked AS instances_locked, instances.locked_by AS instances_locked_by, instances.os_type AS instances_os_type, instances.architecture AS instances_architecture, instances.vm_mode AS instances_vm_mode, instances.uuid AS instances_uuid, instances.root_device_name AS instances_root_device_name, instances.default_ephemeral_device AS instances_default_ephemeral_device, instances.default_swap_device AS instances_default_swap_device, instances.config_drive AS instances_config_drive, instances.access_ip_v4 AS instances_access_ip_v4, instances.access_ip_v6 AS instances_access_ip_v6, instances.auto_disk_config AS instances_auto_disk_config, instances.progress AS instances_progress, instances.shutdown_terminate AS instances_shutdown_terminate, instances.disable_terminate AS instances_disable_terminate, instances.cell_name AS instances_cell_name, instances.internal_id AS instances_internal_id, instances.cleaned AS instances_cleaned FROM instances WHERE instances.deleted = 0 AND instances.uuid = '8d3a0be4-dd7b-4f5b-b19f-308e92597462' LIMIT 1) AS anon_1 LEFT OUTER JOIN (security_group_instance_association AS security_group_instance_association_1 INNER JOIN security_groups AS security_groups_1 ON security_groups_1.id = security_group_instance_association_1.security_group_id AND security_group_instance_association_1.deleted = 0 AND security_groups_1.deleted = 0) ON security_group_instance_association_1.instance_uuid = anon_1.instances_uuid AND anon_1.instances_deleted = 0 LEFT OUTER JOIN security_group_rules AS security_group_rules_1 ON security_group_rules_1.parent_group_id = security_groups_1.id AND security_group_rules_1.deleted = 0 LEFT OUTER JOIN instance_system_metadata AS instance_system_metadata_1 ON anon_1.instances_uuid = instance_system_metadata_1.instance_uuid LEFT OUTER JOIN instance_extra AS instance_extra_1 ON instance_extra_1.instance_uuid = anon_1.instances_uuid LEFT OUTER JOIN instance_metadata AS instance_metadata_1 ON instance_metadata_1.instance_uuid = anon_1.instances_uuid AND instance_metadata_1.deleted = 0 LEFT OUTER JOIN instance_info_caches AS instance_info_caches_1 ON instance_info_caches_1.instance_uuid = anon_1.instances_uuid",
+        "tables_not_mapped": [
+            "security_group_instance_association"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "externalnetworks": [
+                "network_id"
+            ],
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ]
+        },
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, anon_1.networks_id AS anon_1_networks_id FROM (SELECT networks.id AS networks_id FROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id LEFT OUTER JOIN networkrbacs ON networks.id = networkrbacs.object_id WHERE networkrbacs.action = 'access_as_shared' AND (networkrbacs.target_tenant = '*' OR networkrbacs.target_tenant = '9f13bf11e06e4d81b44c8c3e62d4362b')) AS anon_1 INNER JOIN networkrbacs ON anon_1.networks_id = networkrbacs.object_id ORDER BY anon_1.networks_id",
+        "tables_not_mapped": [
+            "externalnetworks",
+            "networks"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "externalnetworks": [
+                "network_id"
+            ],
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ],
+            "subnets": [
+                "network_id"
+            ]
+        },
+        "matching_apis": {
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ]
+        },
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, subnets_1.network_id AS subnets_1_network_id FROM (SELECT networks.id AS networks_id FROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id WHERE networks.id IN ('0a1d0a27-cffa-4de3-92c5-9d3fd3f2e74d', '0a1d0a27-cffa-4de3-92c5-9d3fd3f2e74d', '0a1d0a27-cffa-4de3-92c5-9d3fd3f2e74d')) AS anon_1 INNER JOIN subnets AS subnets_1 ON anon_1.networks_id = subnets_1.network_id INNER JOIN networkrbacs ON subnets_1.network_id = networkrbacs.object_id ORDER BY subnets_1.network_id",
+        "tables_not_mapped": [
+            "externalnetworks",
+            "subnets",
+            "networks"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "services": [
+                "deleted",
+                "forced_down",
+                "binary",
+                "version"
+            ]
+        },
+        "matching_apis": {},
+        "sql": "SELECT min(services.version) AS min_1 FROM services WHERE services.`binary` = 'nova-consoleauth' AND services.deleted = 0 AND services.forced_down = false",
+        "tables_not_mapped": [
+            "services"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "externalnetworks": [
+                "network_id"
+            ],
+            "networkrbacs": [
+                "tenant_id",
+                "id",
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "id"
+            ],
+            "subnets": [
+                "network_id"
+            ]
+        },
+        "matching_apis": {},
+        "sql": "SELECT networkrbacs.tenant_id AS networkrbacs_tenant_id, networkrbacs.id AS networkrbacs_id, networkrbacs.target_tenant AS networkrbacs_target_tenant, networkrbacs.action AS networkrbacs_action, networkrbacs.object_id AS networkrbacs_object_id, subnets_1.network_id AS subnets_1_network_id FROM (SELECT networks.id AS networks_id FROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id WHERE networks.id IN ('0a1d0a27-cffa-4de3-92c5-9d3fd3f2e74d', '0a1d0a27-cffa-4de3-92c5-9d3fd3f2e74d')) AS anon_1 INNER JOIN subnets AS subnets_1 ON anon_1.networks_id = subnets_1.network_id INNER JOIN networkrbacs ON subnets_1.network_id = networkrbacs.object_id ORDER BY subnets_1.network_id",
+        "tables_not_mapped": [
+            "networkrbacs",
+            "externalnetworks",
+            "subnets",
+            "networks"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "instance_info_caches": [
+                "updated_at",
+                "deleted_at",
+                "created_at",
+                "id",
+                "network_info",
+                "deleted",
+                "instance_uuid"
+            ],
+            "instances": [
+                "progress",
+                "display_description",
+                "locked",
+                "vcpus",
+                "root_device_name",
+                "default_ephemeral_device",
+                "availability_zone",
+                "updated_at",
+                "disable_terminate",
+                "root_gb",
+                "default_swap_device",
+                "key_data",
+                "deleted_at",
+                "hostname",
+                "access_ip_v6",
+                "power_state",
+                "key_name",
+                "uuid",
+                "user_id",
+                "vm_mode",
+                "shutdown_terminate",
+                "project_id",
+                "os_type",
+                "ephemeral_gb",
+                "reservation_id",
+                "memory_mb",
+                "vm_state",
+                "kernel_id",
+                "launched_on",
+                "cell_name",
+                "host",
+                "cleaned",
+                "deleted",
+                "terminated_at",
+                "image_ref",
+                "launched_at",
+                "ephemeral_key_uuid",
+                "display_name",
+                "instance_type_id",
+                "node",
+                "config_drive",
+                "architecture",
+                "auto_disk_config",
+                "created_at",
+                "access_ip_v4",
+                "launch_index",
+                "internal_id",
+                "id",
+                "ramdisk_id",
+                "locked_by",
+                "user_data",
+                "task_state"
+            ],
+            "security_group_instance_association": [
+                "deleted",
+                "instance_uuid",
+                "security_group_id"
+            ],
+            "security_group_rules": [
+                "cidr",
+                "to_port",
+                "protocol",
+                "deleted",
+                "from_port",
+                "created_at",
+                "group_id",
+                "deleted_at",
+                "id",
+                "parent_group_id",
+                "updated_at"
+            ],
+            "security_groups": [
+                "deleted_at",
+                "name",
+                "project_id",
+                "id",
+                "user_id",
+                "updated_at",
+                "deleted",
+                "description",
+                "created_at"
+            ]
+        },
+        "matching_apis": {
+            "instance_info_caches": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations "
+            ],
+            "instances": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-baremetal-nodes List Bare Metal Nodes ",
+                " /os-baremetal-nodes/{node_id} Show Bare Metal Node Details "
+            ],
+            "security_group_rules": [
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-security-group-rules Create Security Group Rule "
+            ],
+            "security_groups": [
+                " /servers/detail List Servers Detailed ",
+                " /servers/{server_id} Show Server Details ",
+                " /servers/{server_id} Update Server ",
+                " /servers/{server_id}/action Rebuild Server (rebuild Action) ",
+                " /os-keypairs/{keypair_name} Show Keypair Details ",
+                " /os-aggregates List Aggregates ",
+                " /os-aggregates Create Aggregate ",
+                " /os-aggregates/{aggregate_id} Show Aggregate Details ",
+                " /os-aggregates/{aggregate_id} Update Aggregate ",
+                " /os-aggregates/{aggregate_id}/action Add Host ",
+                " /os-aggregates/{aggregate_id}/action Remove Host ",
+                " /os-aggregates/{aggregate_id}/action Create Or Update Aggregate Metadata ",
+                " /os-migrations List Migrations ",
+                " /servers/{server_id}/migrations List Migrations ",
+                " /servers/{server_id}/migrations/{migration_id} Show Migration Details ",
+                " /os-server-groups List Server Groups ",
+                " /os-server-groups Create Server Group ",
+                " /os-server-groups/{server_group_id} Show Server Group Details "
+            ]
+        },
+        "sql": "SELECT anon_1.instances_created_at AS anon_1_instances_created_at, anon_1.instances_updated_at AS anon_1_instances_updated_at, anon_1.instances_deleted_at AS anon_1_instances_deleted_at, anon_1.instances_deleted AS anon_1_instances_deleted, anon_1.instances_id AS anon_1_instances_id, anon_1.instances_user_id AS anon_1_instances_user_id, anon_1.instances_project_id AS anon_1_instances_project_id, anon_1.instances_image_ref AS anon_1_instances_image_ref, anon_1.instances_kernel_id AS anon_1_instances_kernel_id, anon_1.instances_ramdisk_id AS anon_1_instances_ramdisk_id, anon_1.instances_hostname AS anon_1_instances_hostname, anon_1.instances_launch_index AS anon_1_instances_launch_index, anon_1.instances_key_name AS anon_1_instances_key_name, anon_1.instances_key_data AS anon_1_instances_key_data, anon_1.instances_power_state AS anon_1_instances_power_state, anon_1.instances_vm_state AS anon_1_instances_vm_state, anon_1.instances_task_state AS anon_1_instances_task_state, anon_1.instances_memory_mb AS anon_1_instances_memory_mb, anon_1.instances_vcpus AS anon_1_instances_vcpus, anon_1.instances_root_gb AS anon_1_instances_root_gb, anon_1.instances_ephemeral_gb AS anon_1_instances_ephemeral_gb, anon_1.instances_ephemeral_key_uuid AS anon_1_instances_ephemeral_key_uuid, anon_1.instances_host AS anon_1_instances_host, anon_1.instances_node AS anon_1_instances_node, anon_1.instances_instance_type_id AS anon_1_instances_instance_type_id, anon_1.instances_user_data AS anon_1_instances_user_data, anon_1.instances_reservation_id AS anon_1_instances_reservation_id, anon_1.instances_launched_at AS anon_1_instances_launched_at, anon_1.instances_terminated_at AS anon_1_instances_terminated_at, anon_1.instances_availability_zone AS anon_1_instances_availability_zone, anon_1.instances_display_name AS anon_1_instances_display_name, anon_1.instances_display_description AS anon_1_instances_display_description, anon_1.instances_launched_on AS anon_1_instances_launched_on, anon_1.instances_locked AS anon_1_instances_locked, anon_1.instances_locked_by AS anon_1_instances_locked_by, anon_1.instances_os_type AS anon_1_instances_os_type, anon_1.instances_architecture AS anon_1_instances_architecture, anon_1.instances_vm_mode AS anon_1_instances_vm_mode, anon_1.instances_uuid AS anon_1_instances_uuid, anon_1.instances_root_device_name AS anon_1_instances_root_device_name, anon_1.instances_default_ephemeral_device AS anon_1_instances_default_ephemeral_device, anon_1.instances_default_swap_device AS anon_1_instances_default_swap_device, anon_1.instances_config_drive AS anon_1_instances_config_drive, anon_1.instances_access_ip_v4 AS anon_1_instances_access_ip_v4, anon_1.instances_access_ip_v6 AS anon_1_instances_access_ip_v6, anon_1.instances_auto_disk_config AS anon_1_instances_auto_disk_config, anon_1.instances_progress AS anon_1_instances_progress, anon_1.instances_shutdown_terminate AS anon_1_instances_shutdown_terminate, anon_1.instances_disable_terminate AS anon_1_instances_disable_terminate, anon_1.instances_cell_name AS anon_1_instances_cell_name, anon_1.instances_internal_id AS anon_1_instances_internal_id, anon_1.instances_cleaned AS anon_1_instances_cleaned, instance_info_caches_1.created_at AS instance_info_caches_1_created_at, instance_info_caches_1.updated_at AS instance_info_caches_1_updated_at, instance_info_caches_1.deleted_at AS instance_info_caches_1_deleted_at, instance_info_caches_1.deleted AS instance_info_caches_1_deleted, instance_info_caches_1.id AS instance_info_caches_1_id, instance_info_caches_1.network_info AS instance_info_caches_1_network_info, instance_info_caches_1.instance_uuid AS instance_info_caches_1_instance_uuid, security_groups_1.created_at AS security_groups_1_created_at, security_groups_1.updated_at AS security_groups_1_updated_at, security_groups_1.deleted_at AS security_groups_1_deleted_at, security_groups_1.deleted AS security_groups_1_deleted, security_groups_1.id AS security_groups_1_id, security_groups_1.name AS security_groups_1_name, security_groups_1.description AS security_groups_1_description, security_groups_1.user_id AS security_groups_1_user_id, security_groups_1.project_id AS security_groups_1_project_id, security_group_rules_1.created_at AS security_group_rules_1_created_at, security_group_rules_1.updated_at AS security_group_rules_1_updated_at, security_group_rules_1.deleted_at AS security_group_rules_1_deleted_at, security_group_rules_1.deleted AS security_group_rules_1_deleted, security_group_rules_1.id AS security_group_rules_1_id, security_group_rules_1.parent_group_id AS security_group_rules_1_parent_group_id, security_group_rules_1.protocol AS security_group_rules_1_protocol, security_group_rules_1.from_port AS security_group_rules_1_from_port, security_group_rules_1.to_port AS security_group_rules_1_to_port, security_group_rules_1.cidr AS security_group_rules_1_cidr, security_group_rules_1.group_id AS security_group_rules_1_group_id FROM (SELECT instances.created_at AS instances_created_at, instances.updated_at AS instances_updated_at, instances.deleted_at AS instances_deleted_at, instances.deleted AS instances_deleted, instances.id AS instances_id, instances.user_id AS instances_user_id, instances.project_id AS instances_project_id, instances.image_ref AS instances_image_ref, instances.kernel_id AS instances_kernel_id, instances.ramdisk_id AS instances_ramdisk_id, instances.hostname AS instances_hostname, instances.launch_index AS instances_launch_index, instances.key_name AS instances_key_name, instances.key_data AS instances_key_data, instances.power_state AS instances_power_state, instances.vm_state AS instances_vm_state, instances.task_state AS instances_task_state, instances.memory_mb AS instances_memory_mb, instances.vcpus AS instances_vcpus, instances.root_gb AS instances_root_gb, instances.ephemeral_gb AS instances_ephemeral_gb, instances.ephemeral_key_uuid AS instances_ephemeral_key_uuid, instances.host AS instances_host, instances.node AS instances_node, instances.instance_type_id AS instances_instance_type_id, instances.user_data AS instances_user_data, instances.reservation_id AS instances_reservation_id, instances.launched_at AS instances_launched_at, instances.terminated_at AS instances_terminated_at, instances.availability_zone AS instances_availability_zone, instances.display_name AS instances_display_name, instances.display_description AS instances_display_description, instances.launched_on AS instances_launched_on, instances.locked AS instances_locked, instances.locked_by AS instances_locked_by, instances.os_type AS instances_os_type, instances.architecture AS instances_architecture, instances.vm_mode AS instances_vm_mode, instances.uuid AS instances_uuid, instances.root_device_name AS instances_root_device_name, instances.default_ephemeral_device AS instances_default_ephemeral_device, instances.default_swap_device AS instances_default_swap_device, instances.config_drive AS instances_config_drive, instances.access_ip_v4 AS instances_access_ip_v4, instances.access_ip_v6 AS instances_access_ip_v6, instances.auto_disk_config AS instances_auto_disk_config, instances.progress AS instances_progress, instances.shutdown_terminate AS instances_shutdown_terminate, instances.disable_terminate AS instances_disable_terminate, instances.cell_name AS instances_cell_name, instances.internal_id AS instances_internal_id, instances.cleaned AS instances_cleaned FROM instances WHERE instances.uuid = 'baa9bc44-cfd3-40e6-800b-80ffcb15ce97' LIMIT 1) AS anon_1 LEFT OUTER JOIN instance_info_caches AS instance_info_caches_1 ON instance_info_caches_1.instance_uuid = anon_1.instances_uuid LEFT OUTER JOIN (security_group_instance_association AS security_group_instance_association_1 INNER JOIN security_groups AS security_groups_1 ON security_groups_1.id = security_group_instance_association_1.security_group_id AND security_group_instance_association_1.deleted = 0 AND security_groups_1.deleted = 0) ON security_group_instance_association_1.instance_uuid = anon_1.instances_uuid AND anon_1.instances_deleted = 0 LEFT OUTER JOIN security_group_rules AS security_group_rules_1 ON security_group_rules_1.parent_group_id = security_groups_1.id AND security_group_rules_1.deleted = 0",
+        "tables_not_mapped": [
+            "security_group_instance_association"
+        ]
+    },
+    {
+        "extracted_tables": {
+            "agents": [
+                "started_at",
+                "availability_zone",
+                "description",
+                "resource_versions",
+                "admin_state_up",
+                "load",
+                "topic",
+                "agent_type",
+                "configurations",
+                "created_at",
+                "binary",
+                "host",
+                "heartbeat_timestamp",
+                "id"
+            ],
+            "externalnetworks": [
+                "is_default",
+                "network_id"
+            ],
+            "networkdhcpagentbindings": [
+                "network_id",
+                "dhcp_agent_id"
+            ],
+            "networkdnsdomains": [
+                "dns_domain",
+                "network_id"
+            ],
+            "networkrbacs": [
+                "action",
+                "target_tenant",
+                "object_id"
+            ],
+            "networks": [
+                "tenant_id",
+                "id",
+                "standard_attr_id",
+                "availability_zone_hints",
+                "vlan_transparent",
+                "admin_state_up",
+                "status",
+                "mtu",
+                "name"
+            ],
+            "networksecuritybindings": [
+                "network_id",
+                "port_security_enabled"
+            ],
+            "qos_network_policy_bindings": [
+                "network_id",
+                "policy_id"
+            ],
+            "standardattributes": [
+                "description",
+                "id",
+                "resource_type",
+                "created_at",
+                "updated_at"
+            ],
+            "tags": [
+                "standard_attr_id",
+                "tag"
+            ]
+        },
+        "matching_apis": {
+            "agents": [
+                " /v2.0/networks/{network_id} Show network details ",
+                " /v2.0/networks/{network_id} Update network ",
+                " /v2.0/networks List networks ",
+                " /v2.0/networks Create network ",
+                " /v2.0/networks Bulk create networks ",
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/routers List routers ",
+                " /v2.0/routers Create router ",
+                " /v2.0/routers/{router_id} Show router details ",
+                " /v2.0/routers/{router_id} Update router ",
+                " /v2.0/bgp-speakers/{bgp-speaker-id}/bgp-dragents List Dynamic Routing Agents hosting a specific BGP Speaker ",
+                " /v2.0/agents List all agents ",
+                " /v2.0/agents/{agent_id} Show agent details ",
+                " /v2.0/agents/{agent_id} Update agent ",
+                " /v2.0/routers/{router_id}/l3-agents List L3 agents hosting a router ",
+                " /v2.0/agents/{agent_id}/dhcp-networks List networks hosted by a DHCP agent ",
+                " /v2.0/networks/{network_id}/dhcp-agents List DHCP agents hosting a network "
+            ],
+            "networkdnsdomains": [
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port "
+            ],
+            "networkrbacs": [
+                " /v2.0/rbac-policies/{rbac_policy_id} Show RBAC policy details ",
+                " /v2.0/rbac-policies/{rbac_policy_id} Update RBAC policy ",
+                " /v2.0/rbac-policies List RBAC policies ",
+                " /v2.0/rbac-policies Create RBAC policy ",
+                " /v2.0/rbac-policies Create RBAC policy "
+            ],
+            "networks": [
+                " /v2.0/networks/{network_id} Show network details ",
+                " /v2.0/networks/{network_id} Update network ",
+                " /v2.0/networks List networks ",
+                " /v2.0/networks Create network ",
+                " /v2.0/networks Bulk create networks ",
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/routers List routers ",
+                " /v2.0/routers Create router ",
+                " /v2.0/routers/{router_id} Show router details ",
+                " /v2.0/routers/{router_id} Update router ",
+                " /v2.0/fwaas/firewall_groups List firewall groups ",
+                " /v2.0/fwaas/firewall_groups/{firewall_group_id} Show firewall group details ",
+                " /v2.0/fwaas/firewall_groups Create firewall group ",
+                " /v2.0/fwaas/firewall_groups/{firewall_group_id} Update firewall group ",
+                " /v2.0/vpn/ipsec-site-connections List IPsec connections ",
+                " /v2.0/vpn/ipsec-site-connections Create IPsec connection ",
+                " /v2.0/vpn/ipsec-site-connections/{connection_id} Show IPsec connection ",
+                " /v2.0/vpn/ipsec-site-connections/{connection_id} Update IPsec connection ",
+                " /v2.0/vpn/vpnservices List VPN services ",
+                " /v2.0/vpn/vpnservices Create VPN service ",
+                " /v2.0/vpn/vpnservices/{service_id} Show VPN service details ",
+                " /v2.0/vpn/vpnservices/{service_id} Update VPN service ",
+                " /v2.0/agents/{agent_id}/l3-routers List routers hosted by an L3 agent ",
+                " /v2.0/agents/{agent_id}/dhcp-networks List networks hosted by a DHCP agent ",
+                " /v2.0/taas/tap_services Create Tap Service ",
+                " /v2.0/taas/tap_services/{tap_service_id/name} Show Tap Service ",
+                " /v2.0/taas/tap_flows Create Tap Flow ",
+                " /v2.0/taas/tap_flows/{taf_service_id/name} Update Tap Flow ",
+                " /v2.0/taas/tap_flows/{tap_flows_id/name} Show Tap Flow "
+            ],
+            "networksecuritybindings": [
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port "
+            ],
+            "standardattributes": [
+                " /v2.0/networks/{network_id} Show network details ",
+                " /v2.0/networks/{network_id} Update network ",
+                " /v2.0/networks List networks ",
+                " /v2.0/networks Create network ",
+                " /v2.0/networks Bulk create networks ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Show network segment range details ",
+                " /v2.0/network_segment_ranges/{network_segment_range_id} Update network segment range ",
+                " /v2.0/network_segment_ranges List network segment ranges ",
+                " /v2.0/network_segment_ranges Create network segment range ",
+                " /v2.0/ports/{port_id} Show port details ",
+                " /v2.0/ports/{port_id} Update port ",
+                " /v2.0/ports List ports ",
+                " /v2.0/ports Create port ",
+                " /v2.0/ports Bulk create ports ",
+                " /v2.0/ports/{port_id}/add_allowed_address_pairs Add allowed_address_pairs to port ",
+                " /v2.0/ports/{port_id}/remove_allowed_address_pairs Remove allowed_address_pairs from port ",
+                " /v2.0/segments/{segment_id} Show segment details ",
+                " /v2.0/segments/{segment_id} Update segment ",
+                " /v2.0/segments List segments ",
+                " /v2.0/segments Create segment ",
+                " /v2.0/trunks List trunks ",
+                " /v2.0/trunks Create trunk ",
+                " /v2.0/trunks/{trunk_id}/add_subports Add subports to trunk ",
+                " /v2.0/trunks/{trunk_id}/remove_subports Delete subports from trunk ",
+                " /v2.0/trunks/{trunk_id} Update trunk ",
+                " /v2.0/trunks/{trunk_id} Show trunk ",
+                " /v2.0/floatingips List floating IPs ",
+                " /v2.0/floatingips Create floating IP ",
+                " /v2.0/floatingips/{floatingip_id} Show floating IP details ",
+                " /v2.0/floatingips/{floatingip_id} Update floating IP ",
+                " /v2.0/routers List routers ",
+                " /v2.0/routers Create router ",
+                " /v2.0/routers/{router_id} Show router details ",
+                " /v2.0/routers/{router_id} Update router ",
+                " /v2.0/ndp_proxies List ndp proxies ",
+                " /v2.0/ndp_proxies/{ndp_proxy_id} Show ndp proxy details ",
+                " /v2.0/ndp_proxies/{ndp_proxy_id} Update a ndp proxy ",
+                " /v2.0/ndp_proxies Create ndp proxy ",
+                " /v2.0/subnetpools/{subnetpool_id} Show subnet pool ",
+                " /v2.0/subnetpools/{subnetpool_id} Update subnet pool ",
+                " /v2.0/subnetpools List subnet pools ",
+                " /v2.0/subnetpools Create subnet pool ",
+                " /v2.0/subnets List subnets ",
+                " /v2.0/subnets Create subnet ",
+                " /v2.0/subnets Bulk create subnet ",
+                " /v2.0/subnets/{subnet_id} Show subnet details ",
+                " /v2.0/subnets/{subnet_id} Update subnet ",
+                " /v2.0/local_ips List Local IPs ",
+                " /v2.0/local_ips Create Local IP ",
+                " /v2.0/local_ips/{local_ip_id} Show Local IP details ",
+                " /v2.0/local_ips/{local_ip_id} Update Local IP ",
+                " /v2.0/security-group-rules List security group rules ",
+                " /v2.0/security-group-rules Create security group rule ",
+                " /v2.0/security-group-rules Bulk create security group rule ",
+                " /v2.0/security-group-rules/{security_group_rule_id} Show security group rule ",
+                " /v2.0/security-groups List security groups ",
+                " /v2.0/security-groups Create security group ",
+                " /v2.0/security-groups/{security_group_id} Show security group ",
+                " /v2.0/security-groups/{security_group_id} Update security group ",
+                " /v2.0/qos/policies List QoS policies ",
+                " /v2.0/qos/policies Create QoS policy ",
+                " /v2.0/qos/policies/{policy_id} Show QoS policy details ",
+                " /v2.0/qos/policies/{policy_id} Update QoS policy ",
+                " /v2.0/log/logs List logs ",
+                " /v2.0/log/logs Create log ",
+                " /v2.0/log/logs/{log_id} Show log ",
+                " /v2.0/log/logs/{log_id} Update log ",
+                " /v2.0/agents/{agent_id}/dhcp-networks List networks hosted by a DHCP agent "
+            ]
+        },
+        "sql": "SELECT networks.tenant_id AS networks_tenant_id, networks.id AS networks_id, networks.name AS networks_name, networks.status AS networks_status, networks.admin_state_up AS networks_admin_state_up, networks.mtu AS networks_mtu, networks.vlan_transparent AS networks_vlan_transparent, networks.availability_zone_hints AS networks_availability_zone_hints, networks.standard_attr_id AS networks_standard_attr_id, agents_1.id AS agents_1_id, agents_1.agent_type AS agents_1_agent_type, agents_1.`binary` AS agents_1_binary, agents_1.topic AS agents_1_topic, agents_1.host AS agents_1_host, agents_1.availability_zone AS agents_1_availability_zone, agents_1.admin_state_up AS agents_1_admin_state_up, agents_1.created_at AS agents_1_created_at, agents_1.started_at AS agents_1_started_at, agents_1.heartbeat_timestamp AS agents_1_heartbeat_timestamp, agents_1.description AS agents_1_description, agents_1.configurations AS agents_1_configurations, agents_1.resource_versions AS agents_1_resource_versions, agents_1.`load` AS agents_1_load, standardattributes_1.created_at AS standardattributes_1_created_at, standardattributes_1.updated_at AS standardattributes_1_updated_at, standardattributes_1.id AS standardattributes_1_id, standardattributes_1.resource_type AS standardattributes_1_resource_type, standardattributes_1.description AS standardattributes_1_description, tags_1.standard_attr_id AS tags_1_standard_attr_id, tags_1.tag AS tags_1_tag, externalnetworks_1.network_id AS externalnetworks_1_network_id, externalnetworks_1.is_default AS externalnetworks_1_is_default, qos_network_policy_bindings_1.policy_id AS qos_network_policy_bindings_1_policy_id, qos_network_policy_bindings_1.network_id AS qos_network_policy_bindings_1_network_id, networksecuritybindings_1.network_id AS networksecuritybindings_1_network_id, networksecuritybindings_1.port_security_enabled AS networksecuritybindings_1_port_security_enabled, networkdnsdomains_1.network_id AS networkdnsdomains_1_network_id, networkdnsdomains_1.dns_domain AS networkdnsdomains_1_dns_domain FROM networks LEFT OUTER JOIN externalnetworks ON networks.id = externalnetworks.network_id LEFT OUTER JOIN (networkdhcpagentbindings AS networkdhcpagentbindings_1 INNER JOIN agents AS agents_1 ON agents_1.id = networkdhcpagentbindings_1.dhcp_agent_id) ON networks.id = networkdhcpagentbindings_1.network_id LEFT OUTER JOIN standardattributes AS standardattributes_1 ON standardattributes_1.id = networks.standard_attr_id LEFT OUTER JOIN tags AS tags_1 ON standardattributes_1.id = tags_1.standard_attr_id LEFT OUTER JOIN externalnetworks AS externalnetworks_1 ON networks.id = externalnetworks_1.network_id LEFT OUTER JOIN qos_network_policy_bindings AS qos_network_policy_bindings_1 ON networks.id = qos_network_policy_bindings_1.network_id LEFT OUTER JOIN networksecuritybindings AS networksecuritybindings_1 ON networks.id = networksecuritybindings_1.network_id LEFT OUTER JOIN networkdnsdomains AS networkdnsdomains_1 ON networks.id = networkdnsdomains_1.network_id WHERE networks.tenant_id IN ('8333a6a4e59343eda8957cd61da9f0e6') AND networks.id NOT IN (SELECT networkrbacs.object_id AS networkrbacs_object_id FROM networkrbacs WHERE networkrbacs.action = 'access_as_shared' AND (networkrbacs.target_tenant = '*' OR networkrbacs.target_tenant = '9f13bf11e06e4d81b44c8c3e62d4362b'))",
+        "tables_not_mapped": [
+            "externalnetworks",
+            "tags",
+            "networkdhcpagentbindings",
+            "qos_network_policy_bindings"
+        ]
+    }
+]
