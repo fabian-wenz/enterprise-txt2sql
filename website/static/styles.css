@@ -1,0 +1,254 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+header nav a {
+    color: #fff;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+#annotation-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+#options div {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-top: 20px;
+}
+
+/* Styling for the text area */
+textarea.adjustment-box {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 16px;
+    width: 100%;
+    height: 100px;
+    user-select: text; /* Allows text selection */
+    resize: vertical; /* Allows the textarea to be resizable */
+}
+
+.nav-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-buttons button {
+    font-size: 18px; /* Adjust this value to your desired font size */
+    padding: 10px 20px; /* Optionally adjust padding to make the button size consistent */
+}
+
+/* Consistent circle styling */
+input[type="radio"] {
+    display: none; /* Hide the default radio button */
+}
+
+.option-button::before, .adjustment-label::before {
+    content: "";
+    width: 20px; /* Fixed width for circle */
+    height: 20px; /* Fixed height for circle */
+    border: 2px solid #007bff; /* Border color */
+    border-radius: 50%; /* Make it a circle */
+    background-color: white; /* Circle background */
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; /* Space between circle and text */
+    flex-shrink: 0; /* Prevent the circle from shrinking */
+}
+
+/* Styling the labels to look like text sections */
+label.option-button, label.adjustment-label {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+    font-size: 16px;
+    user-select: text; /* Allows text selection */
+}
+
+.nav-right {
+    display: flex;
+    flex-direction: column; /* Stack the buttons vertically */
+    align-items: flex-end;  /* Align buttons to the right */
+    gap: 10px; /* Adds space between the buttons */
+}
+
+input[type="radio"]:checked + label.option-button::before,
+input[type="radio"]:checked + label.adjustment-label::before {
+    background-color: #007bff; /* Fill color when selected */
+    border-color: #0056b3; /* Border color when selected */
+    box-shadow: inset 0 0 0 4px white; /* Inner shadow to create the checked effect */
+}
+
+.index {
+    color: #d3d3d3; /* Light grey color */
+    font-size: 1.25rem; /* 1.25 times the default font size (20px if default is 16px) */
+}
+
+.visualized-text {
+    white-space: pre-wrap; /* Preserves spaces and line breaks */
+    font-family: monospace; /* Uses a monospace font for better visibility */
+    font-size: 1.25rem; /* 1.25 times the default font size (20px if default is 16px) */
+}
+
+.options-section {
+    flex: 1; /* Set flex-grow to 1 */
+    width: 50%;
+}
+
+.query-section {
+    flex: 1; /* Set flex-grow to 1 */
+    width: 50%;
+}
+
+.comment-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+textarea.comment-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    height: 100px;
+    resize: vertical; /* Allows the textarea to be resizable */
+    width: 98%;
+}
+
+label.comment-label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+/* Style for the progress container */
+.progress-container {
+    width: 100%;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 20px 0;
+    height: 30px;
+    overflow: hidden;
+}
+
+/* Style for the progress bar */
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Fixed at 40% */
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 30px;
+    color: black; /* Set the text color to black */
+}
+
+/* Overlay to dim the background */
+.overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    z-index: 999; /* Behind the popup */
+}
+
+/* Popup styling */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* In front of the overlay */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.popup .close {
+    cursor: pointer;
+    color: white;
+    background: red;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 10px;
+    font-size: 30px;
+    position: absolute;
+    top: -12px; /* Move close button slightly up */
+    right: -12px; /* Move close button slightly right */
+}
+
+/* Input fields and labels */
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"], input[type="file"], button {
+    width: 100%; /* Match input width to container */
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}

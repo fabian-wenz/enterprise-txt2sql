@@ -1,0 +1,715 @@
+[
+    {
+        "adjusted": false,
+        "annotation": "How many records are there in the singer table?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many records are there in the singer table?\n",
+            "What is the total number of entries in the singer table?\n",
+            "How many rows are in the singer table?\n",
+            "What is the count of all records in the singer table?"
+        ],
+        "question": "How many singers do we have?",
+        "sql": "SELECT count(*) FROM singer"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the total number of entries in the singer table?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many records are there in the singer table?\n",
+            "What is the total number of entries in the singer table?\n",
+            "How many rows are in the singer table?\n",
+            "What is the count of all records in the singer table?"
+        ],
+        "question": "What is the total number of singers?",
+        "sql": "SELECT count(*) FROM singer"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names, countries, and ages of singers, sorted by age in descending order?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names, countries, and ages of singers, sorted by age in descending order?\n",
+            "Which singers' names, countries, and ages are listed, with the results ordered by age from highest to lowest?\n",
+            "Can you show me the names, countries, and ages of singers, arranging the data by age in descending order?\n",
+            "How are the names, countries, and ages of singers displayed, with the age column sorted in descending order?"
+        ],
+        "question": "Show name, country, age for all singers ordered by age from the oldest to the youngest.",
+        "sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which singers' names, countries, and ages are listed, with the results ordered by age from highest to lowest?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names, countries, and ages of singers, sorted by age in descending order?\n",
+            "Which singers' names, countries, and ages are listed, with the results ordered by age from highest to lowest?\n",
+            "Can you show me the names, countries, and ages of singers, arranged by age in descending order?\n",
+            "How are the names, countries, and ages of singers displayed, with the list sorted by age in descending order?"
+        ],
+        "question": "What are the names, countries, and ages for every singer in descending order of age?",
+        "sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the average, minimum, and maximum age of singers from France?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the average, minimum, and maximum age of singers from France?\n",
+            "How old are the youngest, oldest, and average-aged singers from France?\n",
+            "Can you provide the average, minimum, and maximum age of singers who are from France?\n",
+            "What are the average, minimum, and maximum ages of singers specifically from France?"
+        ],
+        "question": "What is the average, minimum, and maximum age of all singers from France?",
+        "sql": "SELECT avg(age) ,  min(age) ,  max(age) FROM singer WHERE country  =  'France'"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you provide the average, minimum, and maximum age of singers who are from France?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the average, minimum, and maximum age of singers from France?\n",
+            "How old are the youngest, oldest, and average-aged singers from France?\n",
+            "Can you provide the average, minimum, and maximum age of singers who are from France?\n",
+            "What are the average, minimum, and maximum ages of singers belonging to the country of France?"
+        ],
+        "question": "What is the average, minimum, and maximum age for all French singers?",
+        "sql": "SELECT avg(age) ,  min(age) ,  max(age) FROM singer WHERE country  =  'France'"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Show me the name and release year of the earliest song by a singer, sorted by their age, with only one result displayed.\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the name and release year of the oldest song by each singer in the database?\n",
+            "Which singer has the oldest song in terms of release year, and what is the name of that song?\n",
+            "Show me the name and release year of the earliest song by a singer, sorted by their age, with only one result displayed.\n",
+            "List the song name and release year of the singer with the highest age, showing only one result."
+        ],
+        "question": "Show the name and the release year of the song by the youngest singer.",
+        "sql": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1"
+    },
+    {
+        "adjusted": true,
+        "annotation": "What are the names and release years for all the songs of the youngest singer?",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the name and release year of the earliest song by the singer, sorted by age, with only one result shown?\n",
+            "Which singer has the oldest song in their discography, and what is the release year of that song?\n",
+            "Show me the name and release year of the oldest song by a singer, ordering the results by age and limiting to one.\n",
+            "Who is the singer with the earliest song release year, and what is the name of that song, when sorting by age and displaying only one result?"
+        ],
+        "question": "What are the names and release years for all the songs of the youngest singer?",
+        "sql": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Show me a list of unique countries where singers are older than 20 years old.\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which countries do singers over the age of 20 come from in the database?\n",
+            "Show me a list of unique countries where singers are older than 20 years old.\n",
+            "Can you provide a distinct list of countries where singers are above the age of 20?\n",
+            "What are the countries represented by singers who are over 20 years old in the database?"
+        ],
+        "question": "What are all distinct countries where singers above age 20 are from?",
+        "sql": "SELECT DISTINCT country FROM singer WHERE age  >  20"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you provide a distinct list of countries where singers are above the age of 20?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which countries do singers over the age of 20 come from in the database?\n",
+            "Show me a list of unique countries where singers are older than 20 years old.\n",
+            "Can you provide a distinct list of countries where singers are above the age of 20?\n",
+            "What are the different countries represented by singers who are over 20 years old in the database?"
+        ],
+        "question": "What are  the different countries with singers above age 20?",
+        "sql": "SELECT DISTINCT country FROM singer WHERE age  >  20"
+    },
+    {
+        "adjusted": false,
+        "annotation": "How many singers are there in each country?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the count of singers grouped by country?\n",
+            "How many singers are there in each country?\n",
+            "Can you show me the number of singers grouped by country?\n",
+            "What is the total count of singers in each country?"
+        ],
+        "question": "Show all countries and the number of singers in each country.",
+        "sql": "SELECT country ,  count(*) FROM singer GROUP BY country"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the count of singers grouped by country?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the count of singers grouped by country?\n",
+            "How many singers are there in each country?\n",
+            "Can you show me the number of singers in each country?\n",
+            "How many singers are from each country in the database?"
+        ],
+        "question": "How many singers are from each country?",
+        "sql": "SELECT country ,  count(*) FROM singer GROUP BY country"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names of songs performed by singers who are older than the average age of all singers?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of songs performed by singers who are older than the average age of all singers?\n",
+            "Which song names are associated with singers who are older than the average age of all singers?\n",
+            "Can you provide the names of songs performed by singers who are older than the average age of all singers?\n",
+            "What are the song names of singers who are older than the average age of all singers?"
+        ],
+        "question": "List all song names by singers above the average age.",
+        "sql": "SELECT song_name FROM singer WHERE age  >  (SELECT avg(age) FROM singer)"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which song names are associated with singers who are older than the average age of all singers?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of songs performed by singers who are older than the average age of all singers?\n",
+            "Which song names are associated with singers who are older than the average age of all singers?\n",
+            "Can you provide the names of songs sung by singers who are older than the average age of all singers?\n",
+            "What are the song names of singers who are older than the average age of all singers?"
+        ],
+        "question": "What are all the song names by singers who are older than average?",
+        "sql": "SELECT song_name FROM singer WHERE age  >  (SELECT avg(age) FROM singer)"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the locations and names of stadiums with a capacity between 5000 and 10000?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the locations and names of stadiums with a capacity between 5000 and 10000?\n",
+            "Which stadiums have a capacity ranging from 5000 to 10000, and what are their locations and names?\n",
+            "Show the names and locations of stadiums that have a capacity between 5000 and ",
+            "",
+            "List the names and locations of stadiums where the capacity falls between 5000 and 10000."
+        ],
+        "question": "Show location and name for all stadiums with a capacity between 5000 and 10000.",
+        "sql": "SELECT LOCATION ,  name FROM stadium WHERE capacity BETWEEN 5000 AND 10000"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Provide the names and locations of stadiums where the capacity falls between 5000 and 10000.",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the locations and names of stadiums with a capacity between 5000 and 10000?\n",
+            "Which stadiums have a capacity between 5000 and 10000, and what are their locations and names?\n",
+            "Show the names and locations of stadiums that have a capacity ranging from 5000 to ",
+            "",
+            "Provide the names and locations of stadiums where the capacity falls between 5000 and 10000."
+        ],
+        "question": "What are the locations and names of all stations with capacity between 5000 and 10000?",
+        "sql": "SELECT LOCATION ,  name FROM stadium WHERE capacity BETWEEN 5000 AND 10000"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the maximum capacity of the stadium and what is the average value?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the maximum capacity of the stadium and what is the average value?\n",
+            "Show me the highest capacity and the average value of the stadium.\n",
+            "Can you provide the maximum capacity and average values from the stadium data?\n",
+            "What are the maximum capacity and average values for the stadium?"
+        ],
+        "question": "What is the maximum capacity and the average of all stadiums ?",
+        "sql": "select max(capacity), average from stadium"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the average and maximum capacity of all stadiums?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the average and maximum capacity of all stadiums?\n",
+            "How does the average and maximum capacity of stadiums compare?\n",
+            "Can you provide the average and maximum capacity of stadiums?\n",
+            "What are the average and maximum capacities of all stadiums?"
+        ],
+        "question": "What is the average and maximum capacities for all stadiums ?",
+        "sql": "select avg(capacity) ,  max(capacity) from stadium"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the name and capacity of the stadium with the highest average value?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the name and capacity of the stadium with the highest average value?\n",
+            "Which stadium has the highest average value when sorted by capacity, and what is its name and capacity?\n",
+            "Show the name and capacity of the stadium with the highest average value after sorting by average in descending order.\n",
+            "Identify the stadium with the highest average value by sorting in descending order and display its name and capacity."
+        ],
+        "question": "What is the name and capacity for the stadium with highest average attendance?",
+        "sql": "SELECT name ,  capacity FROM stadium ORDER BY average DESC LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Show the name and capacity of the stadium with the highest average value after sorting by average in descending order.\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the name and capacity of the stadium with the highest average value?\n",
+            "Which stadium has the highest average value when sorted by capacity, and what is its name and capacity?\n",
+            "Show the name and capacity of the stadium with the highest average value after sorting by average in descending order.\n",
+            "Identify the stadium with the highest average value by sorting in descending order and display its name and capacity."
+        ],
+        "question": "What is the name and capacity for the stadium with the highest average attendance?",
+        "sql": "SELECT name ,  capacity FROM stadium ORDER BY average DESC LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "How many concerts took place in the years 2014 and 2015 combined?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many concerts took place in the years 2014 and 2015 combined?\n",
+            "What is the total count of concerts that occurred in either 2014 or 2015?\n",
+            "How many concert records are there for the years 2014 and 2015?\n",
+            "What is the total number of concerts that happened in 2014 or 2015?"
+        ],
+        "question": "How many concerts are there in year 2014 or 2015?",
+        "sql": "SELECT count(*) FROM concert WHERE YEAR  =  2014 OR YEAR  =  2015"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the total number of concerts that occurred in either 2014 or 2015?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many concerts took place in the years 2014 and 2015?\n",
+            "What is the total number of concerts that occurred in either 2014 or 2015?\n",
+            "How many concert records are there for the years 2014 and 2015 combined?\n",
+            "What is the count of concerts that occurred in 2014 or 2015?"
+        ],
+        "question": "How many concerts occurred in 2014 or 2015?",
+        "sql": "SELECT count(*) FROM concert WHERE YEAR  =  2014 OR YEAR  =  2015"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names of stadiums and the number of concerts held in each stadium?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of stadiums and the number of concerts held in each stadium?\n",
+            "Which stadiums are associated with the count of concerts held in each stadium?\n",
+            "Can you provide a list of stadium names along with the total number of concerts held in each stadium?\n",
+            "How many concerts have taken place in each stadium, and what are the names of those stadiums?"
+        ],
+        "question": "Show the stadium name and the number of concerts in each stadium.",
+        "sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you provide a list of stadium names along with the count of concerts held at each stadium?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of stadiums and the total number of concerts held at each stadium?\n",
+            "Which stadiums are associated with the number of concerts they have hosted?\n",
+            "Can you provide a list of stadium names along with the count of concerts held at each stadium?\n",
+            "How many concerts have taken place at each stadium, and what are the names of those stadiums?"
+        ],
+        "question": "For each stadium, how many concerts play there?",
+        "sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the name and capacity of the stadium with the highest number of concerts held since 2014?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the name and capacity of the stadium with the highest number of concerts held since 2014?\n",
+            "Which stadium has the highest number of concerts held since 2014, and what is its name and capacity?\n",
+            "Show the name and capacity of the stadium that hosted the most concerts starting from ",
+            "",
+            "Find the stadium with the highest number of concerts held since 2014, and display its name and capacity."
+        ],
+        "question": "Show the stadium name and capacity with most number of concerts in year 2014 or after.",
+        "sql": "SELECT T2.name ,  T2.capacity FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  >=  2014 GROUP BY T2.stadium_id ORDER BY count(*) DESC LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which stadium has the highest capacity and hosted a concert after 2013?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which stadium has the highest capacity and hosted a concert after 2013?\n",
+            "Show the name and capacity of the stadium that hosted the most concerts after ",
+            "",
+            "Find the stadium with the highest capacity that hosted a concert post-",
+            "",
+            "List the stadium name and capacity that hosted the most concerts after 2013, sorted by the number of concerts in descending order, with only the top result shown."
+        ],
+        "question": "What is the name and capacity of the stadium with the most concerts after 2013 ?",
+        "sql": "select t2.name ,  t2.capacity from concert as t1 join stadium as t2 on t1.stadium_id  =  t2.stadium_id where t1.year  >  2013 group by t2.stadium_id order by count(*) desc limit 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you show me the year with the highest count of concerts in the dataset?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the most frequent year of concerts in the dataset, based on the number of occurrences?\n",
+            "Which year had the highest number of concerts recorded in the dataset?\n",
+            "Can you show me the year with the highest count of concerts in the dataset?\n",
+            "What is the year with the most concerts recorded, based on the count of occurrences?"
+        ],
+        "question": "Which year has most number of concerts?",
+        "sql": "SELECT YEAR FROM concert GROUP BY YEAR ORDER BY count(*) DESC LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which year had the highest number of concerts in the dataset, when grouping concerts by year and sorting them in descending order?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What is the most frequent year of concerts in the dataset, based on the number of concerts held each year?\n",
+            "Which year had the highest number of concerts in the dataset, when grouping concerts by year and sorting them in descending order?\n",
+            "Can you show me the year with the highest count of concerts, after grouping the concerts by year and arranging them in descending order?\n",
+            "What is the year with the most concerts when grouping concerts by year and selecting the year with the highest count?"
+        ],
+        "question": "What is the year that had the most concerts?",
+        "sql": "SELECT YEAR FROM concert GROUP BY YEAR ORDER BY count(*) DESC LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which stadium names are not associated with any concerts based on their stadium IDs?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which stadium names are not associated with any concerts based on their stadium IDs?\n",
+            "Show the names of stadiums that do not have any concerts scheduled at their locations.\n",
+            "List the names of stadiums that do not have any concerts booked by excluding their stadium IDs.\n",
+            "What are the names of stadiums that do not host any concerts, as indicated by their stadium IDs not being present in the concert table?"
+        ],
+        "question": "Show the stadium names without any concert.",
+        "sql": "SELECT name FROM stadium WHERE stadium_id NOT IN (SELECT stadium_id FROM concert)"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which stadium names are not associated with any concerts based on their stadium IDs?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which stadium names are not associated with any concerts based on their stadium IDs?\n",
+            "Show the names of stadiums that do not have any concerts scheduled, excluding those with matching stadium IDs.\n",
+            "List the names of stadiums that do not host any concerts by filtering out those with corresponding stadium IDs.\n",
+            "Identify the stadium names that are not linked to any concerts by excluding stadium IDs present in the concert table."
+        ],
+        "question": "What are the names of the stadiums without any concerts?",
+        "sql": "SELECT name FROM stadium WHERE stadium_id NOT IN (SELECT stadium_id FROM concert)"
+    },
+    {
+        "adjusted": true,
+        "annotation": "Show countries where a singer above age 40 and a singer below 30 are from.",
+        "comment": "Show countries where a singer above age 40 and a singer below 30 are from.",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the countries of singers who are both older than 40 and younger than 30?\n",
+            "Which countries do singers belong to if they are over 40 years old and under 30 years old?\n",
+            "Show the countries of singers who are above 40 years old and below 30 years old.\n",
+            "List the countries of singers who are over 40 and under 30 years of age."
+        ],
+        "question": "Show countries where a singer above age 40 and a singer below 30 are from.",
+        "sql": "SELECT country FROM singer WHERE age  >  40 INTERSECT SELECT country FROM singer WHERE age  <  30"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names of stadiums that did not host a concert in the year 2014?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of stadiums that did not host a concert in the year 2014?\n",
+            "Which stadiums did not host a concert in 2014, based on the names listed in the stadium table?\n",
+            "Show the names of stadiums that were not venues for any concert in ",
+            "",
+            "List the names of stadiums that were not used as concert venues in the year 2014."
+        ],
+        "question": "Show names for all stadiums except for stadiums having a concert in year 2014.",
+        "sql": "SELECT name FROM stadium EXCEPT SELECT T2.name FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  =  2014"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which stadium names are not associated with concerts held in the year 2014?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of stadiums that did not host a concert in the year 2014?\n",
+            "Which stadium names are not associated with concerts held in the year 2014?\n",
+            "List the names of stadiums that did not hold any concerts in ",
+            "",
+            "Show the names of stadiums that were not venues for concerts in the year 2014."
+        ],
+        "question": "What are the names of all stadiums that did not have a concert in 2014?",
+        "sql": "SELECT name FROM stadium EXCEPT SELECT T2.name FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  =  2014"
+    },
+    {
+        "adjusted": true,
+        "annotation": "What are the concert names, themes and the number of singers performing on them?",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many singers are performing in each concert along with the concert name and theme?\n",
+            "What is the count of singers participating in each concert, along with the concert name and theme?\n",
+            "Can you provide the number of singers in each concert, along with the concert name and theme?\n",
+            "Which concerts have how many singers performing, along with their respective themes and names?"
+        ],
+        "question": "Show the name and theme for all concerts and the number of singers in each concert.",
+        "sql": "SELECT T2.concert_name ,  T2.theme ,  count(*) FROM singer_in_concert AS T1 JOIN concert AS T2 ON T1.concert_id  =  T2.concert_id GROUP BY T2.concert_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you provide the concert name, theme, and the number of singers participating in each concert?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many singers participated in each concert along with the concert name and theme?\n",
+            "What is the count of singers in each concert, along with the concert name and theme?\n",
+            "Can you provide the concert name, theme, and the number of singers participating in each concert?\n",
+            "Which concerts have singers performing, and how many singers are participating in each concert, along with the concert theme?"
+        ],
+        "question": "What are the names , themes , and number of singers for every concert ?",
+        "sql": "select t2.concert_name ,  t2.theme ,  count(*) from singer_in_concert as t1 join concert as t2 on t1.concert_id  =  t2.concert_id group by t2.concert_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names of singers and the count of concerts they have participated in?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of singers and the count of concerts they have participated in?\n",
+            "Which singers have performed in concerts and how many concerts have they participated in?\n",
+            "Can you list the names of singers along with the total number of concerts they have performed in?\n",
+            "How many concerts has each singer participated in, and what are their names?"
+        ],
+        "question": "List singer names and number of concerts for each singer.",
+        "sql": "SELECT T2.name ,  count(*) FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id GROUP BY T2.singer_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Can you show me the names of singers and the total number of concerts they have performed in?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names of singers and the count of concerts they have participated in?\n",
+            "Can you show me the names of singers and the total number of concerts they have performed in?\n",
+            "Which singers have participated in concerts, and how many concerts has each singer been a part of?\n",
+            "How many concerts has each singer participated in, and what are the names of these singers?"
+        ],
+        "question": "What are the names of the singers and number of concerts for each person?",
+        "sql": "SELECT T2.name ,  count(*) FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id GROUP BY T2.singer_id"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Retrieve the names of singers who took part in concerts specifically in the year 2014.",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which singers performed in concerts in the year 2014, and what are their names?\n",
+            "Show the names of singers who participated in concerts during the year ",
+            "",
+            "List the names of singers who were part of concerts held in ",
+            "",
+            "Retrieve the names of singers who took part in concerts specifically in the year 2014."
+        ],
+        "question": "List all singer names in concerts in year 2014.",
+        "sql": "SELECT T2.name FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id JOIN concert AS T3 ON T1.concert_id  =  T3.concert_id WHERE T3.year  =  2014"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which singers performed in concerts in the year 2014, and what are their names?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which singers performed in concerts in the year 2014, and what are their names?\n",
+            "Show the names of singers who participated in concerts during the year ",
+            "",
+            "List the names of singers who were part of concerts held in ",
+            "",
+            "Who are the singers that took part in concerts specifically in the year 2014?"
+        ],
+        "question": "What are the names of the singers who performed in a concert in 2014?",
+        "sql": "SELECT T2.name FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id JOIN concert AS T3 ON T1.concert_id  =  T3.concert_id WHERE T3.year  =  2014"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which singers and their respective countries are associated with songs containing the word \"Hey\" in their names?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which singers and their respective countries are associated with songs containing the word \"Hey\" in their names?\n",
+            "Show the names and countries of singers whose song names contain the term \"Hey\".\n",
+            "Who are the singers and what countries are they from for songs with \"Hey\" in their names?\n",
+            "List the names and countries of singers with songs that have \"Hey\" in their titles."
+        ],
+        "question": "what is the name and nation of the singer who have a song having 'Hey' in its name?",
+        "sql": "SELECT name ,  country FROM singer WHERE song_name LIKE '%Hey%'"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Show the names and countries of singers whose song names contain the term \"Hey\".\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "Which singers and their respective countries are associated with songs containing the word \"Hey\" in their names?\n",
+            "Show the names and countries of singers whose song names contain the term \"Hey\".\n",
+            "Who are the singers and what countries are they from for songs with \"Hey\" in their names?\n",
+            "Display the names and countries of singers whose songs have \"Hey\" in their titles."
+        ],
+        "question": "What is the name and country of origin of every singer who has a song with the word 'Hey' in its title?",
+        "sql": "SELECT name ,  country FROM singer WHERE song_name LIKE '%Hey%'"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What are the names and locations of stadiums where concerts were held in both 2014 and 2015?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names and locations of stadiums where concerts were held in both 2014 and 2015?\n",
+            "Which stadiums hosted concerts in both 2014 and 2015, and what are their names and locations?\n",
+            "Show the names and locations of stadiums that hosted concerts in both 2014 and ",
+            "",
+            "List the names and locations of stadiums that were concert venues in both 2014 and 2015."
+        ],
+        "question": "Find the name and location of the stadiums which some concerts happened in the years of both 2014 and 2015.",
+        "sql": "SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2014 INTERSECT SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2015"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Which stadiums hosted concerts in both 2014 and 2015, and what are their names and locations?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "What are the names and locations of stadiums where concerts were held in both 2014 and 2015?\n",
+            "Which stadiums hosted concerts in both 2014 and 2015, and what are their names and locations?\n",
+            "Show the names and locations of stadiums that hosted concerts in both 2014 and ",
+            "",
+            "List the names and locations of stadiums that were concert venues in both 2014 and 2015."
+        ],
+        "question": "What are the names and locations of the stadiums that had concerts that occurred in both 2014 and 2015?",
+        "sql": "SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2014 INTERSECT SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2015"
+    },
+    {
+        "adjusted": false,
+        "annotation": "How many concerts are scheduled to take place at the stadium with the highest capacity?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many concerts are scheduled to take place at the stadium with the highest capacity?\n",
+            "What is the total number of concerts being held at the stadium with the largest seating capacity?\n",
+            "How many concerts are planned at the stadium that has the highest seating capacity?\n",
+            "What is the count of concerts happening at the stadium with the greatest capacity?"
+        ],
+        "question": "Find the number of concerts happened in the stadium with the highest capacity .",
+        "sql": "select count(*) from concert where stadium_id = (select stadium_id from stadium order by capacity desc limit 1)"
+    },
+    {
+        "adjusted": false,
+        "annotation": "How many concerts are scheduled to take place at the stadium with the highest capacity?\r\n",
+        "comment": "",
+        "db_id": "concert_singer",
+        "options": [
+            "How many concerts are scheduled to take place at the stadium with the highest capacity?\n",
+            "What is the total number of concerts planned at the stadium with the largest seating capacity?\n",
+            "How many concerts are set to be held at the stadium that has the highest seating capacity?\n",
+            "What is the count of concerts happening at the stadium with the greatest capacity for spectators?"
+        ],
+        "question": "What are the number of concerts that occurred in the stadium with the largest capacity ?",
+        "sql": "select count(*) from concert where stadium_id = (select stadium_id from stadium order by capacity desc limit 1)"
+    },
+    {
+        "adjusted": false,
+        "annotation": "How many pets in the database weigh more than 10 pounds?\r\n",
+        "comment": "",
+        "db_id": "pets_1",
+        "options": [
+            "How many pets in the database weigh more than 10 pounds?\n",
+            "What is the total count of pets that exceed 10 pounds in weight?\n",
+            "How many pets have a weight greater than 10 pounds?\n",
+            "What is the number of pets that weigh over 10 pounds?"
+        ],
+        "question": "Find the number of pets whose weight is heavier than 10.",
+        "sql": "SELECT count(*) FROM pets WHERE weight  >  10"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the total count of pets that weigh more than 10?\r\n",
+        "comment": "",
+        "db_id": "pets_1",
+        "options": [
+            "How many pets in the database have a weight greater than 10?\n",
+            "What is the total count of pets that weigh more than 10?\n",
+            "How many pets exceed a weight of 10 in the database?\n",
+            "What is the number of pets that have a weight above 10?"
+        ],
+        "question": "How many pets have a greater weight than 10?",
+        "sql": "SELECT count(*) FROM pets WHERE weight  >  10"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the weight of the youngest pet in the database?\r\n",
+        "comment": "",
+        "db_id": "pets_1",
+        "options": [
+            "What is the weight of the youngest pet in the database?\n",
+            "Show the weight of the pet with the lowest age.\n",
+            "Retrieve the weight of the pet that is the youngest among all.\n",
+            "Get the weight of the pet that has the minimum age."
+        ],
+        "question": "Find the weight of the youngest dog.",
+        "sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "Show the weight of the pet with the lowest age.\r\n",
+        "comment": "",
+        "db_id": "pets_1",
+        "options": [
+            "What is the weight of the youngest pet in the database?\n",
+            "Show the weight of the pet with the lowest age.\n",
+            "Retrieve the weight of the youngest pet from the pets table.\n",
+            "Which pet has the lowest age, and what is its weight?"
+        ],
+        "question": "How much does the youngest dog weigh?",
+        "sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1"
+    },
+    {
+        "adjusted": false,
+        "annotation": "What is the maximum weight for each type of pet in the pets table?\r\n",
+        "comment": "",
+        "db_id": "pets_1",
+        "options": [
+            "What is the maximum weight for each type of pet in the pets table?\n",
+            "Which pet type has the highest weight among all the pets in the table?\n",
+            "How is the maximum weight distributed across different pet types in the pets table?\n",
+            "For each type of pet, what is the highest weight recorded in the pets table?"
+        ],
+        "question": "Find the maximum weight for each type of pet. List the maximum weight and pet type.",
+        "sql": "SELECT max(weight) ,  petType FROM pets GROUP BY petType"
+    }
+]

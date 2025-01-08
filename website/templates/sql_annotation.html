@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>SQL ANNOTATION</h2>
+<div class="progress-container">
+     <div class="progress-bar" id="progress-bar" style="width: {{ annotation.percentage }}%">
+        {{ annotation.percentage }}%
+    </div>
+</div>
+<div id="annotation-container">
+    <p class="index">{{ annotation_id }}</p>
+    <div class="query-section">
+        <p class="visualized-text">{{ annotation.sql }}</p>
+    </div>
+
+    <div class="options-section">
+        <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=sql" id="annotation-form">
+            <div id="options">
+                {% for option in annotation.options %}
+                <div class="option" data-option-id="{{ loop.index }}">
+                    <input type="radio" id="option-{{ loop.index }}" name="selected_option" value="{{ option }}" {% if annotation.question | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="option-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+                <!-- Adding the text area as an option -->
+                <div class="option">
+                    <input type="radio" id="adjustment-option" name="selected_option" value="adjustment" {% if annotation.adjusted %}checked{% endif %}>
+                    <label for="adjustment-option" class="adjustment-label">
+                        <textarea id="adjustment-box" class="adjustment-box" name="adjustment_text" placeholder="adjustment for an option">{{ annotation.question if annotation.adjusted else '' }}</textarea>
+                    </label>
+                </div>
+                <div class="comment-section">
+                    <label for="comment-box" class="comment-label">
+                        <textarea id="comment-box" class="comment-box" name="comment_text" placeholder="additional comments">{{ annotation.comment if annotation.comment else '' }}</textarea>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <a href="{{ url_for('sql_annotation', annotation_id=annotation_id - 1) }}?type=sql"
+       class="{% if annotation_id <= 1 %}disabled{% endif %}">
+        <button {% if annotation_id <= 1 %}disabled{% endif %}>
+            ← back
+        </button>
+    </a>
+    <div class ="nav-right">
+        <button type="submit" form="annotation-form">
+            {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
+        </button>
+
+        <a href="{{ url_for('sql_annotation', annotation_id=annotation_id + 1) }}?type=sql"
+           class="{% if annotation_id >= data_length%}disabled{% endif %}">
+            <button {% if annotation_id >= data_length %}disabled{% endif %}>
+                    skip >>
+            </button>
+        </a>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const adjustmentBox = document.getElementById('adjustment-box');
+
+        adjustmentBox.addEventListener('input', function() {
+            // Logic can be added here if needed when text is entered into the adjustment box
+        });
+    });
+</script>
+{% endblock %}
+

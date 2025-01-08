@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+
+        /* Styling for the selected (checked) state */
+        input[type="radio"]:checked + label.option-button, input[type="radio"]:checked + label.adjustment-label {
+            border-color: #007bff; /* Subtle border change to indicate selection */
+        }
+        /* Gear button styling */
+        .gear-button {
+            position: fixed; /* Stick it to the top-right corner */
+            top: 90px;
+            right: 10px;
+            background-color: #f8f9fa; /* Light background */
+            border: none;
+            border-radius: 50%; /* Make it circular */
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+        .gear-button i {
+            color: #333; /* Icon color */
+            font-size:14px;
+        }
+
+        .gear-button:hover {
+            background-color: #e0e0e0; /* Change background on hover */
+        }
+
+        .gear-button:active {
+            transform: scale(0.95); /* Slight shrink on click */
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>The Annotator</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('sql_annotation', annotation_id=1) }}?type=sql">SQL Annotation</a>
+            <a href="{{ url_for('column_annotation', annotation_id=1) }}?type=column">Column Annotation</a>
+            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">NL Annotation</a>
+            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">SQL Creation</a>
+            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">NL Creation</a>
+            <a href="{{ url_for('verification', annotation_id=1) }}?type=verification">Verification</a>
+        </nav>
+        {% if request.endpoint != 'index' %}
+            <!-- Gear Button -->
+            <button class="gear-button" onclick="showPopup()">
+                <i class="fas fa-cog"></i> <!-- Gear icon -->
+            </button>
+
+            <!-- Overlay -->
+            <div id="overlay" class="overlay"></div>
+
+            <!-- Popup Window -->
+            <div id="popup" class="popup">
+                <button class="close" onclick="hidePopup()">&times;</button>
+                <h2 style="text-align: center;color:black">Current Prompt</h2>
+                <textarea id="editableText">Generate SQL given the question and tables to answer the question correctly.\n\n</textarea>
+                <button onclick="saveChanges()">Save</button>
+            </div>
+
+            <script>
+                // Show the popup
+                function showPopup() {
+                    document.getElementById("overlay").style.display = "block";
+                    document.getElementById("popup").style.display = "block";
+                }
+
+                // Hide the popup
+                function hidePopup() {
+                    document.getElementById("overlay").style.display = "none";
+                    document.getElementById("popup").style.display = "none";
+                }
+
+                // Save changes from the popup
+                function saveChanges() {
+                    const text = document.getElementById("editableText").value;
+                    alert("Text saved: " + text); // Replace with actual save logic if needed
+                    hidePopup();
+                }
+            </script>
+        {% endif %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+
