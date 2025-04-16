@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step active" data-step="4">Retrieval</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+<p class="visualized-text" style="font-size: 12px;">Percentage of already annotated data:</p>
+<div class="progress-container">
+     <div class="progress-bar" id="progress-bar" style="width: {{ annotation.percentage }}%">
+        {{ annotation.percentage }}%
+    </div>
+</div>
+<h2>RETRIEVAL</h2>
+<p class="visualized-text" style="font-size: 12px;">At Index {{ annotation_id }}:</p>
+<p class="visualized-text"  style="font-size: 14px;">The following SQL will be inspected:</p>
+<pre style="margin-top: -22px; margin-bottom: 18px; padding: 0px;"><code class="language-sql">
+{{ annotation.gold_sql}}
+</code></pre>
+
+<form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=retrieval" id="annotation-form">
+
+<div id="annotation-container">
+    <!--<p class="index"> Index {{ annotation_id }}</p>-->
+    <div class="options-section">
+    For the upcoming prompt relevant examples and relevant tables will be provided. Please modify the selection if needed.
+        <p class="visualized-text">Adjust relevant tables:</p>
+        <p>Suggestions:</p>
+            <div id="suggested_tables">
+                {% for option in annotation.suggested_tables %}
+                <div class="option" data-option-id="{{ loop.index }}">
+                    <input type="checkbox" id="suggested_tables-{{ loop.index }}" name="selected_suggested_tables" value="{{ option }}" checked>
+                    <label for="suggested_tables-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        <p>Additional tables:</p>
+            <div id="tables">
+                {% for option in annotation.tables %}
+                <div class="option" data-option-id="{{ loop.index }}">
+                    <input type="checkbox" id="tables-{{ loop.index }}" name="selected_tables" value="{{ option }}" {% if annotation.annotation | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="tables-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+    </div>
+
+    <div class="options-section">
+        <p class="visualized-text">Adjust relevant examples from already annotated data:</p>
+        <p>Suggestions:</p>
+        <div id="suggested_examples">
+            {% for option in annotation.suggested_examples %}
+            <div class="option" data-option-id="{{ loop.index }}">
+                <input type="checkbox" id="suggested_example-{{ loop.index }}" name="selected_suggested_examples" value="{{ option }}" checked>
+                <label for="suggested_example-{{ loop.index }}" class="option-button">{{ option }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        <p>Additional examples:</p>
+        <div id="examples">
+            {% for option in annotation.examples %}
+            <div class="option" data-option-id="{{ loop.index }}">
+                <input type="checkbox" id="example-{{ loop.index }}" name="selected_examples" value="{{ option }}">
+                <label for="example-{{ loop.index }}" class="option-button">{{ option }}</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</form>
+
+<div class="nav-buttons">
+    <a href="{{ url_for('retrieval', annotation_id=annotation_id - 1) }}"
+       class="{% if annotation_id <= 1 %}disabled{% endif %}">
+        <button {% if annotation_id <= 1 %}disabled{% endif %}>
+            ← back
+        </button>
+    </a>
+    <div class ="nav-right">
+        <button type="submit" form="annotation-form">
+            {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
+        </button>
+
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id + 1) }}"
+           class="{% if annotation_id >= data_length%}disabled{% endif %}">
+            <button {% if annotation_id >= data_length %}disabled{% endif %}>
+                    skip >>
+            </button>
+        </a>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const adjustmentBox = document.getElementById('adjustment-box');
+
+        adjustmentBox.addEventListener('input', function() {
+            // Logic can be added here if needed when text is entered into the adjustment box
+        });
+    });
+</script>
+{% endblock %}
+

@@ -17,14 +17,12 @@
     <div class="options-section">
         <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=verification" id="annotation-form">
             <div id="options">
-                {% for option in annotation.options %}
-                <div class="option" data-option-id="{{ loop.index }}">
-                    <input type="radio" id="option-{{ loop.index }}" name="selected_option" value="{{ option }}" {% if annotation.annotation | trim | lower == option | trim | lower %}checked{% endif %}>
-                    <label for="option-{{ loop.index }}" class="option-button">
-                        {{ option }}
+                <div class="option">
+                    <input type="radio" name="selected_option" value="{{ option }}" {% if annotation.annotation | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label class="option-button">
+                        {{ annotation.annotation }}
                     </label>
                 </div>
-                {% endfor %}
                 <!-- Adding the text area as an option -->
                 <div class="option">
                     <input type="radio" id="adjustment-option" name="selected_option" value="adjustment" {% if annotation.adjusted %}checked{% endif %}>

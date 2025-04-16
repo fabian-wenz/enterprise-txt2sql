@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="preactive step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <h2>Define environment</h2>
+
+
+<form method="POST" action="{{ url_for('save_and_next') }}?type=task_selection" id="annotation-form">
+<div id="annotation-container">
+    <div class="options-section">
+    <h2>Select a Task:</h2>
+    <p>Choose a task out of the given ones:</p>
+            <div id="tasks">
+                {% for option in annotation.tasks %}
+                <div class="option" data-option-id="tasks-{{ loop.index }}">
+                    <input type="radio" id="tasks-{{ loop.index }}" name="selected_task" value="{{ option }}" {% if annotation.task | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="tasks-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <p>• TXT-2-SQL</p>
+    </div>
+
+    <div class="options-section">
+    <h2>Select a Model:</h2>
+    <p>Choose a LLM model out of the given ones:</p>
+            <div id="models">
+                {% for option in annotation.models %}
+                <div class="option" data-option-id="models-{{ loop.index }}">
+                    <input type="radio" id="models-{{ loop.index }}" name="selected_model" value="{{ option }}" {% if annotation.model | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="models-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <p>• DeepSeek</p>
+    </div>
+
+</div>
+</form>
+
+    <div class="nav-buttons">
+        <a href="{{ url_for('upload') }}">
+            <button>← back</button>
+        </a>
+        <a><button type="submit" form="annotation-form">submit →</button></a>
+
+    </div>
+{% endblock %}

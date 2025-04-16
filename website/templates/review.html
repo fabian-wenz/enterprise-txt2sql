@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('retrieval',annotation_id=1) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step active" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+
+    <div class="container">
+        <h2>Text-to-SQL Model Performance</h2>
+        <p>Performance evaluation across different accuracy metrics.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BLEU Score</td>
+                    <td>{{annotation.bleu}}%</td>
+                </tr>
+                <tr>
+                    <td>ROUGE Score</td>
+                    <td>{{annotation.rouge}}%</td>
+                </tr>
+                <tr>
+                    <td>BERTScore</td>
+                    <td>{{annotation.bert}}%</td>
+                </tr>
+                <tr>
+                    <td># annotated</td>
+                    <td>{{annotation.annotated}}</td>
+                </tr>
+                <tr>
+                    <td># adjusted</td>
+                    <td>{{annotation.adjusted}}</td>
+                </tr>
+            </tbody>
+            <!--<tbody>
+                <tr>
+                    <td>Loose Accuracy</td>
+                    <td>85.4%</td>
+                </tr>
+                <tr>
+                    <td>Column Accuracy</td>
+                    <td>92.1%</td>
+                </tr>
+                <tr>
+                    <td>Row Accuracy</td>
+                    <td>88.6%</td>
+                </tr>
+                <tr>
+                    <td>Column Name Accuracy</td>
+                    <td>94.3%</td>
+                </tr>
+                <tr>
+                    <td>Calculation Accuracy</td>
+                    <td>79.8%</td>
+                </tr>
+                <tr>
+                    <td>Exact Accuracy</td>
+                    <td>73.5%</td>
+                </tr>
+            </tbody>-->
+        </table>
+    </div>
+
+{% endblock %}

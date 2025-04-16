@@ -1,20 +1,38 @@
 {% extends "base.html" %}
 
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('sql_annotation', annotation_id=annotation_id) }}?type=sql" class="run step active" data-step="5">Generation</a>
+        <a href="{{ url_for('sql_annotation',annotation_id=annotation_id) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
 {% block content %}
-<h2>SQL ANNOTATION</h2>
+
+<style>
+    table { width: 50%; border-collapse: collapse; margin: 20px auto; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #007BFF; color: white; }
+</style>
+<p class="visualized-text" style="font-size: 12px;">Annotated data:</p>
 <div class="progress-container">
      <div class="progress-bar" id="progress-bar" style="width: {{ annotation.percentage }}%">
         {{ annotation.percentage }}%
     </div>
 </div>
+<h2>SQL ANNOTATION</h2>
+<p class="visualized-text" style="font-size: 12px;">Index {{ annotation_id }}:
 <div id="annotation-container">
-    <p class="index">{{ annotation_id }}</p>
-    <div class="query-section">
-        <p class="visualized-text">{{ annotation.sql }}</p>
+    <div class="options-section">
+        <p class="visualized-text">{{ annotation.gold_sql }}</p>
     </div>
 
     <div class="options-section">
-        <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=sql" id="annotation-form">
+        <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=sql_annotation" id="annotation-form">
             <div id="options">
                 {% for option in annotation.options %}
                 <div class="option" data-option-id="{{ loop.index }}">
@@ -42,7 +60,7 @@
 </div>
 
 <div class="nav-buttons">
-    <a href="{{ url_for('sql_annotation', annotation_id=annotation_id - 1) }}?type=sql"
+    <a href="{{ url_for('retrieval', annotation_id=annotation_id - 1) }}"
        class="{% if annotation_id <= 1 %}disabled{% endif %}">
         <button {% if annotation_id <= 1 %}disabled{% endif %}>
             ← back
@@ -53,7 +71,7 @@
             {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
         </button>
 
-        <a href="{{ url_for('sql_annotation', annotation_id=annotation_id + 1) }}?type=sql"
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id + 1) }}"
            class="{% if annotation_id >= data_length%}disabled{% endif %}">
             <button {% if annotation_id >= data_length %}disabled{% endif %}>
                     skip >>
@@ -62,6 +80,20 @@
     </div>
 
 </div>
+<table>
+    <tr>
+        {% for col in annotation.column_names %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in annotation.rows %}
+    <tr>
+        {% for value in row %}
+        <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
