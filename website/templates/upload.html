@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="preactive step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('sql_annotation', annotation_id=1) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('task_selection') }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('task_selection') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <h2>Select a Dataset and Queryset:</h2>
+    <p>Choose a dataset out of the given ones:</p>
+
+    <div class="options-section">
+        <form method="POST" action="{{ url_for('save_and_next') }}?type=upload" id="annotation-form">
+            <div id="options">
+                {% for option in annotation.options %}
+                <div class="option" data-option-id="{{ loop.index }}">
+                    <input type="radio" id="option-{{ loop.index }}" name="selected_option" value="{{ option }}" {% if annotation.temp | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="option-{{ loop.index }}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+
+                <p>• INTEL</p>
+                <p>• BEAVER</p><br><br>
+
+                <p>or upload your own files:</p>
+                <div class="option" data-option-id="4">
+                    <input type="radio" id="option-4" name="selected_option" value="OwnUpload"{% if annotation.temp | trim | lower == "OwnUpload" | trim | lower %}checked{% endif %}>
+                    <label for="option-4" class="option-button">Upload files below</label>
+
+                    <!-- Move file inputs inside the main form -->
+                    <div class="file-upload-container">
+                        <label for="schema_file">Schema File:</label>
+                        <input type="file" id="schema_file" name="schema_file" accept=".csv">
+
+                        <label for="database_file">Database File (.sqlite):</label>
+                        <input type="file" id="database_file" name="database_file" accept=".sqlite">
+
+                        <label for="sql_file">SQL Log File:</label>
+                        <input type="file" id="sql_file" name="sql_file" accept=".sql">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="{{ url_for('index') }}">
+            <button>← back</button>
+        </a>
+        <a><button type="submit" form="annotation-form">submit →</button></a>
+
+    </div>
+
+{% endblock %}

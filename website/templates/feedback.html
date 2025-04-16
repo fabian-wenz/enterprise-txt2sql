@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('sql_annotation', annotation_id=annotation_id) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('feedback',annotation_id=annotation_id) }}" class="run step active" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <h2>Feedback</h2>
+    <p class="visualized-text" style="font-size: 12px;">Index {{ annotation_id }}:</p>
+    <p>You did not select one of these 4 options:</p>
+    <p class="visualized-text">{{ annotation.options }}</p>
+    <p>You selected:</p>
+    <p class="visualized-text">{{ annotation.question }}</p>
+    <p>Your comment was:</p>
+    <p class="visualized-text">{{ annotation.comment }}</p>
+    <div id="annotation-container">
+    <div class="options-section">
+        <p>Keep your current prompt:</p>
+       <p class="visualized-text">{{ annotation.prompt }}</p>
+    </div>
+    <div class="options-section">
+                    <p>Or create a new prompt:</p>
+    <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=feedback" id="annotation-form">
+        <input type="checkbox" id="adjustment-option" name="selected_option" value="{{ annotation.new_prompt }}">
+        <label for="adjustment-option" class="adjustment-label">
+            <textarea id="adjustment-box" class="adjustment-box" name="selected_option" placeholder="{{ annotation.new_prompt }}">{{ annotation.new_prompt }}</textarea>
+        </label>
+    </form>
+    </div>
+    </div>
+
+<div class="nav-buttons">
+    <a href="{{ url_for('retrieval', annotation_id=annotation_id - 1) }}"
+       class="{% if annotation_id <= 1 %}disabled{% endif %}">
+        <button {% if annotation_id <= 1 %}disabled{% endif %}>
+            ← back
+        </button>
+    </a>
+    <div class ="nav-right">
+        <button type="submit" form="annotation-form">
+            {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
+        </button>
+
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id + 1) }}"
+           class="{% if annotation_id >= data_length%}disabled{% endif %}">
+            <button {% if annotation_id >= data_length %}disabled{% endif %}>
+                    skip >>
+            </button>
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

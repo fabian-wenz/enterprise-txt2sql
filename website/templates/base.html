@@ -48,55 +48,159 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-sql.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>The Annotator</h1>
-        <nav>
-            <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('sql_annotation', annotation_id=1) }}?type=sql">SQL Annotation</a>
-            <a href="{{ url_for('column_annotation', annotation_id=1) }}?type=column">Column Annotation</a>
-            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">NL Annotation</a>
-            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">SQL Creation</a>
-            <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">NL Creation</a>
-            <a href="{{ url_for('verification', annotation_id=1) }}?type=verification">Verification</a>
+    <header><script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let apiKey = localStorage.getItem("api_key"); // Get API key from localStorage
+
+        if (apiKey) {
+            console.log("Sending API Key to Flask:", apiKey);
+
+            fetch("/save_api_key", {  // Change this to your Flask route
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ api_key: apiKey }),
+            })
+            .then(response => response.json())
+            .then(data => console.log("Server Response:", data))
+            .catch(error => console.error("Error sending API Key:", error));
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        let apiKey = localStorage.getItem("api_key"); // Retrieve stored API key
+
+        console.log("Stored API Key:", apiKey);  // Debugging: Check in console
+
+        if (!apiKey || apiKey.trim() === "") {
+            console.log("⚠️ API Key is missing. Showing popup.");
+            showPopup();
+        } else {
+            console.log("✅ API Key exists.");
+            document.getElementById("editableText").value = apiKey; // Keep API key in the text box
+        }
+    });
+
+    // Show the popup
+    function showPopup() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+    }
+
+    // Hide the popup
+    function hidePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").style.display = "none";
+    }
+
+    // Save API Key from the popup
+    function saveChanges() {
+        const apiKey = document.getElementById("editableText").value;
+
+        if (apiKey.trim() === "") {
+            alert("API Key cannot be empty!");
+            return;
+        }
+
+        // Store in localStorage
+        localStorage.setItem("api_key", apiKey);
+
+        // Send API Key to Flask
+        fetch("/save_api_key", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ api_key: apiKey }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);  // Show success message from Flask
+            hidePopup();  // Close the popup
+        })
+        .catch(error => console.error("Error sending API Key:", error));
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let apiKey = localStorage.getItem("api_key");
+        if (apiKey) {
+            document.getElementById("api_key_display").innerText = "API Key: " + apiKey;
+        }
+    });
+</script>
+
+<p id="api_key_display">API Key not set.</p>
+
+
+            <!--
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Get all step links
+                    const steps = document.querySelectorAll(".nav-container .step");
+
+                    // Load last active step from localStorage (or default to step 1)
+                    let activeStep = parseInt(localStorage.getItem("activeStep")) || 1;
+                    highlightSteps(activeStep);
+
+                    // Click event listener for step links
+                    steps.forEach(step => {
+                        step.addEventListener("click", function(event) {
+                            event.preventDefault(); // Prevent immediate page reload
+
+                            let stepNumber = parseInt(this.getAttribute("data-step"));
+                            highlightSteps(stepNumber);
+                            localStorage.setItem("activeStep", stepNumber); // Store progress
+
+                            // Allow navigation after highlighting
+                            setTimeout(() => {
+                                window.location.href = this.href;
+                            }, 200); // Delay ensures visual update before navigation
+                        });
+                    });
+
+                    function highlightSteps(activeStep) {
+                        steps.forEach(step => {
+                            let stepNumber = parseInt(step.getAttribute("data-step"));
+                            if (stepNumber <= activeStep) {
+                                step.classList.add("active"); // Highlight previous and current steps
+                            } else {
+                                step.classList.remove("active"); // Remove highlight for future steps
+                            }
+                        });
+                    }
+                });
+            </script>-->
+        <h1>The BENCHPRESS</h1>
+         {% block header %}
+        <nav class="nav-container">
+            <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+            <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Upload</a>
+            <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Tasks</a>
+            <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="4">Retrieval</a>
+            <!--<a href="{{ url_for('correction') }}" class="step" data-step="5">Correction</a>-->
+            <a href="{{ url_for('sql_annotation', annotation_id=1) }}?type=sql" class="run step" data-step="5">Generation</a>
+            <a href="{{ url_for('feedback', annotation_id=annotation_id) }}" class="run step" data-step="6">Feedback</a>
+            <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+            <!--<a href="{{ url_for('sql_annotation', annotation_id=1) }}?type=sql" class="step" data-step="8">SQL</a>-->
+            <!--<a href="{{ url_for('coming_soon') }}?type=column" class="step" data-step="9">Column Annotation</a>-->
+            <!--<a href="{{ url_for('coming_soon') }}" class="step" data-step="10">SQL Creation</a>-->
+            <!--<a href="{{ url_for('coming_soon') }}" class="step" data-step="11">NL Creation</a>-->
+            <!--<a href="{{ url_for('verification', annotation_id=1) }}?type=verification" class="step" data-step="12">Verification</a>-->
         </nav>
-        {% if request.endpoint != 'index' %}
-            <!-- Gear Button -->
-            <button class="gear-button" onclick="showPopup()">
-                <i class="fas fa-cog"></i> <!-- Gear icon -->
-            </button>
+        {% endblock %}
+        <!-- Gear Button -->
+        <button class="gear-button" onclick="showPopup()">
+            <i class="fas fa-cog"></i> <!-- Gear icon -->
+        </button>
 
-            <!-- Overlay -->
-            <div id="overlay" class="overlay"></div>
+            <!-- Overlay & Popup (Always in HTML but Hidden by Default) -->
+            <div id="overlay" class="overlay" style="display:none;"></div>
 
-            <!-- Popup Window -->
-            <div id="popup" class="popup">
-                <button class="close" onclick="hidePopup()">&times;</button>
-                <h2 style="text-align: center;color:black">Current Prompt</h2>
-                <textarea id="editableText">Generate SQL given the question and tables to answer the question correctly.\n\n</textarea>
+            <div id="popup" class="popup" style="display:none;">
+                <!--  <button class="close" onclick="hidePopup()">&times;</button> -->
+                <h2 style="text-align: center;color:black">Current API KEY</h2>
+                <textarea id="editableText">{{ api_key }}</textarea>
                 <button onclick="saveChanges()">Save</button>
             </div>
-
-            <script>
-                // Show the popup
-                function showPopup() {
-                    document.getElementById("overlay").style.display = "block";
-                    document.getElementById("popup").style.display = "block";
-                }
-
-                // Hide the popup
-                function hidePopup() {
-                    document.getElementById("overlay").style.display = "none";
-                    document.getElementById("popup").style.display = "none";
-                }
-
-                // Save changes from the popup
-                function saveChanges() {
-                    const text = document.getElementById("editableText").value;
-                    alert("Text saved: " + text); // Replace with actual save logic if needed
-                    hidePopup();
-                }
-            </script>
-        {% endif %}
     </header>
 
     <main>
@@ -104,4 +208,3 @@
     </main>
 </body>
 </html>
-

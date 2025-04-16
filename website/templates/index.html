@@ -1,50 +1,95 @@
 {% extends "base.html" %}
 
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="preactive step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}?type=sql" class="run step" data-step="5">Generation</a>
+        <a href="{{ url_for('retrieval', annotation_id=1) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
 {% block content %}
     <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
     <!-- Popup Content -->
-    <div id="popupForm" class="popup">
-        <button class="close" onclick="closePopup()">&times;</button>
-        <h2 style="text-align: center;">Submit Your Details</h2>
-        <form action="/submit" method="POST" enctype="multipart/form-data">
-            <label for="api_key">API Key:</label>
-            <input type="text" id="api_key" name="api_key" required>
+    <!--<div id="popupForm" class="popup">-->
+    <!--    <button class="close" onclick="closePopup()">&times;</button>-->
+    <!--    <h2 style="text-align: center;">Submit Your Files</h2>-->
+    <!--    <form action="/submit" method="POST" enctype="multipart/form-data">-->
+    <!--        <label for="schema_file">Schema File:</label>-->
+    <!--        <input type="file" id="schema_file" name="schema_file" accept=".csv">-->
+            <!-- <input type="text" id="api_key" name="api_key" required>-->
+<!---->
+    <!--        <label for="database_file">Database File(.sqlite):</label>-->
+    <!--        <input type="file" id="database_file" name="database_file" accept=".sqlite">-->
+<!---->
+    <!--        <label for="sql_file">SQL Log File:</label>-->
+    <!--        <input type="file" id="sql_file" name="sql_file" accept=".sql">-->
+<!---->
+    <!--        <button type="submit">Submit</button>-->
+    <!--    </form>-->
+    <!--</div>-->
 
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+    <!-- Loading Message -->
+    <!--<p id="loadingMessage" style="display: none;">Processing... Please wait.</p>-->
 
-            <label for="sql_file">SQL File:</label>
-            <input type="file" id="sql_file" name="sql_file" accept=".sql" required>
-
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-
-    <script>
-        // Show the popup when the page loads
-        window.onload = function() {
-            document.getElementById("popupForm").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
-        };
-
-        // Close the popup and overlay
-        function closePopup() {
-            document.getElementById("popupForm").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
-        }
-    </script>
+    <!-- Error Message -->
+    <!--<p id="errorMessage" style="display: none; color: red;"></p>-->
 
 
 
-    <h2>Welcome to the Annotator</h2>
-    <p>Use this tool to annotate SQL queries and columns and map api calls.</p>
-    <a href="{{ url_for('column_annotation', annotation_id=1) }}">Go to Column Annotation<br></a>
-    <a href="{{ url_for('sql_annotation', annotation_id=1) }}">Go to SQL Annotation<br></a>
-    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to NL Annotation<br></a>
-    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to SQL Creation<br></a>
-    <a href="{{ url_for('api_mapping_annotation', annotation_id=1) }}">Go to NL Creation<br></a>
-    <a href="{{ url_for('verification', annotation_id=1) }}?type=verification">Go to Verification</a>
+  <h2 style="lmargin-bottom: 20px;">🧭 How BENCHPRESS Works</h2>
+
+  <p style="line-height: 1.6;">
+    <strong>BENCHPRESS</strong> is an interactive annotation system for rapidly creating high-quality text-to-SQL benchmarks tailored to enterprise data. The interface is designed with a logical flow, visually guided by color-coded buttons to reflect different phases of the process:
+  </p>
+
+  <h3 style="color: #f57c00;">🟠  ORANGE STAGE — One-Time Setup</h3>
+  <ul>
+    <li>🟠 <strong>Home</strong>: Entry point and system overview.</li>
+    <li>🟠 <strong>Dataset</strong>: Upload SQL logs/dataset or select one of the typical benchmarks(SPIDER, BIRD, FIBEN, BEAVER) to begin.</li>
+    <li>🟠 <strong>Setup</strong>: Define and select forward or backward direction and which model to use.</li>
+  </ul>
+  <p>➡️ These steps are typically completed once at the beginning of a project.</p>
+
+  <h3 style="color: #4caf50;">🟢 GREEN STAGE — Iterative Annotation</h3>
+  <ol>
+    <li>🟢 <strong>Retrieval</strong>: Review and refine most relevant examples and tables from a given SQL or NL.</li>
+        ⬇️
+    <li>🟢 <strong>Generation</strong>: Generate or edit 4 possible SQLs/NLs using LLM support and give the user the option to create their own.</li>
+        ⬇️
+    <li>(🟢 <strong>Feedback</strong>): If none of the options matched, sugest a modified prompt emphasis or additional knowledge.</li>
+        ⬇️<br>
+        1. 🔄
+  </ol>
+  <p>➡️ This is the core loop and is used repeatedly during annotation.</p>
+
+  <h3 style="color: #9e9e9e;">⚪ GRAY STAGE — Review & Evaluation</h3>
+  <ul>
+    <li>⚪ <strong>Review</strong>: Final performance review and ability to download the annotated dataset.</li>
+  </ul>
+  <p>➡️ This is the final verification step before export or benchmark inclusion.</p>
+
+  <h3 style="margin-top: 30px;">🔁 Flow Summary</h3>
+  <pre style="background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto;">
+[Home] → [Upload] → [Tasks]
+       ↓
+   [Retrieval] → [Generation] → [Feedback]
+                               ↓
+                           [Review]
+  </pre>
+    <!--<h2>Welcome to BENCHPRESS</h2>
+    <p>BENCHPRESS is an interactive annotation system for rapidly creating text-to-SQL benchmarks tailored to enterprise data tasks. It uses a human-in-the-loop approach, where annotators refine or repair LLM-generated SQL-NL pairs. BENCHPRESS was instrumental in creating the BEAVER benchmark and includes plans for scalable query log annotation, semantic context enrichment, and robustness evaluation, addressing the unique challenges of enterprise data.</p>-->
+    <!--<a href="{{ url_for('coming_soon') }}">Task Selection<br></a>-->
+    <!--<a href="{{ url_for('coming_soon') }}">Go to Column Annotation<br></a>-->
+    <!--<a href="{{ url_for('sql_annotation', annotation_id=1) }}">Go to SQL Annotation<br></a>-->
+    <!--<a href="{{ url_for('coming_soon') }}">Go to NL Annotation<br></a>-->
+    <!--<a href="{{ url_for('coming_soon') }}">Go to SQL Creation<br></a>-->
+    <!--<a href="{{ url_for('coming_soon') }}">Go to NL Creation<br></a>-->
+    <!--<a href="{{ url_for('verification', annotation_id=1) }}?type=verification">Go to Verification</a>-->
 
 {% endblock %}
