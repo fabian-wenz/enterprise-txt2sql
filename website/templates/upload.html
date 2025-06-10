@@ -27,7 +27,7 @@
                 </div>
                 {% endfor %}
 
-                <p>• INTEL</p>
+                <!--<p>• INTEL</p>
                 <p>• BEAVER</p><br><br>
 
                 <p>or upload your own files:</p>
@@ -35,7 +35,7 @@
                     <input type="radio" id="option-4" name="selected_option" value="OwnUpload"{% if annotation.temp | trim | lower == "OwnUpload" | trim | lower %}checked{% endif %}>
                     <label for="option-4" class="option-button">Upload files below</label>
 
-                    <!-- Move file inputs inside the main form -->
+
                     <div class="file-upload-container">
                         <label for="schema_file">Schema File:</label>
                         <input type="file" id="schema_file" name="schema_file" accept=".csv">
@@ -46,7 +46,7 @@
                         <label for="sql_file">SQL Log File:</label>
                         <input type="file" id="sql_file" name="sql_file" accept=".sql">
                     </div>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>

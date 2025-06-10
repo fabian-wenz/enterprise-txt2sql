@@ -272,7 +272,7 @@ def decompose_statements(json_file):
       logdata[i]['sql_in_cte']=response.choices[0].message.content
       print(logdata[i]['sql_in_cte'])
 
-  save_json_data(json_file + '2', logdata)
+  save_json_data(json_file[:-4] + '2.json', logdata)
 
 def reiterate_decompose(json_file):
   logdata = load_json_data(json_file)
@@ -280,7 +280,7 @@ def reiterate_decompose(json_file):
 
   api_key = "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"
   client = OpenAI(api_key=api_key)
-  conn = sqlite3.connect("./data/fiben/database/fiben.sqlite")
+  conn = sqlite3.connect("./data/beaver/database/dw/dw.sqlite")
   cursor = conn.cursor()
   for i in range(len(logdata)):
     nested_sql = logdata[i]['gold-sql'].replace("FIBEN.", "")
@@ -350,11 +350,51 @@ def reiterate_decompose(json_file):
         print(logdata[i]['sql_in_cte'])
         print('--------------------------------')
 
-  save_json_data(json_file[:-1] + '3', logdata)
+  save_json_data(json_file[:-4] + '3.json', logdata)
+
+def extract_decomposition(json_file):
+  logdata = load_json_data(json_file)
+  model = SentenceTransformer("all-MiniLM-L6-v2")
+  # Fetch the specific annotation based on the ID provided in the URL
+  for i in range(len(logdata)):
+    print(i)
+    nested_sql = logdata[i]['gold-sql'].replace("FIBEN.", "")
+    if len(re.findall(r"\bSELECT\b", nested_sql, flags=re.IGNORECASE)) >=2:
+      try:
+        print(logdata[i]['sql_in_cte'])
+        sql_cte = logdata[i]['sql_in_cte']
+        parsed = sqlglot.parse_one(sql_cte)
+
+        # Get CTEs
+        with_clause = parsed.args.get("with")
+        ctes = {}
+        for cte in with_clause.expressions:
+          cte_name = cte.alias_or_name
+          cte_sql = cte.this.sql(pretty=False)
+          ctes[cte_name] = cte_sql
+
+        start = sql_cte.rfind(cte_sql)
+        end = start + len(cte_sql)
+        temp_sql = sql_cte[end:]
+        end += temp_sql.find('SELECT')
+        ctes['main'] = sql_cte[end:]
+        logdata[i]['sql_decomposition'] = []
+        j=0
+        for cte in ctes.keys():
+          logdata[i]['sql_decomposition'].append({'question':"", "gold-sql":"", "title":"", "db_id":"","adjusted":False, "comment":"", "sql_embedding":[], "options":[]})
+          logdata[i]['sql_decomposition'][j]['title'] = cte
+          logdata[i]['sql_decomposition'][j]["gold-sql"] = ctes[cte]
+          logdata[i]['sql_decomposition'][j]['db_id'] = logdata[i]['db_id']
+          logdata[i]['sql_decomposition'][j]['sql_embedding'] = model.encode(logdata[i]['sql_decomposition'][j]["gold-sql"], convert_to_tensor=True).detach().cpu().numpy().tolist()
+          j+=1
+      except Exception as e:
+        print(e)
+        continue
+  save_json_data(json_file[:-4] + '4', logdata)
 
 if __name__ == '__main__':
   # Example file paths (replace with actual file paths)
-  json_file = "./data/fiben/queries.json2"
+  json_file = "./data/beaver/sql_sample_50_ts_and_es.2.3.json"
   sqlite_file = "database.sqlite"
   csv_file = "./data/beaver/tables.csv"
   #embedding_csv(json_file)
@@ -363,15 +403,30 @@ if __name__ == '__main__':
   #embedding_json(json_file)
   #spider_short(json_file)
   #
-  reiterate_decompose(json_file)
-  log_data = load_json_data(json_file)
-  for i in range(len(log_data)):
-    if 'sql_in_cte' in log_data[i].keys():
-      print('--------------------------------')
-      print(i)
-      print(sqlparse.format(log_data[i]['sql_in_cte'], reindent=True, keyword_case='upper'))
-      print(sqlparse.format(log_data[i]['gold-sql'], reindent=True, keyword_case='upper'))
-      print('--------------------------------')
+
+
+
+
+  #reiterate_decompose(json_file)
+  #log_data = load_json_data(json_file)
+  #for i in range(len(log_data)):
+  #  if 'sql_in_cte' in log_data[i].keys():
+  #    print('--------------------------------')
+  #    print(i)
+  #    print(sqlparse.format(log_data[i]['sql_in_cte'], reindent=True, keyword_case='upper'))
+  #    print(sqlparse.format(log_data[i]['gold-sql'], reindent=True, keyword_case='upper'))
+  #    print('--------------------------------')
+  #decompose_statements(json_file)
+  #reiterate_decompose(json_file)
+  extract_decomposition(json_file)
+
+
+
+
+
+
+
+
   #validate_json(json_file, [])
   #embedding_json(json_file)
   #convert_schema(json_file)

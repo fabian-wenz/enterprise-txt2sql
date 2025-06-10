@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Benchpress Annotation Portal</title>
+
+  <!-- 💄 Add Picnic CSS for styling -->
+  <link rel="stylesheet" href="https://unpkg.com/picnic">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    body {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .box {
+      padding: 2rem;
+      background: #f9f9f9;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    pre {
+      background: #f2f2f2;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    .button + input[type="file"] {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h1>📊 Benchpress Annotation Task</h1>
+    <p>Welcome! You’ll be downloading a task file and submitting your annotations in JSON format.</p>
+
+    <ul>
+      <li><strong>queryset.json</strong> – Includes a list of SQL queries with empty natural language (NL) fields. Fill those out.</li>
+      <li><strong>schema.csv</strong> – Describes the table schema (table, column, type) in CSV format.</li>
+    </ul>
+
+    <p>⏱️ The time between download and upload is recorded automatically.</p>
+
+    <button class="button primary" onclick="downloadZip()">📦 Download ZIP</button><br><br>
+
+    <label><strong>⬆️ Upload your filled JSON:</strong></label>
+    <input type="file" id="upload" accept=".json" onchange="handleUpload(event)" />
+
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    function downloadZip() {
+      const queryset = {
+        metadata: {
+          downloaded_at: new Date().toISOString()
+        },
+        queries: [
+          { sql: "SELECT * FROM students;", nl: "" },
+          { sql: "SELECT name FROM teachers WHERE age > 40;", nl: "" }
+        ]
+      };
+
+      const schemaCsv = `table,column,type
+students,id,INT
+students,name,TEXT
+teachers,id,INT
+teachers,name,TEXT
+teachers,age,INT`;
+
+      const zip = new JSZip();
+      zip.file("queryset.json", JSON.stringify(queryset, null, 2));
+      zip.file("schema.csv", schemaCsv);
+
+      zip.generateAsync({ type: "blob" }).then(function (blob) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "dataset.zip";
+        a.click();
+      });
+    }
+
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const json = JSON.parse(e.target.result);
+          const uploadedAt = new Date();
+
+          if (json.metadata && json.metadata.downloaded_at) {
+            const downloadedAt = new Date(json.metadata.downloaded_at);
+            const elapsed = (uploadedAt - downloadedAt) / 1000;
+            json.metadata.uploaded_at = uploadedAt.toISOString();
+            json.metadata.elapsed_seconds = elapsed;
+
+            document.getElementById("output").textContent =
+              "✅ Upload successful. Elapsed time (seconds): " + elapsed.toFixed(2) + "\n\n" +
+              JSON.stringify(json, null, 2);
+          } else {
+            document.getElementById("output").textContent =
+              "⚠️ Missing 'downloaded_at' timestamp in metadata.";
+          }
+        } catch (err) {
+          document.getElementById("output").textContent = "❌ Invalid JSON file.";
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>

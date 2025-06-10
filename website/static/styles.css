@@ -120,27 +120,76 @@ input[type="radio"]:checked + label.adjustment-label::before {
 }
 
 .visualized-text {
-    white-space: pre-wrap; /* Preserves spaces and line breaks */
-    font-family: monospace; /* Uses a monospace font for better visibility */
-    font-size: 1.25rem; /* 1.25 times the default font size (20px if default is 16px) */
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 1.25rem;
 }
 
 .options-section {
-    flex: 1; /* Set flex-grow to 1 */
+    flex: 1;
     width: 50%;
 }
 
-.query-section {
-    flex: 1; /* Set flex-grow to 1 */
-    width: 50%;
+/* Hide the default radio buttons and checkboxes */
+.option input[type="radio"],
+.option input[type="checkbox"],
+.adjustment-option input[type="checkbox"] {
+    display: none;
 }
 
-.comment-section {
-    margin-top: 20px;
-    padding: 10px;
+
+/* Label styles for clickable options */
+.option label.option-button {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    position: relative;
+}
+
+/* Custom radio and checkbox outer circle */
+.option label.option-button::before,
+.adjustment-option label.option-button::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%; /* Make it circular */
+    border: 2px solid #007BFF; /* Border color */
+    margin-right: 10px;
+    background-color: white;
+    transition: background-color 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+/* Inner dot effect (for both radio & checkbox) */
+.option input[type="radio"]:checked + label.option-button::before,
+.option input[type="checkbox"]:checked + label.option-button::before,
+.adjustment-option input[type="checkbox"]:checked + label.option-button::before {
+    background-color: white; /* Keep the background white */
+    border: 2px solid #007BFF; /* Keep the outer border color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Small dot in center (radio & checkbox) */
+.option input[type="radio"]:checked + label.option-button::after,
+.option input[type="checkbox"]:checked + label.option-button::after,
+.adjustment-option input[type="checkbox"]:checked + label.option-button::after {
+    content: "";
+    width: 12px; /* Size of the inner dot */
+    height: 12px;
+    background-color: #007BFF; /* Inner dot color */
+    border-radius: 50%; /* Makes it a small dot */
+    position: absolute;
+    left: 20px; /* Position inside the bigger circle */
+    top: center;
 }
 
 textarea.comment-box {
@@ -179,7 +228,63 @@ label.comment-label {
     text-align: center;
     line-height: 30px;
     color: black; /* Set the text color to black */
+}/* Center the navigation bar */
+
+.nav-container {
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+    position: relative;
 }
+
+/* Default step style */
+.nav-container a {
+    position: relative;
+    z-index: 2;
+    background-color: #ddd; /* Default gray */
+    color: black;
+    text-decoration: none;
+    padding: 12px 24px;
+    margin: 0 5px;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* 🔹 Completed steps (Green) */
+.nav-container a.run {
+    background-color: #4caf50; /* Green */
+    color: white;
+}
+
+.nav-container a.active {
+    border: 3px solid #3e8e41;
+}
+
+/* 🔹 Active step (Orange) */
+.nav-container a.pre {
+    background-color: #ffa500; /* Orange */
+    color: white;
+}
+
+/* 🔹 Inactive steps (Default gray) */
+.nav-container a:not(.run):not(.active):not(.pre):not(.preactive) {
+    background-color: #ddd;
+    color: black;
+}
+.nav-container a.preactive {
+    background-color: #ffa500; /* Orange */
+    color: white;
+    border: 3px solid #D2691E; /* Dark Orange */
+}
+
+
 
 /* Overlay to dim the background */
 .overlay {
@@ -250,5 +355,50 @@ button {
 }
 
 button:hover {
+    background-color: #45a049;
+}
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Adds spacing between input fields */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-top: 15px;
+}
+
+.file-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adds spacing between label and input */
+}
+
+.file-upload-container label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.file-upload-container input[type="file"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.file-upload-container button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+}
+
+.file-upload-container button:hover {
     background-color: #45a049;
 }
