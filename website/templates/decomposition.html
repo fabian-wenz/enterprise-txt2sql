@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step active" data-step="4">Decomposition</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}?type=sql" class="run step" data-step="5">Retrieval</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}?type=sql" class="run step" data-step="6">Generation</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step" data-step="7">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="8">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <p class="visualized-text" style="font-size: 12px;">Percentage of already annotated data:</p>
+    <div class="progress-container">
+         <div class="progress-bar" id="progress-bar" style="width: {{ annotation.percentage }}%">
+            {{ annotation.percentage }}%
+        </div>
+    </div>
+    <h2>DECOMPOSITION</h2>
+    <div id="annotation-container">
+    <div class="options-section">
+    <p>At Index {{ annotation_id }}:<br>
+    The following SQL will be inspected:</p><p class="visualized-text">
+    <code class="language-sql" style="white-space: pre-wrap;">
+    {{ annotation.gold_sql|safe}}
+    </code></p>
+    </div>
+    <div class="options-section">
+    <p>To improve LLM suggestions the nested SQL will be reformulated to the following. Please modify the query if necessary:</p>
+    <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=decomposed_retrieval" id="annotation-form">
+    <label for="comment-box" class="comment-label">
+    <textarea id="comment-box" class="comment-box" name="sql_in_cte">{{ annotation.sql_in_cte }}</textarea>
+    </label>
+    </form>
+    </div>
+    </div>
+
+<div class="nav-buttons">
+    <a href="{{ url_for('retrieval', annotation_id=annotation_id - 1) }}"
+       class="{% if annotation_id <= 1 %}disabled{% endif %}">
+        <button {% if annotation_id <= 1 %}disabled{% endif %}>
+            ← back
+        </button>
+    </a>
+    <div class ="nav-right">
+        <button type="submit" form="annotation-form">
+            {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
+        </button>
+
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id + 1) }}"
+           class="{% if annotation_id >= data_length%}disabled{% endif %}">
+            <button {% if annotation_id >= data_length %}disabled{% endif %}>
+                    skip >>
+            </button>
+        </a>
+    </div>
+
+</div>
+<script>
+    // Get the comment-box element
+const textarea = document.getElementById('comment-box');
+
+// Function to resize textarea based on content
+function autoResizeTextarea() {
+    // Reset the height to auto to shrink the box back when content is deleted
+    textarea.style.height = 'auto';
+    // Adjust the height based on the content's scrollHeight
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
+// Set up the event listener for input changes
+textarea.addEventListener('input', autoResizeTextarea);
+
+// Optional: Call the function on page load to resize according to initial content
+window.addEventListener('load', autoResizeTextarea);
+</script>
+{% endblock %}

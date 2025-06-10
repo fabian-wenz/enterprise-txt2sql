@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <nav class="nav-container">
+        <a href="{{ url_for('index') }}" class="pre step" data-step="1">Home</a>
+        <a href="{{ url_for('upload') }}" class="pre step" data-step="2">Dataset</a>
+        <a href="{{ url_for('task_selection') }}" class="pre step" data-step="3">Setup</a>
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id) }}" class="run step" data-step="4">Retrieval</a>
+        <a href="{{ url_for('sql_annotation', annotation_id=annotation_id) }}?type=sql" class="run step active" data-step="5">Generation</a>
+        <a href="{{ url_for('sql_annotation',annotation_id=annotation_id) }}" class="run step" data-step="6">Feedback</a>
+        <a href="{{ url_for('review') }}" class="step" data-step="7">Review</a>
+    </nav>
+{% endblock %}
+{% block content %}
+
+<style>
+    table { width: 50%; border-collapse: collapse; margin: 20px auto; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #007BFF; color: white; }
+</style>
+<p class="visualized-text" style="font-size: 12px;">Annotated data:</p>
+<div class="progress-container">
+     <div class="progress-bar" id="progress-bar" style="width: {{ annotations.percentage }}%">
+        {{ annotations.percentage }}%
+    </div>
+</div>
+<h2>SQL ANNOTATION (1/2)</h2>
+<p class="visualized-text" style="font-size: 12px;">Index {{ annotation_id }}:
+<p class="visualized-text"  style="font-size: 14px;">The following reformulated SQL will now be inspected by its various common table expressions(CTE):</p>
+<pre style="margin-top: -22px; margin-bottom: 18px; padding: 0px;"><code class="language-sql">
+{{ annotations.sql_in_cte}}
+</code></pre>
+{% for annotation in annotations.sql_decomposition %}
+<div id="annotation-container">
+    <div class="options-section">
+        <p class="visualized-text">This is a portion of the SQL query shown above. Please choose the corresponding natural language description or modify it in the adjustment box if needed.</p>
+        <pre style="margin-top: -22px; margin-bottom: 18px; padding: 0px;">
+            <code class="language-sql">
+                {{ annotation.gold_sql}}
+            </code>
+        </pre>
+    </div>
+
+    <div class="options-section">
+        <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=decomposed_sql_annotation" id="annotation-form">
+            <div id="options">
+                {% for option in annotation.options %}
+                <div class="option" data-option-id="{{ loop.index }}">
+                    <input type="radio" id="option-{{ loop.index }}{{annotation.title}}" name="selected_option{{annotation.title}}" value="{{ option }}" {% if annotation.question | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="option-{{ loop.index }}{{annotation.title}}" class="option-button">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+                <!-- Adding the text area as an option -->
+                <p class="visualized-text">If needed, please provide a modified version of one of the natural language descriptions here.</p>
+                <div class="option">
+                    <input type="radio" id="adjustment-option{{annotation.title}}" name="selected_option{{annotation.title}}" value="adjustment" {% if annotation.adjusted %}checked{% endif %}>
+                    <label for="adjustment-option{{annotation.title}}" class="adjustment-label">
+                        <textarea id="adjustment-box{{annotation.title}}" class="adjustment-box" name="adjustment_text{{annotation.title}}" placeholder="adjustment for an option">{{ annotation.question if annotation.adjusted else '' }}</textarea>
+                    </label>
+                </div>
+                <p class="visualized-text">Please explain your modification here.</p>
+                <div class="comment-section">
+                    <label for="comment-box{{annotation.title}}" class="comment-label">
+                        <textarea id="comment-box{{annotation.title}}" class="comment-box" name="comment_text{{annotation.title}}" placeholder="additional comments">{{ annotation.comment if annotation.comment else '' }}</textarea>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+<div class="nav-buttons">
+    <a href="{{ url_for('retrieval', annotation_id=annotation_id - 1) }}"
+       class="{% if annotation_id <= 1 %}disabled{% endif %}">
+        <button {% if annotation_id <= 1 %}disabled{% endif %}>
+            ← back
+        </button>
+    </a>
+    <div class ="nav-right">
+        <button type="submit" form="annotation-form">
+            {{ 'forward & submit →' if annotation_id < data_length else 'submit' }}
+        </button>
+
+        <a href="{{ url_for('retrieval', annotation_id=annotation_id + 1) }}"
+           class="{% if annotation_id >= data_length%}disabled{% endif %}">
+            <button {% if annotation_id >= data_length %}disabled{% endif %}>
+                    skip >>
+            </button>
+        </a>
+    </div>
+
+</div>
+<table>
+    <tr>
+        {% for col in annotations.column_names %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in annotations.rows %}
+    <tr>
+        {% for value in row %}
+        <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const adjustmentBox = document.getElementById('adjustment-box');
+
+        adjustmentBox.addEventListener('input', function() {
+            // Logic can be added here if needed when text is entered into the adjustment box
+        });
+    });
+</script>
+{% endblock %}
+

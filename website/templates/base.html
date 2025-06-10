@@ -50,34 +50,33 @@
 <body>
     <header><script>
     document.addEventListener("DOMContentLoaded", function() {
-        let apiKey = localStorage.getItem("api_key"); // Get API key from localStorage
+        let apiKey = localStorage.getItem("api_key");
+        let userId = localStorage.getItem("user_id"); // Get the user ID from localStorage
 
-        if (apiKey) {
-            console.log("Sending API Key to Flask:", apiKey);
+        // If both API Key and User ID exist, update UI
+        if (apiKey && userId) {
+            console.log("API Key found:", apiKey);
+            console.log("User ID found:", userId);
 
-            fetch("/save_api_key", {  // Change this to your Flask route
+            document.getElementById("editableAPIkey").value = apiKey;
+            document.getElementById("editableUserId").value = userId;
+            document.getElementById("api_key_display").innerText = "API Key: " + apiKey;
+            document.getElementById("user_id_display").innerText = "User ID: " + userId; // Display user ID
+
+            // Send API Key and User ID to Flask (only once)
+            fetch("/save_api_key_and_user_id", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ api_key: apiKey }),
+                body: JSON.stringify({ api_key: apiKey, user_id: userId }),
             })
             .then(response => response.json())
             .then(data => console.log("Server Response:", data))
-            .catch(error => console.error("Error sending API Key:", error));
-        }
-    });
-    document.addEventListener("DOMContentLoaded", function() {
-        let apiKey = localStorage.getItem("api_key"); // Retrieve stored API key
-
-        console.log("Stored API Key:", apiKey);  // Debugging: Check in console
-
-        if (!apiKey || apiKey.trim() === "") {
-            console.log("⚠️ API Key is missing. Showing popup.");
-            showPopup();
+            .catch(error => console.error("Error sending data:", error));
         } else {
-            console.log("✅ API Key exists.");
-            document.getElementById("editableText").value = apiKey; // Keep API key in the text box
+            console.log("⚠️ API Key or User ID is missing. Showing popup.");
+            showPopup();  // Show the popup if either API key or User ID is missing
         }
     });
 
@@ -93,43 +92,38 @@
         document.getElementById("popup").style.display = "none";
     }
 
-    // Save API Key from the popup
+    // Save API Key and User ID from the popup
     function saveChanges() {
-        const apiKey = document.getElementById("editableText").value;
+        const apiKey = document.getElementById("editableAPIkey").value;
+        const userId = document.getElementById("editableUserId").value; // Assume you have a field for user ID
 
-        if (apiKey.trim() === "") {
-            alert("API Key cannot be empty!");
+        if (apiKey.trim() === "" || userId.trim() === "") {
+            alert("API Key and User ID cannot be empty!");
             return;
         }
 
-        // Store in localStorage
         localStorage.setItem("api_key", apiKey);
+        localStorage.setItem("user_id", userId);
 
-        // Send API Key to Flask
-        fetch("/save_api_key", {
+        // Send API Key and User ID to Flask
+        fetch("/save_api_key_and_user_id", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ api_key: apiKey }),
+            body: JSON.stringify({ api_key: apiKey, user_id: userId }),
         })
         .then(response => response.json())
         .then(data => {
             alert(data.message);  // Show success message from Flask
             hidePopup();  // Close the popup
         })
-        .catch(error => console.error("Error sending API Key:", error));
+        .catch(error => console.error("Error sending data:", error));
     }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        let apiKey = localStorage.getItem("api_key");
-        if (apiKey) {
-            document.getElementById("api_key_display").innerText = "API Key: " + apiKey;
-        }
-    });
 </script>
 
 <p id="api_key_display">API Key not set.</p>
+<p id="user_id_display">USER ID not set.</p>
 
 
             <!--
@@ -198,7 +192,9 @@
             <div id="popup" class="popup" style="display:none;">
                 <!--  <button class="close" onclick="hidePopup()">&times;</button> -->
                 <h2 style="text-align: center;color:black">Current API KEY</h2>
-                <textarea id="editableText">{{ api_key }}</textarea>
+                <textarea id="editableAPIkey">{{ api_key }}</textarea>
+                <h2 style="text-align: center;color:black">Current USER ID</h2>
+                <textarea id="editableUserId">{{ user_id }}</textarea>
                 <button onclick="saveChanges()">Save</button>
             </div>
     </header>
