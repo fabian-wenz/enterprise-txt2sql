@@ -392,9 +392,23 @@ def extract_decomposition(json_file):
         continue
   save_json_data(json_file[:-4] + '4', logdata)
 
+def embedding_calc(json_file):
+  logdata = load_json_data(json_file)
+  model = SentenceTransformer("all-MiniLM-L6-v2")
+  for entry in logdata:
+    if not entry.get('sql_embedding'):
+        entry['sql_embedding'] = model.encode(entry["gold-sql"], convert_to_tensor=True).detach().cpu().numpy().tolist()
+    if not entry.get('sql_embedding'):
+        entry['sql_embedding'] = model.encode(entry["gold-sql"], convert_to_tensor=True).detach().cpu().numpy().tolist()
+    if entry.get('sql_decomposition'):
+      for i in range(len(entry.get('sql_decomposition'))):
+        entry['sql_decomposition'][i]['sql_embedding'] = model.encode(entry['sql_decomposition'][i]["gold-sql"], convert_to_tensor=True).detach().cpu().numpy().tolist()
+
+  save_json_data(json_file[:-5] + '4.json', logdata)
+
 if __name__ == '__main__':
   # Example file paths (replace with actual file paths)
-  json_file = "./data/beaver/sql_sample_50_ts_and_es.2.3.json"
+  json_file = "./data/sample/queries.json"
   sqlite_file = "database.sqlite"
   csv_file = "./data/beaver/tables.csv"
   #embedding_csv(json_file)
@@ -418,7 +432,8 @@ if __name__ == '__main__':
   #    print('--------------------------------')
   #decompose_statements(json_file)
   #reiterate_decompose(json_file)
-  extract_decomposition(json_file)
+  #extract_decomposition(json_file)
+  embedding_calc(json_file)
 
 
 

@@ -2,6 +2,8 @@ import os
 import sqlite3
 import textwrap
 import time
+import shutil
+from pathlib import Path
 
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, json, jsonify
@@ -12,15 +14,15 @@ import numpy as np
 import ast
 from sql_metadata import Parser
 from metrics import evaluate_nl_accuracy
-
+import random
 
 app = Flask(__name__)
 with open("config.json", "r") as json_file:
     DATA = json.load(json_file)
     print(DATA)
-DATABASE = DATA ['datasets'][1]
+DATABASE = DATA ['datasets'][0]
 TASK = DATA['tasks'][0]
-MODEL = DATA['models'][2]
+MODEL = DATA['models'][0]
 REL_TABLES = []
 REL_EXAMPLES = []
 PROMPT = DATA['prompt']
@@ -71,14 +73,14 @@ def index():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    global API_KEY, USER_NAME, SQL_FILE  # Declare globals
+    global API_KEY, USER_NAME, SQL_FILE, DATABASE # Declare globals
     # Retrieve data from the form
     api_key = request.form.get("api_key")
-    username = request.form.get("username")
+    user_id = request.form.get("user_id")
     sql_file = request.files.get("sql_file")
 
     API_KEY = api_key
-    USER_NAME = username
+    USER_NAME = user_id
 
     # Save the SQL file locally (optional)
     if sql_file:
@@ -89,22 +91,53 @@ def submit():
 
 
     # Process the API key, username, and SQL file as needed
-    print(f"Username: {username}")
-    print(f"SQL File: {sql_file.filename if sql_file else 'No file uploaded'}")
+    print(f"Username: {user_id}")
+    #print(f"SQL File: {sql_file.filename if sql_file else 'No file uploaded'}")
+
+
+    file_path = Path("./data/user/queries_"+user_id+'.json')
+    if not file_path.exists():
+        with open(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json', 'r') as f_in, open("./data/user/queries_"+user_id+'.json', 'w') as f_out:
+            f_out.write(f_in.read())
+    SQL_FILE = "./data/user/queries_"+user_id
 
     # Redirect back to the homepage after submission
     return redirect(url_for("index"))
 @app.route("/save_api_key_and_user_id", methods=["POST"])
 def save_api_key_and_user_id():
-    global API_KEY
+    global API_KEY, SQL_FILE, DATABASE
     data = request.json
     api_key = data.get("api_key")
+    user_id = data.get("user_id")
 
     if not api_key:
         return jsonify({"message": "API Key is missing!"}), 400
 
     API_KEY = api_key  # Store in memory (or a database)
     print("Received API Key:", API_KEY)
+
+    #file_path = Path("./data/user/queries_"+user_id+'.json')
+    file_path = Path(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json')
+    output_path = Path("./data/user/queries_" + user_id + ".json")
+
+    if not output_path.exists():
+        with open(file_path, 'r') as f_in:
+            data = json.load(f_in)
+
+        first_15 = data[:15]
+        last_15 = data[-15:]
+
+        random.shuffle(first_15)
+        random.shuffle(last_15)
+
+        new_data = first_15 + last_15
+
+        with open(output_path, 'w') as f_out:
+            json.dump(new_data, f_out, indent=2)
+    #if not file_path.exists():
+    #    with open(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json', 'r') as f_in, open("./data/user/queries_"+user_id+'.json', 'w') as f_out:
+    #        f_out.write(f_in.read())
+    SQL_FILE = "./data/user/queries_"+user_id
 
     return jsonify({"message": "API Key saved successfully!"})
 
@@ -142,7 +175,7 @@ def decomposed_sql_annotation(annotation_id):
         annotations['column_names'] = ["ERROR"]
     for i in range(len(annotations['sql_decomposition'])):
         annotations['sql_decomposition'][i]['gold_sql']= sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper').strip()
-        annotations['sql_decomposition'][i]['options'] = generate_candidate(MODEL, API_KEY, PROMPT, PROMPT_TXT, annotations['sql_decomposition'][i]['gold-sql'],REL_TABLES[annotation_id][annotations['sql_decomposition'][i]['title']], REL_EXAMPLES[annotation_id][annotations['sql_decomposition'][i]['title']], annotation['db_id'], DATABASE, )
+        annotations['sql_decomposition'][i]['options'] = generate_candidate(MODEL, API_KEY, PROMPT, PROMPT_TXT, annotations['sql_decomposition'][i]['gold-sql'],REL_TABLES[annotation_id][annotations['sql_decomposition'][i]['title']], REL_EXAMPLES[annotation_id][annotations['sql_decomposition'][i]['title']], annotation['db_id'], DATABASE, annotations['rows'], annotations['column_names'] )
     logdata[annotation_id - 1] = annotations
     #save_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()), logdata)
     if "comment" not in annotation.keys():
@@ -310,9 +343,11 @@ def save_and_next_annotation(annotation_id):
         return redirect(url_for("retrieval", annotation_id=annotation_id+1))
     if type == 'feedback':
         global PROMPT_TXT
-        selected_option = request.form.get('selected_option')
-        if selected_option:
-            PROMPT_TXT = selected_option
+        test=request.form
+        selected_option = test.get('selected_option')
+        if selected_option != "1":
+            adjustment_text = request.form.get('adjustment_text')
+            PROMPT_TXT = adjustment_text
         logdata = load_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()))
         logdata[annotation_id - 1]['time']['feedback'] = SINGLE_TIME - old_time
         save_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()), logdata)
@@ -392,22 +427,29 @@ def decomposed_retrieval(annotation_id):
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
     annotations = annotation
     for i in range(len(annotations['sql_decomposition'])):
-        most_relevant_examples_ = rank_sentences_more(annotations['sql_decomposition'][i]['sql_embedding'],[logdata['gold-sql'][i] for i in range(data_length) if i != annotation_id-1], [logdata['sql_embedding'][i] for i in range(data_length) if i != annotation_id-1], [logdata['gold-question'][i] for i in range(data_length) if i != annotation_id-1])
+        most_relevant_examples_ = rank_sentences_more(annotations['sql_decomposition'][i]['sql_embedding'],[logdata['gold-sql'][i] for i in range(data_length) if not logdata['question'][i] == ""], [logdata['sql_embedding'][i] for i in range(data_length) if not logdata['question'][i] == ""], [logdata['gold-question'][i] for i in range(data_length) if not logdata['question'][i] == ""])
         most_relevant_examples = [{'sql':x[0],'question':x[1]} for x in most_relevant_examples_]
         schema = load_json_data(SCHEMA_FILE.format(DATABASE=DATABASE.lower()))
         schema = pd.DataFrame(schema)
         #schema["schema_embedding"] = schema["schema_embedding"].apply(lambda x: np.array(x))
         most_relevant_tables_ = rank_sentences(annotations['sql_decomposition'][i]['sql_embedding'], list(schema['schema']), list(schema["schema_embedding"]))
-        most_relevant_tables = Parser(annotations['sql_decomposition'][i]['gold-sql']).tables
-        len_tables = len(most_relevant_tables)
+        try:
+            most_relevant_tables = Parser(annotations['sql_decomposition'][i]['gold-sql']).tables
+            len_tables = len(most_relevant_tables)
+        except Exception as e:
+            print(str(e))
+            most_relevant_tables = []
+            len_tables = min(5, len(most_relevant_tables_))
         for t in most_relevant_tables_:
             if t[0].split(',')[0] not in most_relevant_tables:
                 most_relevant_tables.append(t[0].split(',')[0])
         annotations['sql_decomposition'][i]['gold_sql'] = sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper')
-        annotations['sql_decomposition'][i]['suggested_examples']=most_relevant_examples[:5]
-        annotations['sql_decomposition'][i]['examples']=most_relevant_examples[5:(min(10, len(most_relevant_examples)-5))]
-        annotations['sql_decomposition'][i]['tables']=most_relevant_tables[len_tables:(min(10, len(most_relevant_tables)-len_tables))]
+        annotations['sql_decomposition'][i]['suggested_examples']=most_relevant_examples[:2]
+        annotations['sql_decomposition'][i]['examples']=most_relevant_examples[3:(min(5, len(most_relevant_examples)-5))]
+        annotations['sql_decomposition'][i]['tables']=most_relevant_tables[len_tables:(min(len_tables+2, len(most_relevant_tables)-len_tables))]
         tables = retrieve_filenames(SCHEMA_FOLDER.format(DATABASE=DATABASE.lower()))
+        if annotation.get("db_id") == "dw":
+            tables = [t[3:] for t in tables]
         annotations['sql_decomposition'][i]['suggested_tables']=most_relevant_tables[:len_tables]
         annotations['sql_decomposition'][i]['suggested_tables'] = list(set(annotations['sql_decomposition'][i]['suggested_tables']) & set(tables))
     annotations['percentage'] = round(num_annotated / data_length *100,2)
@@ -430,12 +472,29 @@ def recompose_sql_annotation(annotation_id):
     annotation['column'] = ['c']
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
     logdata_=pd.DataFrame(logdata)
-    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if i != annotation_id-1], [logdata_['sql_embedding'][i] for i in range(data_length) if i != annotation_id-1], [logdata_['gold-question'][i] for i in range(data_length) if i != annotation_id-1])
+    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['sql_embedding'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['gold-question'][i] for i in range(data_length) if not logdata['question'][i] == ""])
     most_relevant_examples = [{'sql':x[0],'question':x[1]} for x in most_relevant_examples_]
     nl_annotations = {}
     for i in range(len(annotation['sql_decomposition'])):
         nl_annotations[annotation['sql_decomposition'][i]['title']] = annotation['sql_decomposition'][i]['question']
-    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_examples[1]["question"], PROMPT_TXT)
+    annotation_ = annotation
+    conn = sqlite3.connect("./data/"+DATABASE.lower()+"/database/"+annotation_['db_id'] + "/"+annotation_['db_id'] + ".sqlite")
+    cursor = conn.cursor()
+
+    # Execute a SELECT query
+    try:
+        cursor.execute(annotation_['gold-sql'].replace("FIBEN.", ""))
+        annotation_['rows'] = cursor.fetchall()
+        annotation_['rows'] = annotation_['rows'][:min(10, len(annotation['rows']))]
+        annotation_['column_names'] = [desc[0] for desc in cursor.description]
+
+        # Close the connection
+        conn.close()
+    except Exception as e:
+        print(e)
+        annotation_['rows'] =[[str(e)]]
+        annotation_['column_names'] = ["ERROR"]
+    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_examples[1]["question"], PROMPT_TXT, annotation_['rows'], annotation_['column_names'])
     return render_template("recompose_sql_annotation.html", annotation=annotation, annotation_id=annotation_id, data_length=data_length)
 
 @app.route('/retrieval/<int:annotation_id>')
@@ -454,7 +513,7 @@ def retrieval(annotation_id):
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
     if 'sql_decomposition' in annotation.keys():
         return redirect(url_for("decomposition", annotation_id=annotation_id))
-    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata['gold-sql'][i] for i in range(data_length) if i != annotation_id-1], [logdata['sql_embedding'][i] for i in range(data_length) if i != annotation_id-1], [logdata['gold-question'][i] for i in range(data_length) if i != annotation_id-1])
+    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata['gold-sql'][i] for i in range(data_length) if not logdata['question'][i] == ""], [logdata['sql_embedding'][i] for i in range(data_length) if not logdata['question'][i] == ""], [logdata['gold-question'][i] for i in range(data_length) if not logdata['question'][i] == ""])
     most_relevant_examples = [{'sql':x[0],'question':x[1]} for x in most_relevant_examples_]
     schema = load_json_data(SCHEMA_FILE.format(DATABASE=DATABASE.lower()))
     schema = pd.DataFrame(schema)
@@ -463,6 +522,13 @@ def retrieval(annotation_id):
     most_relevant_tables_ = rank_sentences(annotation['sql_embedding'], list(schema['schema']), list(schema["schema_embedding"]))
     most_relevant_tables = Parser(annotation['gold-sql']).tables
     len_tables = len(most_relevant_tables)
+    try:
+        most_relevant_tables = Parser(annotation['gold-sql']).tables
+        len_tables = len(most_relevant_tables)
+    except Exception as e:
+        print(str(e))
+        most_relevant_tables = []
+        len_tables = min(5, len(most_relevant_tables_))
     for t in most_relevant_tables_:
         if t[0].split(',')[0] not in most_relevant_tables:
             most_relevant_tables.append(t[0].split(',')[0])
@@ -517,6 +583,7 @@ def feedback(annotation_id):
     data_length = len(logdata)
     annotation = logdata[annotation_id-1]
     annotation['prompt'] = PROMPT_TXT
+    annotation['prompt_html'] = PROMPT_TXT[1:].replace('\n', '<br>\n')
     annotation['new_prompt'] = generate_improved_prompt(MODEL, API_KEY, PROMPT_TXT, logdata[annotation_id-1]['options'], logdata[annotation_id-1]['question'],logdata[annotation_id-1]['comment'], DATABASE)
     annotation["options"] = "\n".join(f"• {opt}" for opt in logdata[annotation_id-1]['options'])
     return render_template('feedback.html', annotation=annotation, annotation_id=annotation_id, data_length=data_length)

@@ -1,8 +1,8 @@
 {
-    "models": ["gpt-4","gpt-4-turbo","gpt-3.5-turbo","gpt-3.5-turbo-1106"],
+    "models": ["gpt-3.5-turbo"],
     "prompt":"Your task is to generate 4 different natural language options for the given SQL query. \n\nThe goal is for the user to later select the most appropriate natural language question from these options. \n\n{prompt_text}\n#### Example SQL Query & gold natural language description:\n\n{examples}\n\n#### Relevant Table Schema for the upcoming task:\n\n{schema}\n\n### Now, Perform the Task for the Given SQL Query:\n\n",
-    "prompt_text": "\nEach option should:\n1. Clearly describe the purpose of the SQL query.\n2. Focus on the columns, filtering conditions, and overall intent of the query.\n3. Be distinct from the others while staying accurate to the query, especially in the overall order and amount of columns.\n4. Use diverse phrasings and question structures to avoid redundancy and enhance clarity.\n",
+    "prompt_text": "\nEach option should:\n1. **Clearly describe the purpose of the SQL query**, emphasizing what the query aims to achieve.\n2. **Refer to each column in the output**, paying particular attention to their **order**. If necessary, explain what each column represents.\n3. **Explain any calculations** (e.g., sums, averages) and how they are derived.\n4. **Summarize the final result of the query**, but **avoid referencing SQL constructs** like CTEs, joins, or unions.\n5. Use **diverse phrasings and question structures** to avoid redundancy and enhance clarity. Each option should be distinct but accurate to the SQL query.",
     "tasks": [ "SQL-2-TXT"],
-    "datasets": ["BIRD", "SPIDER", "FIBEN", "BEAVER"],
+    "datasets": ["SAMPLE"],
     "steps": {"0": "Home", "1":"Upload", "2":"Tasks", "3":"Retrieval","4":"Correction", "5":"Generation","6":"Feedback", "7":"Review"}
 }

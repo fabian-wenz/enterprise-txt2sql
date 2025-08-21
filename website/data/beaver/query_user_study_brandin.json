@@ -1,0 +1,985 @@
+[
+  {
+    "adjusted": false,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "Among the mailing lists subscribed by people with physical offices in building 24, provide the name of the most subscribed mailing list and the total number of subscribers.",
+    "gold-sql": "WITH MailingListStats AS ( SELECT ml.MOIRA_LIST_NAME, COUNT(DISTINCT mld.MOIRA_LIST_MEMBER) AS Total_Members FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN EMPLOYEE_DIRECTORY ed ON mld.MOIRA_LIST_MEMBER = ed.KRB_NAME WHERE ed.OFFICE_LOCATION LIKE '24%' GROUP BY ml.MOIRA_LIST_NAME ), Largest AS ( SELECT MOIRA_LIST_NAME, Total_Members, RANK() OVER (ORDER BY Total_Members DESC) AS Size_Rank FROM MailingListStats ) SELECT MAX(CASE WHEN Size_Rank = 1 THEN MOIRA_LIST_NAME END) AS Largest_Mailing_List, MAX(CASE WHEN Size_Rank = 1 THEN Total_Members END) AS Member_Count FROM Largest;",
+    "options": [
+      "A",
+      "What is the name of the largest mailing list and how many members does it have? The largest mailing list is \"orange-rabbit\" with 29 members.",
+      "B",
+      "Which mailing list has the highest number of members and how many members are in it? The mailing list \"orange-rabbit\" has the most members, totaling 29.",
+      "C",
+      "Can you identify the mailing list with the most members and provide the count of members in that list? The mailing list \"orange-rabbit\" stands out as the largest with 29 members.",
+      "D",
+      "What is the name of the mailing list that boasts the highest number of members, and how many members are part of it? The mailing list \"orange-rabbit\" leads with 29 members in total."
+    ],
+    "oracle_sql": "WITH MailingListStats AS ( SELECT ml.MOIRA_LIST_NAME, COUNT(DISTINCT mld.MOIRA_LIST_MEMBER) AS Total_Members FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN EMPLOYEE_DIRECTORY ed ON mld.MOIRA_LIST_MEMBER = ed.KRB_NAME WHERE ed.OFFICE_LOCATION LIKE '24%' GROUP BY ml.MOIRA_LIST_NAME ), Largest AS ( SELECT MOIRA_LIST_NAME, Total_Members, RANK() OVER (ORDER BY Total_Members DESC) AS Size_Rank FROM MailingListStats ) SELECT MAX(CASE WHEN Size_Rank = 1 THEN MOIRA_LIST_NAME END) AS Largest_Mailing_List, MAX(CASE WHEN Size_Rank = 1 THEN Total_Members END) AS Member_Count FROM Largest;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH MailingListStats AS ( SELECT ml.MOIRA_LIST_NAME, COUNT(DISTINCT mld.MOIRA_LIST_MEMBER) AS Total_Members FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN EMPLOYEE_DIRECTORY ed ON mld.MOIRA_LIST_MEMBER = ed.KRB_NAME WHERE ed.OFFICE_LOCATION LIKE '24%' GROUP BY ml.MOIRA_LIST_NAME ), Largest AS ( SELECT MOIRA_LIST_NAME, Total_Members, RANK() OVER (ORDER BY Total_Members DESC) AS Size_Rank FROM MailingListStats ) SELECT MAX(CASE WHEN Size_Rank = 1 THEN MOIRA_LIST_NAME END) AS Largest_Mailing_List, MAX(CASE WHEN Size_Rank = 1 THEN Total_Members END) AS Member_Count FROM Largest;",
+    "sql_decomposition": [
+      {
+        "question": "List the names of Moira lists along with the number of distinct members who have physical offices in building 24.",
+        "gold-sql": "SELECT ml.MOIRA_LIST_NAME, COUNT(DISTINCT mld.MOIRA_LIST_MEMBER) AS Total_Members FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN EMPLOYEE_DIRECTORY ed ON mld.MOIRA_LIST_MEMBER = ed.KRB_NAME WHERE ed.OFFICE_LOCATION LIKE '24%' GROUP BY ml.MOIRA_LIST_NAME;",
+        "title": "MailingListStats",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the names of the Moira lists and how many unique members do they have in total? Which Moira list has one member each, such as \"amber-beacon,\" \"amber-bear,\" \"amber-candle-goose,\" \"amber-cherry,\" and \"amber-echo\"?",
+          "B",
+          "Can you list the Moira list names along with the count of distinct members they contain? For instance, which Moira lists like \"amber-beacon,\" \"amber-bear,\" \"amber-candle-goose,\" \"amber-cherry,\" and \"amber-echo\" have one member each?",
+          "C",
+          "Which Moira lists, such as \"amber-beacon,\" \"amber-bear,\" \"amber-candle-goose,\" \"amber-cherry,\" and \"amber-echo,\" have exactly one unique member each? Provide the names of the lists and the total count of their members.",
+          "D",
+          "Identify the Moira lists and the corresponding total count of distinct members they have. Specifically, which Moira lists like \"amber-beacon,\" \"amber-bear,\" \"amber-candle-goose,\" \"amber-cherry,\" and \"amber-echo\" each have one member?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "Retrieve the names of all moira lists along with their total number of members and the rank according to their number of members in decreasing order.",
+        "gold-sql": "SELECT MOIRA_LIST_NAME, Total_Members, RANK() OVER (ORDER BY Total_Members DESC) AS Size_Rank FROM MailingListStats",
+        "title": "Largest",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "What are the names of the mailing lists along with the total number of members in each list? Additionally, what is the rank of each list based on the total number of members, with the list having the highest number of members ranked first?",
+          "Which mailing lists are listed along with the count of total members in each list? Moreover, how are the lists ranked based on the total number of members, with the list having the highest number of members ranked at the top?",
+          "Can you provide a list of mailing lists with their respective total member counts? Furthermore, how are these lists ranked in terms of the total number of members, with the list having the most members ranked first?",
+          "What are the names of the mailing lists and their corresponding total member counts? Also, how are these lists prioritized based on the total number of members, with the list having the highest number of members ranked first?"
+        ],
+        "question_ts_and_es": "What are the names of the mailing lists along with the total number of members in each list? Additionally, what is the rank of each list based on the total number of members, with the list having the highest number of members ranked first?"
+      },
+      {
+        "question": "List the Moira list names where size rank is 1 and the total numbers of members of these lists",
+        "gold-sql": "SELECT MAX(CASE WHEN Size_Rank = 1 THEN MOIRA_LIST_NAME END) AS Largest_Mailing_List, MAX(CASE WHEN Size_Rank = 1 THEN Total_Members END) AS Member_Count FROM Largest;",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the name and total number of members in the largest mailing list?",
+          "B",
+          "Which mailing list has the highest number of members, and how many members does it have?",
+          "C",
+          "Can you provide the name and total member count of the mailing list with the most members?",
+          "D",
+          "What is the name and the number of members in the mailing list that ranks first in terms of size?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": false,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For students with last names starting with H who are subscribed to mailing list 'beacon-date-date', list the names of the students, the phone numbers of departments they belong to, and the size of the mailing list 'beacon-date-date' that they are subscribed to.",
+    "gold-sql": "WITH FilteredMoiraLists AS ( SELECT MOIRA_LIST_KEY, MOIRA_LIST_NAME FROM MOIRA_LIST WHERE MOIRA_LIST_NAME = 'beacon-date-date' ), FilteredMoiraListDetails AS ( SELECT mld.MOIRA_LIST_MEMBER, mld.MOIRA_LIST_KEY FROM MOIRA_LIST_DETAIL mld JOIN FilteredMoiraLists fml ON mld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY ), MailingListSizes AS ( SELECT fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME, COUNT(fmld.MOIRA_LIST_MEMBER) AS List_Size FROM FilteredMoiraLists fml JOIN FilteredMoiraListDetails fmld ON fml.MOIRA_LIST_KEY = fmld.MOIRA_LIST_KEY GROUP BY fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME ) SELECT msd.FULL_NAME AS Student_Name, sad.DEPARTMENT_PHONE_NUMBER, MLS.List_Size AS List_Size FROM MIT_STUDENT_DIRECTORY msd JOIN SIS_DEPARTMENT sd ON msd.DEPARTMENT = sd.DEPARTMENT_CODE JOIN SIS_ADMIN_DEPARTMENT sad ON sd.DEPARTMENT_CODE = sad.SIS_ADMIN_DEPARTMENT_CODE JOIN SE_PERSON se ON msd.FULL_NAME = se.FULL_NAME JOIN FilteredMoiraListDetails fmld ON UPPER(se.KRB_NAME) = UPPER(fmld.MOIRA_LIST_MEMBER) JOIN FilteredMoiraLists fml ON fmld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY JOIN MailingListSizes MLS ON fml.MOIRA_LIST_KEY = MLS.MOIRA_LIST_KEY WHERE msd.LAST_NAME LIKE 'H%';",
+    "options": [
+      "A",
+      "What are the names of students whose last names start with 'H', their respective department phone numbers, and the size of the mailing list they belong to?",
+      "B",
+      "Can you provide a list of students with last names starting with 'H', along with their department phone numbers and the size of the mailing list they are part of?",
+      "C",
+      "Which students with last names beginning with 'H' are associated with specific department phone numbers and belong to a mailing list with a certain size?",
+      "D",
+      "Who are the students with last names starting with 'H', what are their department phone numbers, and how many members are in the mailing list they are part of?"
+    ],
+    "oracle_sql": "WITH FilteredMoiraLists AS ( SELECT MOIRA_LIST_KEY, MOIRA_LIST_NAME FROM MOIRA_LIST WHERE MOIRA_LIST_NAME = 'beacon-date-date' ), FilteredMoiraListDetails AS ( SELECT mld.MOIRA_LIST_MEMBER, mld.MOIRA_LIST_KEY FROM MOIRA_LIST_DETAIL mld JOIN FilteredMoiraLists fml ON mld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY ), MailingListSizes AS ( SELECT fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME, COUNT(fmld.MOIRA_LIST_MEMBER) AS List_Size FROM FilteredMoiraLists fml JOIN FilteredMoiraListDetails fmld ON fml.MOIRA_LIST_KEY = fmld.MOIRA_LIST_KEY GROUP BY fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME ) SELECT msd.FULL_NAME AS Student_Name, sad.DEPARTMENT_PHONE_NUMBER, MLS.List_Size AS List_Size FROM MIT_STUDENT_DIRECTORY msd JOIN SIS_DEPARTMENT sd ON msd.DEPARTMENT = sd.DEPARTMENT_CODE JOIN SIS_ADMIN_DEPARTMENT sad ON sd.DEPARTMENT_CODE = sad.SIS_ADMIN_DEPARTMENT_CODE JOIN SE_PERSON se ON msd.FULL_NAME = se.FULL_NAME JOIN FilteredMoiraListDetails fmld ON UPPER(se.KRB_NAME) = UPPER(fmld.MOIRA_LIST_MEMBER) JOIN FilteredMoiraLists fml ON fmld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY JOIN MailingListSizes MLS ON fml.MOIRA_LIST_KEY = MLS.MOIRA_LIST_KEY WHERE msd.LAST_NAME LIKE 'H%';",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH FilteredMoiraLists AS (\n    SELECT MOIRA_LIST_KEY, MOIRA_LIST_NAME \n    FROM MOIRA_LIST \n    WHERE MOIRA_LIST_NAME = 'beacon-date-date'\n), \nFilteredMoiraListDetails AS (\n    SELECT mld.MOIRA_LIST_MEMBER, mld.MOIRA_LIST_KEY \n    FROM MOIRA_LIST_DETAIL mld \n    JOIN FilteredMoiraLists fml ON mld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY\n), \nMailingListSizes AS (\n    SELECT fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME, COUNT(fmld.MOIRA_LIST_MEMBER) AS List_Size \n    FROM FilteredMoiraLists fml \n    JOIN FilteredMoiraListDetails fmld ON fml.MOIRA_LIST_KEY = fmld.MOIRA_LIST_KEY \n    GROUP BY fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME\n) \nSELECT msd.FULL_NAME AS Student_Name, sad.DEPARTMENT_PHONE_NUMBER, MLS.List_Size AS List_Size \nFROM MIT_STUDENT_DIRECTORY msd \nJOIN SIS_DEPARTMENT sd ON msd.DEPARTMENT = sd.DEPARTMENT_CODE \nJOIN SIS_ADMIN_DEPARTMENT sad ON sd.DEPARTMENT_CODE = sad.SIS_ADMIN_DEPARTMENT_CODE \nJOIN SE_PERSON se ON msd.FULL_NAME = se.FULL_NAME \nJOIN FilteredMoiraListDetails fmld ON UPPER(se.KRB_NAME) = UPPER(fmld.MOIRA_LIST_MEMBER) \nJOIN FilteredMoiraLists fml ON fmld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY \nJOIN MailingListSizes MLS ON fml.MOIRA_LIST_KEY = MLS.MOIRA_LIST_KEY \nWHERE msd.LAST_NAME LIKE 'H%';",
+    "sql_decomposition": [
+      {
+        "question": "What are the key and name of the Moira list where the moira list name is 'beacon-date-date'?",
+        "gold-sql": "SELECT MOIRA_LIST_KEY, MOIRA_LIST_NAME FROM MOIRA_LIST WHERE MOIRA_LIST_NAME = 'beacon-date-date'",
+        "title": "FilteredMoiraLists",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the key and name of the Moira list where the name is 'beacon-date-date'?",
+          "B",
+          "Can you provide the key and name of the Moira list with the name 'beacon-date-date'?",
+          "C",
+          "Which Moira list has the name 'beacon-date-date', and what is its key?",
+          "D",
+          "For the Moira list with the name 'beacon-date-date', what are the key and name?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the `MOIRA_LIST_MEMBER` and `MOIRA_LIST_KEY` values from the `MOIRA_LIST_DETAIL` table that match the `MOIRA_LIST_KEY` values in the `FilteredMoiraLists` table?",
+        "gold-sql": "SELECT mld.MOIRA_LIST_MEMBER, mld.MOIRA_LIST_KEY FROM MOIRA_LIST_DETAIL AS mld JOIN FilteredMoiraLists AS fml ON mld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY",
+        "title": "FilteredMoiraListDetails",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the `MOIRA_LIST_MEMBER` and `MOIRA_LIST_KEY` values from the `MOIRA_LIST_DETAIL` table that match the `MOIRA_LIST_KEY` values in the `FilteredMoiraLists` table?",
+          "B",
+          "Retrieve the `MOIRA_LIST_MEMBER` and `MOIRA_LIST_KEY` columns from the `MOIRA_LIST_DETAIL` table where the `MOIRA_LIST_KEY` values match those in the `FilteredMoiraLists` table.",
+          "C",
+          "Which `MOIRA_LIST_MEMBER` and `MOIRA_LIST_KEY` pairs from the `MOIRA_LIST_DETAIL` table correspond to the `MOIRA_LIST_KEY` values in the `FilteredMoiraLists` table?",
+          "D",
+          "List the `MOIRA_LIST_MEMBER` and `MOIRA_LIST_KEY` values from the `MOIRA_LIST_DETAIL` table that have matching `MOIRA_LIST_KEY` values in the `FilteredMoiraLists` table."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What is the key and name of each Moira list along with the number of members in each list?",
+        "gold-sql": "SELECT fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME, COUNT(fmld.MOIRA_LIST_MEMBER) AS List_Size FROM FilteredMoiraLists AS fml JOIN FilteredMoiraListDetails AS fmld ON fml.MOIRA_LIST_KEY = fmld.MOIRA_LIST_KEY GROUP BY fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME",
+        "title": "MailingListSizes",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the key and name of each Moira list along with the number of members in each list?",
+          "B",
+          "How many members are there in each Moira list, and what are the key and name of the list?",
+          "C",
+          "Can you provide a list of Moira lists with their respective keys, names, and the number of members in each list?",
+          "D",
+          "Which Moira lists have how many members, and what are the keys and names of these lists?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the names and phone numbers of students whose last names start with 'H', along with the size of the Moira list they belong to?",
+        "gold-sql": "SELECT fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME, COUNT(fmld.MOIRA_LIST_MEMBER) AS List_Size \n    FROM FilteredMoiraLists fml \n    JOIN FilteredMoiraListDetails fmld ON fml.MOIRA_LIST_KEY = fmld.MOIRA_LIST_KEY \n    GROUP BY fml.MOIRA_LIST_KEY, fml.MOIRA_LIST_NAME\n) \nSELECT msd.FULL_NAME AS Student_Name, sad.DEPARTMENT_PHONE_NUMBER, MLS.List_Size AS List_Size \nFROM MIT_STUDENT_DIRECTORY msd \nJOIN SIS_DEPARTMENT sd ON msd.DEPARTMENT = sd.DEPARTMENT_CODE \nJOIN SIS_ADMIN_DEPARTMENT sad ON sd.DEPARTMENT_CODE = sad.SIS_ADMIN_DEPARTMENT_CODE \nJOIN SE_PERSON se ON msd.FULL_NAME = se.FULL_NAME \nJOIN FilteredMoiraListDetails fmld ON UPPER(se.KRB_NAME) = UPPER(fmld.MOIRA_LIST_MEMBER) \nJOIN FilteredMoiraLists fml ON fmld.MOIRA_LIST_KEY = fml.MOIRA_LIST_KEY \nJOIN MailingListSizes MLS ON fml.MOIRA_LIST_KEY = MLS.MOIRA_LIST_KEY \nWHERE msd.LAST_NAME LIKE 'H%';",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the names and phone numbers of students whose last names start with 'H', along with the size of the Moira list they belong to?",
+          "B",
+          "Retrieve the full names of students whose last names begin with 'H', their respective department phone numbers, and the size of the Moira list they are part of.",
+          "C",
+          "List the names of students with last names starting with 'H', their department phone numbers, and the number of members in the Moira list they are associated with.",
+          "D",
+          "Which students, whose last names start with 'H', are part of a Moira list, and what is the size of that list along with their department phone numbers?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "What are the academic year, and instructors names for courses offered in the academic year 2022, along with the total number of types of courses per instructor?",
+    "gold-sql": "SELECT ata.ACADEMIC_YEAR, ed.FULL_NAME, COUNT(distinct so.COURSE_NUMBER) AS Total_Courses FROM SUBJECT_OFFERED so JOIN ACADEMIC_TERMS_ALL ata ON so.TERM_CODE = ata.TERM_CODE JOIN EMPLOYEE_DIRECTORY ed ON so.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID WHERE ata.ACADEMIC_YEAR = 2022 GROUP BY ata.ACADEMIC_YEAR, ed.FULL_NAME;",
+    "options": [
+      "A",
+      "What is the total number of courses taught by each faculty member for the academic year 2022? Display the academic year, full name of the faculty member, and the total number of distinct course numbers they are responsible for teaching.",
+      "B",
+      "How many unique courses are assigned to each faculty member for the academic year 2022? List the academic year, full name of the faculty member, and the count of distinct course numbers they are responsible for.",
+      "C",
+      "Which faculty members are responsible for teaching courses in the academic year 2022, and how many unique courses does each faculty member teach? Provide the academic year, full name of the faculty member, and the total count of distinct course numbers they are responsible for.",
+      "D",
+      "For the academic year 2022, what is the distribution of unique courses among faculty members? Show the academic year, full name of each faculty member, and the total count of distinct course numbers they teach."
+    ],
+    "oracle_sql": "SELECT ata.ACADEMIC_YEAR, ed.FULL_NAME, COUNT(distinct so.COURSE_NUMBER) AS Total_Courses FROM SUBJECT_OFFERED so JOIN ACADEMIC_TERMS_ALL ata ON so.TERM_CODE = ata.TERM_CODE JOIN EMPLOYEE_DIRECTORY ed ON so.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID WHERE ata.ACADEMIC_YEAR = 2022 GROUP BY ata.ACADEMIC_YEAR, ed.FULL_NAME;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A"
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "What is the current building key, building street address, city, state, and postal code of the history department?",
+    "gold-sql": "SELECT DISTINCT d.FCLT_BUILDING_KEY, e.BUILDING_STREET_ADDRESS, d.CITY, d.STATE, d.POSTAL_CODE FROM FCLT_BUILDING_ADDRESS d JOIN FCLT_ROOMS a ON a.FCLT_BUILDING_KEY = d.FCLT_BUILDING_KEY JOIN FCLT_ORG_DLC_KEY b ON a.FCLT_ORGANIZATION_KEY = b.FCLT_ORGANIZATION_KEY JOIN MASTER_DEPT_HIERARCHY c ON b.DLC_KEY = c.DLC_KEY JOIN BUILDINGS e ON e.BUILDING_KEY = d.FCLT_BUILDING_KEY WHERE lower(c.DLC_NAME) = lower('History') AND d.ADDRESS_PURPOSE = 'STREET';",
+    "options": [
+      "A",
+      "What are the unique facility building keys, building street addresses, cities, states, and postal codes for buildings with the department name 'History' and address purpose 'STREET'? The output includes the facility building key, street address, city, state, and postal code for the relevant building.",
+      "B",
+      "Which facility building key, building street address, city, state, and postal code are associated with the department 'History' and have the address purpose set to 'STREET'? The result displays the unique facility building key, street address, city, state, and postal code for the specified buildings.",
+      "C",
+      "Can you provide the facility building key, building street address, city, state, and postal code for buildings linked to the 'History' department with the address purpose as 'STREET'? The output lists the unique facility building key, street address, city, state, and postal code for the identified buildings.",
+      "D",
+      "What are the distinct facility building keys, building street addresses, cities, states, and postal codes for buildings associated with the 'History' department and having the address purpose specified as 'STREET'? The query output includes details such as the facility building key, street address, city, state, and postal code for the relevant buildings."
+    ],
+    "oracle_sql": "SELECT DISTINCT d.FCLT_BUILDING_KEY, e.BUILDING_STREET_ADDRESS, d.CITY, d.STATE, d.POSTAL_CODE FROM FCLT_BUILDING_ADDRESS d JOIN FCLT_ROOMS a ON a.FCLT_BUILDING_KEY = d.FCLT_BUILDING_KEY JOIN FCLT_ORG_DLC_KEY b ON a.FCLT_ORGANIZATION_KEY = b.FCLT_ORGANIZATION_KEY JOIN MASTER_DEPT_HIERARCHY c ON b.DLC_KEY = c.DLC_KEY JOIN BUILDINGS e ON e.BUILDING_KEY = d.FCLT_BUILDING_KEY WHERE lower(c.DLC_NAME) = lower('History') AND d.ADDRESS_PURPOSE = 'STREET';",
+    "question": "1. Retrieve the distinct building key, street address, city, state, and postal code for buildings associated with the History department, focusing on street addresses.",
+    "sql": "",
+    "question_ts_and_es": "A"
+  },
+  {
+    "adjusted": false,
+    "comment": "it is not the current academic term",
+    "db_id": "dw",
+    "gold-question": "For each IAP category and academic year, list the category name, academic year, total fee collected, total number of IAP subjects, and the minimum and maximum enrollment.",
+    "gold-sql": "SELECT isc.IAP_CATEGORY_NAME, td.ACADEMIC_YEAR, SUM(isd.FEE) AS Total_Fee, COUNT(distinct isd.ACTIVITY_TITLE) AS Total_Subjects, MIN(isd.MAX_ENROLLMENT) AS Min_Attendance, MAX(isd.MAX_ENROLLMENT) AS Max_Attendance FROM IAP_SUBJECT_DETAIL isd JOIN IAP_SUBJECT_CATEGORY isc ON isd.IAP_SUBJECT_CATEGORY_KEY = isc.IAP_SUBJECT_CATEGORY_KEY JOIN TIME_DAY td ON isd.TERM_CODE = td.ACADEMIC_TERM_CODE GROUP BY isc.IAP_CATEGORY_NAME, td.ACADEMIC_YEAR;",
+    "options": [
+      "What are the total fees, number of subjects, and attendance details for different categories in the IAP program during the academic year 2021? Which categories have the highest and lowest attendance rates?",
+      "How many subjects were offered, and what were the attendance ranges for various categories like A.I. and Robotics, Academic Skills and Resources, Art and Architecture, Athletics and Exercise, and Boston and Cambridge in the academic year 2021?",
+      "In the academic year 2021, what are the total fees, number of subjects, and attendance statistics for categories such as A.I. and Robotics, Academic Skills and Resources, Art and Architecture, Athletics and Exercise, and Boston and Cambridge in the IAP program?",
+      "For the academic year 2021, can you provide insights into the IAP program categories like A.I. and Robotics, Academic Skills and Resources, Art and Architecture, Athletics and Exercise, and Boston and Cambridge? Include details on total fees, subjects offered, and attendance variations."
+    ],
+    "oracle_sql": "SELECT isc.IAP_CATEGORY_NAME, td.ACADEMIC_YEAR, SUM(isd.FEE) AS Total_Fee, COUNT(distinct isd.ACTIVITY_TITLE) AS Total_Subjects, MIN(isd.MAX_ENROLLMENT) AS Min_Attendance, MAX(isd.MAX_ENROLLMENT) AS Max_Attendance FROM IAP_SUBJECT_DETAIL isd JOIN IAP_SUBJECT_CATEGORY isc ON isd.IAP_SUBJECT_CATEGORY_KEY = isc.IAP_SUBJECT_CATEGORY_KEY JOIN TIME_DAY td ON isd.TERM_CODE = td.ACADEMIC_TERM_CODE GROUP BY isc.IAP_CATEGORY_NAME, td.ACADEMIC_YEAR;",
+    "question": "What are the IAP category names, the years they occur, the total fee, number of subjects, minimum and maximum attendance, for each IAP category and academic year?",
+    "sql": "",
+    "question_ts_and_es": "What are the total fees, number of subjects, and attendance details for different categories in the IAP program during the academic year 2021? Which categories have the highest and lowest attendance rates?"
+  },
+  {
+    "adjusted": false,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For email lists with names starting with e (case insensitive), containing 10 to 20 members inclusive, and where over 75% are computer science students, provide the list name, owner, and member count.",
+    "gold-sql": "WITH FilteredLists AS ( SELECT ml.MOIRA_LIST_NAME, mlo.OWNER, COUNT(mld.MOIRA_LIST_MEMBER) AS TOTAL_MEMBER_COUNT FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN MOIRA_LIST_OWNER mlo ON mld.MOIRA_LIST_OWNER_KEY = mlo.MOIRA_LIST_OWNER_KEY WHERE UPPER(ml.MOIRA_LIST_NAME) LIKE 'E%' GROUP BY ml.MOIRA_LIST_NAME, mlo.OWNER HAVING COUNT(mld.MOIRA_LIST_MEMBER) BETWEEN 10 AND 20 ), CSStudentCounts AS ( SELECT ml.MOIRA_LIST_NAME, COUNT(CASE WHEN msd.DEPARTMENT = '6' THEN 1 ELSE NULL END) AS CS_STUDENT_COUNT FROM FilteredLists fl JOIN MOIRA_LIST ml ON fl.MOIRA_LIST_NAME = ml.MOIRA_LIST_NAME JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN SE_PERSON se ON UPPER(mld.MOIRA_LIST_MEMBER) = UPPER(se.KRB_NAME) JOIN MIT_STUDENT_DIRECTORY msd ON se.FULL_NAME = msd.FULL_NAME GROUP BY ml.MOIRA_LIST_NAME ) SELECT fl.MOIRA_LIST_NAME, fl.OWNER, fl.TOTAL_MEMBER_COUNT FROM FilteredLists fl JOIN CSStudentCounts cs ON fl.MOIRA_LIST_NAME = cs.MOIRA_LIST_NAME WHERE cs.CS_STUDENT_COUNT > 0.75 * fl.TOTAL_MEMBER_COUNT;",
+    "options": [
+      "A",
+      "What are the `MOIRA_LIST_NAME`, `OWNER`, and total `TOTAL_MEMBER_COUNT` for lists starting with 'E' where the number of Computer Science students is more than 75% of the total member count?",
+      "B",
+      "Which lists, starting with 'E', have owners and total member counts meeting specific criteria, and how many Computer Science students are in each list?",
+      "C",
+      "Can you provide a list of `MOIRA_LIST_NAME`, `OWNER`, and the total `TOTAL_MEMBER_COUNT` for lists starting with 'E' where the majority of members are Computer Science students?",
+      "D",
+      "List the `MOIRA_LIST_NAME`, `OWNER`, and total `TOTAL_MEMBER_COUNT` for lists starting with 'E' that have a high percentage of Computer Science students compared to the total member count."
+    ],
+    "oracle_sql": "WITH FilteredLists AS (SELECT ml.MOIRA_LIST_NAME, mlo.OWNER, COUNT(mld.MOIRA_LIST_MEMBER) AS TOTAL_MEMBER_COUNT FROM MOIRA_LIST ml JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN MOIRA_LIST_OWNER mlo ON mld.MOIRA_LIST_OWNER_KEY = mlo.MOIRA_LIST_OWNER_KEY WHERE UPPER(ml.MOIRA_LIST_NAME) LIKE 'E%' GROUP BY ml.MOIRA_LIST_NAME, mlo.OWNER HAVING COUNT(mld.MOIRA_LIST_MEMBER) BETWEEN 10 AND 20), CSStudentCounts AS (SELECT ml.MOIRA_LIST_NAME, COUNT(CASE WHEN msd.DEPARTMENT = '6' THEN 1 ELSE NULL END) AS CS_STUDENT_COUNT FROM FilteredLists fl JOIN MOIRA_LIST ml ON fl.MOIRA_LIST_NAME = ml.MOIRA_LIST_NAME JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN SE_PERSON se ON UPPER(mld.MOIRA_LIST_MEMBER) = UPPER(se.KRB_NAME) JOIN MIT_STUDENT_DIRECTORY msd ON se.FULL_NAME = msd.FULL_NAME GROUP BY ml.MOIRA_LIST_NAME) SELECT fl.MOIRA_LIST_NAME, fl.OWNER, fl.TOTAL_MEMBER_COUNT FROM FilteredLists fl JOIN CSStudentCounts cs ON fl.MOIRA_LIST_NAME = cs.MOIRA_LIST_NAME WHERE cs.CS_STUDENT_COUNT > 0.75 * fl.TOTAL_MEMBER_COUNT;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH FilteredLists AS (\n    SELECT \n        ml.MOIRA_LIST_NAME, \n        mlo.OWNER, \n        COUNT(mld.MOIRA_LIST_MEMBER) AS TOTAL_MEMBER_COUNT \n    FROM \n        MOIRA_LIST ml \n        JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY \n        JOIN MOIRA_LIST_OWNER mlo ON mld.MOIRA_LIST_OWNER_KEY = mlo.MOIRA_LIST_OWNER_KEY \n    WHERE \n        UPPER(ml.MOIRA_LIST_NAME) LIKE 'E%' \n    GROUP BY \n        ml.MOIRA_LIST_NAME, mlo.OWNER \n    HAVING \n        COUNT(mld.MOIRA_LIST_MEMBER) BETWEEN 10 AND 20\n), \nCSStudentCounts AS (\n    SELECT \n        fl.MOIRA_LIST_NAME, \n        COUNT(CASE WHEN msd.DEPARTMENT = '6' THEN 1 ELSE NULL END) AS CS_STUDENT_COUNT \n    FROM \n        FilteredLists fl \n        JOIN MOIRA_LIST ml ON fl.MOIRA_LIST_NAME = ml.MOIRA_LIST_NAME \n        JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY \n        JOIN SE_PERSON se ON UPPER(mld.MOIRA_LIST_MEMBER) = UPPER(se.KRB_NAME) \n        JOIN MIT_STUDENT_DIRECTORY msd ON se.FULL_NAME = msd.FULL_NAME \n    GROUP BY \n        fl.MOIRA_LIST_NAME\n)\nSELECT \n    fl.MOIRA_LIST_NAME, \n    fl.OWNER, \n    fl.TOTAL_MEMBER_COUNT \nFROM \n    FilteredLists fl \n    JOIN CSStudentCounts cs ON fl.MOIRA_LIST_NAME = cs.MOIRA_LIST_NAME \nWHERE \n    cs.CS_STUDENT_COUNT > 0.75 * fl.TOTAL_MEMBER_COUNT;\n",
+    "sql_decomposition": [
+      {
+        "question": "What are the names of the Moira lists starting with 'E', their respective owners, and the total number of members in each list? Show only those lists with member counts between 10 and 20.",
+        "gold-sql": "SELECT ml.MOIRA_LIST_NAME, mlo.OWNER, COUNT(mld.MOIRA_LIST_MEMBER) AS TOTAL_MEMBER_COUNT FROM MOIRA_LIST AS ml JOIN MOIRA_LIST_DETAIL AS mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN MOIRA_LIST_OWNER AS mlo ON mld.MOIRA_LIST_OWNER_KEY = mlo.MOIRA_LIST_OWNER_KEY WHERE UPPER(ml.MOIRA_LIST_NAME) LIKE 'E%' GROUP BY ml.MOIRA_LIST_NAME, mlo.OWNER HAVING COUNT(mld.MOIRA_LIST_MEMBER) BETWEEN 10 AND 20",
+        "title": "FilteredLists",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the names of the Moira lists starting with 'E', their respective owners, and the total number of members in each list? Show only those lists with member counts between 10 and 20.",
+          "B",
+          "List the Moira list names beginning with 'E', along with their owners and the total count of members in each list. Include only those lists with member counts ranging from 10 to 20.",
+          "C",
+          "Which Moira lists, starting with 'E', have owners and a total member count falling between 10 and 20? Display the names of these lists, their owners, and the corresponding member counts.",
+          "D",
+          "Provide a list of Moira lists that start with 'E', showing the owners and the total number of members in each list. Include only those lists with member counts between 10 and 20."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "Provide the Moira list name and the count of Computer Science students in each filtered list?",
+        "gold-sql": "SELECT fl.MOIRA_LIST_NAME, COUNT(CASE WHEN msd.DEPARTMENT = '6' THEN 1 ELSE NULL END) AS CS_STUDENT_COUNT FROM FilteredLists AS fl JOIN MOIRA_LIST AS ml ON fl.MOIRA_LIST_NAME = ml.MOIRA_LIST_NAME JOIN MOIRA_LIST_DETAIL AS mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY JOIN SE_PERSON AS se ON UPPER(mld.MOIRA_LIST_MEMBER) = UPPER(se.KRB_NAME) JOIN MIT_STUDENT_DIRECTORY AS msd ON se.FULL_NAME = msd.FULL_NAME GROUP BY fl.MOIRA_LIST_NAME",
+        "title": "CSStudentCounts",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the count of Computer Science students in each filtered list?",
+          "B",
+          "How many students in each filtered list are majoring in Computer Science?",
+          "C",
+          "Can you provide the number of students studying Computer Science for each filtered list?",
+          "D",
+          "For each filtered list, how many students are enrolled in the Computer Science department?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What is the name of the Moira list, the owner of the list, and the total number of members for Moira lists where more than 75% of the members are Computer Science students?",
+        "gold-sql": "SELECT \n        fl.MOIRA_LIST_NAME, \n        COUNT(CASE WHEN msd.DEPARTMENT = '6' THEN 1 ELSE NULL END) AS CS_STUDENT_COUNT \n    FROM \n        FilteredLists fl \n        JOIN MOIRA_LIST ml ON fl.MOIRA_LIST_NAME = ml.MOIRA_LIST_NAME \n        JOIN MOIRA_LIST_DETAIL mld ON ml.MOIRA_LIST_KEY = mld.MOIRA_LIST_KEY \n        JOIN SE_PERSON se ON UPPER(mld.MOIRA_LIST_MEMBER) = UPPER(se.KRB_NAME) \n        JOIN MIT_STUDENT_DIRECTORY msd ON se.FULL_NAME = msd.FULL_NAME \n    GROUP BY \n        fl.MOIRA_LIST_NAME\n)\nSELECT \n    fl.MOIRA_LIST_NAME, \n    fl.OWNER, \n    fl.TOTAL_MEMBER_COUNT \nFROM \n    FilteredLists fl \n    JOIN CSStudentCounts cs ON fl.MOIRA_LIST_NAME = cs.MOIRA_LIST_NAME \nWHERE \n    cs.CS_STUDENT_COUNT > 0.75 * fl.TOTAL_MEMBER_COUNT;\n",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the name of the Moira list, the owner of the list, and the total number of members for Moira lists where more than 75% of the members are Computer Science students?",
+          "B",
+          "Which Moira lists have a high percentage of Computer Science students as members, and who are the owners of these lists along with the total number of members?",
+          "C",
+          "List the Moira lists, their owners, and the total number of members where the majority of members are Computer Science students.",
+          "D",
+          "For which Moira lists do Computer Science students make up more than 75% of the total members, and who are the owners of these lists?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For each course, list its name, name of the building of the course location, and the cumulative number of courses, including the course itself, held in the same year or preceding years (partitioned by academic year and sorted in the ascending order of course start date).",
+    "gold-sql": "select distinct subject_title, building_name, count(ccso.subject_id) over (partition by ccso.academic_year order by term_start_date asc range between unbounded preceding and current row) from COURSE_CATALOG_SUBJECT_OFFERED ccso join academic_terms on ccso.effective_term_code =academic_terms.term_code JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY",
+    "options": [
+      "A",
+      "What are the subject titles, building names, and the running count of subject IDs partitioned by academic year and ordered by term start date in ascending order?",
+      "B",
+      "Can you show me the subject titles, building names, and the cumulative count of subject IDs for each academic year, sorted by term start date in ascending order?",
+      "C",
+      "How many subject titles, along with their corresponding building names, have a running count of subject IDs partitioned by academic year and ordered by term start date in ascending order?",
+      "D",
+      "Which subject titles and building names have a count of subject IDs that increases over time within each academic year, based on the term start date?"
+    ],
+    "oracle_sql": "select distinct subject_title, building_name, count(ccso.subject_id) over (partition by ccso.academic_year order by term_start_date asc range between unbounded preceding and current row) from COURSE_CATALOG_SUBJECT_OFFERED ccso join academic_terms on ccso.effective_term_code =academic_terms.term_code JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A"
+  },
+  {
+    "adjusted": false,
+    "comment": "missing coalesce",
+    "db_id": "dw",
+    "gold-question": "For each course, provide the room number of course location, building name, building number, building city, building state, area, organization name, room usage, term code, course level, the total number of subjects, unique meeting times, and total units. Do not include meet place or meet times with NULL values.",
+    "gold-sql": "WITH MeetingPlaceDetails AS ( SELECT c.MEET_PLACE AS room_number, c.MEET_TIME, c.TERM_CODE, c.SUBJECT_ID, c.TOTAL_UNITS, b.BUILDING_NAME, b.BUILDING_NUMBER, ba.CITY AS building_city, ba.STATE AS building_state, fr.AREA, fr.ORGANIZATION_NAME, fmu.MAJOR_USE, scd.COURSE_LEVEL AS course_level, scd.COURSE_DESCRIPTION AS course_description FROM COURSE_CATALOG_SUBJECT_OFFERED c JOIN FAC_ROOMS fr ON c.MEET_PLACE = fr.FAC_ROOM_KEY JOIN FAC_BUILDING b ON fr.BUILDING_KEY = b.FAC_BUILDING_KEY JOIN FAC_MAJOR_USE fmu ON fr.MAJOR_USE_KEY = fmu.MAJOR_USE_KEY LEFT JOIN FAC_BUILDING_ADDRESS ba ON b.FAC_BUILDING_KEY = ba.BUILDING_KEY LEFT JOIN SIS_COURSE_DESCRIPTION scd ON c.SUBJECT_ID = scd.COURSE WHERE c.MEET_PLACE IS NOT NULL AND c.MEET_TIME IS NOT NULL ), MeetingPlaceAggregates AS ( SELECT room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level, COUNT(DISTINCT SUBJECT_ID) AS num_subjects, COUNT(DISTINCT MEET_TIME) AS unique_meet_times, SUM(TOTAL_UNITS) AS total_units FROM MeetingPlaceDetails GROUP BY room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level ) SELECT room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level, num_subjects, unique_meet_times, total_units FROM MeetingPlaceAggregates ORDER BY TERM_CODE, total_units DESC, room_number;",
+    "options": [
+      "A",
+      "What are the room numbers, building names, building numbers, cities, states, areas, organization names, major uses, term codes, course levels, number of subjects, unique meeting times, and total units for meeting places, sorted by term code, total units in descending order, and room number?",
+      "B",
+      "Can you provide a list of meeting places with details such as room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units, ordered by term code, total units (in descending order), and room number?",
+      "C",
+      "Which meeting places have room numbers, building names, building numbers, cities, states, areas, organization names, major uses, term codes, course levels, number of subjects, unique meeting times, and total units available? Please sort the results by term code, total units (in descending order), and room number.",
+      "D",
+      "List the room numbers, building names, building numbers, cities, states, areas, organization names, major uses, term codes, course levels, number of subjects, unique meeting times, and total units for meeting places. Sort the output by term code, total units (descending), and room number."
+    ],
+    "oracle_sql": "WITH MeetingPlaceDetails AS ( SELECT c.MEET_PLACE AS room_number, c.MEET_TIME, c.TERM_CODE, c.SUBJECT_ID, c.TOTAL_UNITS, b.BUILDING_NAME, b.BUILDING_NUMBER, ba.CITY AS building_city, ba.STATE AS building_state, fr.AREA, fr.ORGANIZATION_NAME, fmu.MAJOR_USE, scd.COURSE_LEVEL AS course_level, scd.COURSE_DESCRIPTION AS course_description FROM COURSE_CATALOG_SUBJECT_OFFERED c JOIN FAC_ROOMS fr ON c.MEET_PLACE = fr.FAC_ROOM_KEY JOIN FAC_BUILDING b ON fr.BUILDING_KEY = b.FAC_BUILDING_KEY JOIN FAC_MAJOR_USE fmu ON fr.MAJOR_USE_KEY = fmu.MAJOR_USE_KEY LEFT JOIN FAC_BUILDING_ADDRESS ba ON b.FAC_BUILDING_KEY = ba.BUILDING_KEY LEFT JOIN SIS_COURSE_DESCRIPTION scd ON c.SUBJECT_ID = scd.COURSE WHERE c.MEET_PLACE IS NOT NULL AND c.MEET_TIME IS NOT NULL ), MeetingPlaceAggregates AS ( SELECT room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level, COUNT(DISTINCT SUBJECT_ID) AS num_subjects, COUNT(DISTINCT MEET_TIME) AS unique_meet_times, SUM(TOTAL_UNITS) AS total_units FROM MeetingPlaceDetails GROUP BY room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level ) SELECT room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level, num_subjects, unique_meet_times, total_units FROM MeetingPlaceAggregates ORDER BY TERM_CODE, total_units DESC, room_number;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH MeetingPlaceDetails AS (\n    SELECT \n        c.MEET_PLACE AS room_number, \n        c.MEET_TIME, \n        c.TERM_CODE, \n        c.SUBJECT_ID, \n        c.TOTAL_UNITS, \n        b.BUILDING_NAME, \n        b.BUILDING_NUMBER, \n        ba.CITY AS building_city, \n        ba.STATE AS building_state, \n        fr.AREA, \n        fr.ORGANIZATION_NAME, \n        fmu.MAJOR_USE, \n        scd.COURSE_LEVEL AS course_level, \n        scd.COURSE_DESCRIPTION AS course_description \n    FROM \n        COURSE_CATALOG_SUBJECT_OFFERED c \n        JOIN FAC_ROOMS fr ON c.MEET_PLACE = fr.FAC_ROOM_KEY \n        JOIN FAC_BUILDING b ON fr.BUILDING_KEY = b.FAC_BUILDING_KEY \n        JOIN FAC_MAJOR_USE fmu ON fr.MAJOR_USE_KEY = fmu.MAJOR_USE_KEY \n        LEFT JOIN FAC_BUILDING_ADDRESS ba ON b.FAC_BUILDING_KEY = ba.BUILDING_KEY \n        LEFT JOIN SIS_COURSE_DESCRIPTION scd ON c.SUBJECT_ID = scd.COURSE \n    WHERE \n        c.MEET_PLACE IS NOT NULL \n        AND c.MEET_TIME IS NOT NULL\n), \nMeetingPlaceAggregates AS (\n    SELECT \n        room_number, \n        BUILDING_NAME, \n        BUILDING_NUMBER, \n        building_city, \n        building_state, \n        AREA, \n        ORGANIZATION_NAME, \n        MAJOR_USE, \n        TERM_CODE, \n        course_level, \n        COUNT(DISTINCT SUBJECT_ID) AS num_subjects, \n        COUNT(DISTINCT MEET_TIME) AS unique_meet_times, \n        SUM(TOTAL_UNITS) AS total_units \n    FROM \n        MeetingPlaceDetails \n    GROUP BY \n        room_number, \n        BUILDING_NAME, \n        BUILDING_NUMBER, \n        building_city, \n        building_state, \n        AREA, \n        ORGANIZATION_NAME, \n        MAJOR_USE, \n        TERM_CODE, \n        course_level\n) \nSELECT \n    room_number, \n    BUILDING_NAME, \n    BUILDING_NUMBER, \n    building_city, \n    building_state, \n    AREA, \n    ORGANIZATION_NAME, \n    MAJOR_USE, \n    TERM_CODE, \n    course_level, \n    num_subjects, \n    unique_meet_times, \n    total_units \nFROM \n    MeetingPlaceAggregates \nORDER BY \n    TERM_CODE, \n    total_units DESC, \n    room_number;",
+    "sql_decomposition": [
+      {
+        "question": "What are the room numbers, meeting times, term codes, subject IDs, total units, building names, building numbers, building cities, building states, areas, organization names, major uses, course levels, and course descriptions for all courses offered with non-null meeting places and non-null meeting times?",
+        "gold-sql": "SELECT c.MEET_PLACE AS room_number, c.MEET_TIME, c.TERM_CODE, c.SUBJECT_ID, c.TOTAL_UNITS, b.BUILDING_NAME, b.BUILDING_NUMBER, ba.CITY AS building_city, ba.STATE AS building_state, fr.AREA, fr.ORGANIZATION_NAME, fmu.MAJOR_USE, scd.COURSE_LEVEL AS course_level, scd.COURSE_DESCRIPTION AS course_description FROM COURSE_CATALOG_SUBJECT_OFFERED AS c JOIN FAC_ROOMS AS fr ON c.MEET_PLACE = fr.FAC_ROOM_KEY JOIN FAC_BUILDING AS b ON fr.BUILDING_KEY = b.FAC_BUILDING_KEY JOIN FAC_MAJOR_USE AS fmu ON fr.MAJOR_USE_KEY = fmu.MAJOR_USE_KEY LEFT JOIN FAC_BUILDING_ADDRESS AS ba ON b.FAC_BUILDING_KEY = ba.BUILDING_KEY LEFT JOIN SIS_COURSE_DESCRIPTION AS scd ON c.SUBJECT_ID = scd.COURSE WHERE NOT c.MEET_PLACE IS NULL AND NOT c.MEET_TIME IS NULL",
+        "title": "MeetingPlaceDetails",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the room numbers, meeting times, term codes, subject IDs, total units, building names, building numbers, building cities, building states, areas, organization names, major uses, course levels, and course descriptions for all courses offered with non-null meeting places and meeting times?",
+          "B",
+          "Can you provide a list of room numbers, meeting times, term codes, subject IDs, total units, building names, building numbers, building cities, building states, areas, organization names, major uses, course levels, and course descriptions for courses with valid meeting places and times?",
+          "C",
+          "Which courses have room numbers, meeting times, term codes, subject IDs, total units, building names, building numbers, building cities, building states, areas, organization names, major uses, course levels, and course descriptions available, excluding those with null meeting places or times?",
+          "D",
+          "How can we retrieve the room numbers, meeting times, term codes, subject IDs, total units, building names, building numbers, building cities, building states, areas, organization names, major uses, course levels, and course descriptions for courses that have valid meeting places and times?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "Could you list the room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of unique subjects, number of unique meeting times, and total units for each room in the MeetingPlaceDetails table?",
+        "gold-sql": "SELECT room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level, COUNT(DISTINCT SUBJECT_ID) AS num_subjects, COUNT(DISTINCT MEET_TIME) AS unique_meet_times, SUM(TOTAL_UNITS) AS total_units FROM MeetingPlaceDetails GROUP BY room_number, BUILDING_NAME, BUILDING_NUMBER, building_city, building_state, AREA, ORGANIZATION_NAME, MAJOR_USE, TERM_CODE, course_level",
+        "title": "MeetingPlaceAggregates",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the total number of unique subjects, unique meeting times, and total units for each room in the MeetingPlaceDetails table? Can you provide the room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units for each room?",
+          "B",
+          "Could you list the room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of unique subjects, number of unique meeting times, and total units for each room in the MeetingPlaceDetails table?",
+          "C",
+          "How many unique subjects, unique meeting times, and total units are associated with each room in the MeetingPlaceDetails table? Please provide the room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units for each room.",
+          "D",
+          "For each room in the MeetingPlaceDetails table, can you show the room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of unique subjects, number of unique meeting times, and total units?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "Provide room number, building name, building number, city, state, area, organization name, major use, term code, and course level and additionally the number of distinct subject IDs, unique meeting times, and total units for each group based on specified attributes. The final result displays the aggregated meeting place details with the specified calculations, sorted by term code, total units in descending order, and room number.",
+        "gold-sql": "SELECT \n        room_number, \n        BUILDING_NAME, \n        BUILDING_NUMBER, \n        building_city, \n        building_state, \n        AREA, \n        ORGANIZATION_NAME, \n        MAJOR_USE, \n        TERM_CODE, \n        course_level, \n        COUNT(DISTINCT SUBJECT_ID) AS num_subjects, \n        COUNT(DISTINCT MEET_TIME) AS unique_meet_times, \n        SUM(TOTAL_UNITS) AS total_units \n    FROM \n        MeetingPlaceDetails \n    GROUP BY \n        room_number, \n        BUILDING_NAME, \n        BUILDING_NUMBER, \n        building_city, \n        building_state, \n        AREA, \n        ORGANIZATION_NAME, \n        MAJOR_USE, \n        TERM_CODE, \n        course_level\n) \nSELECT \n    room_number, \n    BUILDING_NAME, \n    BUILDING_NUMBER, \n    building_city, \n    building_state, \n    AREA, \n    ORGANIZATION_NAME, \n    MAJOR_USE, \n    TERM_CODE, \n    course_level, \n    num_subjects, \n    unique_meet_times, \n    total_units \nFROM \n    MeetingPlaceAggregates \nORDER BY \n    TERM_CODE, \n    total_units DESC, \n    room_number;",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "This query aims to aggregate meeting place details by various attributes such as room number, building name, building number, city, state, area, organization name, major use, term code, and course level. It calculates the number of distinct subject IDs, unique meeting times, and total units for each group.",
+          "The output includes room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units.",
+          "The query calculates the number of distinct subject IDs, unique meeting times, and sums the total units for each group based on the specified attributes.",
+          "The final result displays the aggregated meeting place details with the specified calculations, sorted by term code, total units in descending order, and room number.",
+          "B",
+          "What are the aggregated meeting place details including room number, building name, building number, city, state, area, organization name, major use, term code, and course level? The query also calculates the number of distinct subject IDs, unique meeting times, and total units for each group.",
+          "The output consists of room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units.",
+          "By grouping the meeting place details, the query computes the count of distinct subject IDs, unique meeting times, and the sum of total units for each group.",
+          "The final result presents the aggregated meeting place details with the specified calculations, ordered by term code, total units in descending order, and room number.",
+          "C",
+          "How many distinct subject IDs, unique meeting times, and total units are associated with each aggregated meeting place detail, including room number, building name, building number, city, state, area, organization name, major use, term code, and course level?",
+          "The columns in the output include room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units.",
+          "The query groups meeting place details and calculates the count of distinct subject IDs, unique meeting times, and the sum of total units for each group.",
+          "The final result showcases the aggregated meeting place details with the specified calculations, sorted by term code, total units in descending order, and room number.",
+          "D",
+          "What is the summary of meeting place details grouped by room number, building name, building number, city, state, area, organization name, major use, term code, and course level, including the count of distinct subject IDs, unique meeting times, and total units?",
+          "The result set includes room number, building name, building number, city, state, area, organization name, major use, term code, course level, number of subjects, unique meeting times, and total units.",
+          "By grouping the data, the query calculates the number of distinct subject IDs, unique meeting times, and sums the total units for each group.",
+          "The final output displays the aggregated meeting place details with the specified calculations, ordered by term code, total units in descending order, and room number."
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For each sponsor of the independent activity periods, list the sponsor name, number of sessions held, the total number of enrollment, the minimum and maximum fee, the number of sessions with info, and the number of sessions without info.",
+    "gold-sql": "SELECT issr.SPONSOR_NAME, COUNT(DISTINCT iss.IAP_SUBJECT_SESSION_KEY) AS Total_Sessions, SUM(isd.MAX_ENROLLMENT), MIN(isd.FEE) AS Min_Fee, MAX(isd.FEE) AS Max_Fee, SUM(CASE WHEN iss.HAS_SESSION_INFO = 'Y' THEN 1 ELSE 0 END) AS Num_Sessions_With_Info, SUM(CASE WHEN iss.HAS_SESSION_INFO = 'N' THEN 1 ELSE 0 END) AS Num_Sessions_Without_Info FROM IAP_SUBJECT_SESSION iss JOIN IAP_SUBJECT_DETAIL isd ON iss.IAP_SUBJECT_SESSION_KEY = isd.IAP_SUBJECT_SESSION_KEY JOIN IAP_SUBJECT_SPONSOR issr ON isd.IAP_SUBJECT_SPONSOR_KEY = issr.IAP_SUBJECT_SPONSOR_KEY GROUP BY issr.SPONSOR_NAME;",
+    "options": [
+      "A",
+      "What are the total number of sessions, maximum enrollment, minimum fee, maximum fee, number of sessions with information, and number of sessions without information for each sponsor? Can you provide the sponsor name along with these details?",
+      "B",
+      "How many sessions does each sponsor have in total? What is the sum of the maximum enrollment, minimum fee, and maximum fee for these sessions? Additionally, how many sessions have information and how many do not for each sponsor?",
+      "C",
+      "Which sponsors are associated with the sessions, and how many sessions do they each have? What are the total maximum enrollment, minimum fee, and maximum fee for these sessions? Also, how many sessions have information versus those without information for each sponsor?",
+      "D",
+      "Could you list the sponsors along with the total number of sessions they have organized? What is the combined maximum enrollment, minimum fee, and maximum fee for these sessions? Furthermore, how many sessions have information and how many do not for each sponsor?"
+    ],
+    "oracle_sql": "SELECT issr.SPONSOR_NAME, COUNT(DISTINCT iss.IAP_SUBJECT_SESSION_KEY) AS Total_Sessions, SUM(isd.MAX_ENROLLMENT), MIN(isd.FEE) AS Min_Fee, MAX(isd.FEE) AS Max_Fee, SUM(CASE WHEN iss.HAS_SESSION_INFO = 'Y' THEN 1 ELSE 0 END) AS Num_Sessions_With_Info, SUM(CASE WHEN iss.HAS_SESSION_INFO = 'N' THEN 1 ELSE 0 END) AS Num_Sessions_Without_Info FROM IAP_SUBJECT_SESSION iss JOIN IAP_SUBJECT_DETAIL isd ON iss.IAP_SUBJECT_SESSION_KEY = isd.IAP_SUBJECT_SESSION_KEY JOIN IAP_SUBJECT_SPONSOR issr ON isd.IAP_SUBJECT_SPONSOR_KEY = issr.IAP_SUBJECT_SPONSOR_KEY GROUP BY issr.SPONSOR_NAME;",
+    "question": "Show the sponsor names along with the total count of unique sessions, the sum of maximum enrollments, the minimum fee, the maximum fee, the count of sessions with information, and the count of sessions without information for each sponsor in the IAP subject sessions.",
+    "sql": "",
+    "question_ts_and_es": "A"
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For email lists with names starting with C (case insensitive) and containing faculty who teach courses in the summer in financial aid years after 2001, provide the name of the list, the number of people in the list, and the number of faculty in the list.",
+    "gold-sql": "WITH FilteredLists AS ( SELECT ml.MOIRA_LIST_KEY, ml.MOIRA_LIST_NAME FROM MOIRA_LIST ml WHERE upper(ml.MOIRA_LIST_NAME) LIKE 'C%' ) SELECT DISTINCT fl.MOIRA_LIST_NAME AS Moira_List_Name, COUNT(mld.MOIRA_LIST_MEMBER) AS Member_Count, COUNT(DISTINCT ed.MIT_ID) AS Distinct_Faculty_Count FROM COURSE_CATALOG_SUBJECT_OFFERED ccso JOIN EMPLOYEE_DIRECTORY ed ON ccso.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID JOIN MOIRA_LIST_DETAIL mld ON UPPER(ed.KRB_NAME) = UPPER(mld.MOIRA_LIST_MEMBER) JOIN FilteredLists fl ON mld.MOIRA_LIST_KEY = fl.MOIRA_LIST_KEY JOIN ACADEMIC_TERMS at ON ccso.TERM_CODE = at.TERM_CODE WHERE at.TERM_CODE LIKE '%SU' AND CAST(at.FINANCIAL_AID_YEAR AS UNSIGNED) > 2001 GROUP BY fl.MOIRA_LIST_NAME;",
+    "options": [
+      "A",
+      "What are the Moira lists starting with 'C' and their corresponding member and distinct faculty counts? The output includes the Moira list name, the total number of members in each list, and the count of distinct faculty members associated with each list.",
+      "B",
+      "Which Moira lists, beginning with 'C', have been filtered based on specific criteria, and how many members and distinct faculty members are associated with each list? The results display the Moira list names along with the total member count and the count of unique faculty members for each list.",
+      "C",
+      "Can you provide a breakdown of Moira lists that start with 'C', showing the names of the lists, the total number of members in each list, and the count of distinct faculty members within those lists?",
+      "D",
+      "How many members and distinct faculty members are there in Moira lists starting with 'C'? The output lists the Moira list names, the total number of members in each list, and the count of unique faculty members associated with each list."
+    ],
+    "oracle_sql": "WITH FilteredLists AS ( SELECT ml.MOIRA_LIST_KEY, ml.MOIRA_LIST_NAME FROM MOIRA_LIST ml WHERE upper(ml.MOIRA_LIST_NAME) LIKE 'C%' ) SELECT DISTINCT fl.MOIRA_LIST_NAME AS Moira_List_Name, COUNT(mld.MOIRA_LIST_MEMBER) AS Member_Count, COUNT(DISTINCT ed.MIT_ID) AS Distinct_Faculty_Count FROM COURSE_CATALOG_SUBJECT_OFFERED ccso JOIN EMPLOYEE_DIRECTORY ed ON ccso.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID JOIN MOIRA_LIST_DETAIL mld ON UPPER(ed.KRB_NAME) = UPPER(mld.MOIRA_LIST_MEMBER) JOIN FilteredLists fl ON mld.MOIRA_LIST_KEY = fl.MOIRA_LIST_KEY JOIN ACADEMIC_TERMS at ON ccso.TERM_CODE = at.TERM_CODE WHERE at.TERM_CODE LIKE '%SU' AND CAST(at.FINANCIAL_AID_YEAR AS UNSIGNED) > 2001 GROUP BY fl.MOIRA_LIST_NAME;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH FilteredLists AS (\n    SELECT ml.MOIRA_LIST_KEY, ml.MOIRA_LIST_NAME \n    FROM MOIRA_LIST ml \n    WHERE UPPER(ml.MOIRA_LIST_NAME) LIKE 'C%'\n)\n\nSELECT DISTINCT fl.MOIRA_LIST_NAME AS Moira_List_Name, \n    COUNT(mld.MOIRA_LIST_MEMBER) AS Member_Count, \n    COUNT(DISTINCT ed.MIT_ID) AS Distinct_Faculty_Count \nFROM COURSE_CATALOG_SUBJECT_OFFERED ccso \nJOIN EMPLOYEE_DIRECTORY ed ON ccso.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID \nJOIN MOIRA_LIST_DETAIL mld ON UPPER(ed.KRB_NAME) = UPPER(mld.MOIRA_LIST_MEMBER) \nJOIN FilteredLists fl ON mld.MOIRA_LIST_KEY = fl.MOIRA_LIST_KEY \nJOIN ACADEMIC_TERMS at ON ccso.TERM_CODE = at.TERM_CODE \nWHERE at.TERM_CODE LIKE '%SU' \n    AND CAST(at.FINANCIAL_AID_YEAR AS UNSIGNED) > 2001 \nGROUP BY fl.MOIRA_LIST_NAME;",
+    "sql_decomposition": [
+      {
+        "question": "What are the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` for entries in the `MOIRA_LIST` table where the `MOIRA_LIST_NAME` starts with the letter 'C'?",
+        "gold-sql": "SELECT ml.MOIRA_LIST_KEY, ml.MOIRA_LIST_NAME FROM MOIRA_LIST AS ml WHERE UPPER(ml.MOIRA_LIST_NAME) LIKE 'C%'",
+        "title": "FilteredLists",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` for entries in the `MOIRA_LIST` table where the `MOIRA_LIST_NAME` starts with the letter 'C'? The output includes the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` columns for these entries.",
+          "B",
+          "Can you provide the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` for records in the `MOIRA_LIST` table where the `MOIRA_LIST_NAME` begins with 'C'? The result displays the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` columns for these specific entries.",
+          "C",
+          "Which `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` are listed in the `MOIRA_LIST` table with names starting with 'C'? The output shows the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` columns for these records.",
+          "D",
+          "List the `MOIRA_LIST_KEY` and `MOIRA_LIST_NAME` from the `MOIRA_LIST` table where the names start with 'C'. The result includes these columns for the relevant entries."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the unique names of Moira lists, the total number of members in each list, and the count of distinct faculty members associated with each list filtering them by the academic summer terms and financial aid years above 2001.",
+        "gold-sql": "SELECT DISTINCT fl.MOIRA_LIST_NAME AS Moira_List_Name, \n    COUNT(mld.MOIRA_LIST_MEMBER) AS Member_Count, \n    COUNT(DISTINCT ed.MIT_ID) AS Distinct_Faculty_Count \nFROM COURSE_CATALOG_SUBJECT_OFFERED ccso \nJOIN EMPLOYEE_DIRECTORY ed ON ccso.RESPONSIBLE_FACULTY_MIT_ID = ed.MIT_ID \nJOIN MOIRA_LIST_DETAIL mld ON UPPER(ed.KRB_NAME) = UPPER(mld.MOIRA_LIST_MEMBER) \nJOIN FilteredLists fl ON mld.MOIRA_LIST_KEY = fl.MOIRA_LIST_KEY \nJOIN ACADEMIC_TERMS at ON ccso.TERM_CODE = at.TERM_CODE \nWHERE at.TERM_CODE LIKE '%SU' \n    AND CAST(at.FINANCIAL_AID_YEAR AS UNSIGNED) > 2001 \nGROUP BY fl.MOIRA_LIST_NAME;",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the names of Moira lists, the total number of members in each list, and the count of distinct faculty members associated with each list? The query combines data from multiple tables to calculate these values, filtering by specific academic terms and financial aid years. The final result groups the output by Moira list names.",
+          "B",
+          "Which Moira lists have been filtered based on specific academic terms for summer sessions with financial aid years greater than 2001? The query counts the total members in each list and the distinct faculty members associated with them. The results are grouped by Moira list names.",
+          "C",
+          "How many members are in each Moira list, and how many distinct faculty members are linked to each list for summer terms after the year 2001? By joining various tables and applying filters, the query calculates these values and presents the results grouped by Moira list names.",
+          "D",
+          "What are the Moira list names, the total count of members in each list, and the number of unique faculty members associated with those lists for summer terms post the year 2001? The query combines data from different tables, filtering by specific academic terms and financial aid years, and then groups the output by Moira list names."
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For each course, list its name, name of the building of the course location, the start date, the name of the course before it, and the name of the course after it, access level of the building, and the assignable area of the room used for the course, sorted by the ascending order start date and course name.",
+    "gold-sql": "SELECT ccso.subject_title, fb.BUILDING_NAME_LONG AS building_name, at.TERM_START_DATE AS term_start_date, lag(ccso.subject_title) OVER ( ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC ) AS previous_subject_title, lead(ccso.subject_title) OVER ( ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC ) AS next_subject_title, fb.ACCESS_LEVEL_NAME AS access_level, fr.AREA AS room_assignable_area FROM ( SELECT DISTINCT subject_id, subject_title, effective_term_code, meet_place FROM COURSE_CATALOG_SUBJECT_OFFERED ) ccso JOIN ACADEMIC_TERMS at ON at.TERM_CODE = ccso.effective_term_code JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC;",
+    "options": [
+      "A",
+      "What are the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for courses offered in different buildings? The output includes the subject title, building name, term start date, previous subject title, next subject title, access level, and room assignable area for each course.",
+      "B",
+      "Can you provide a list of subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for courses offered in various buildings? The results show the subject title, building name, term start date, previous subject title, next subject title, access level, and room assignable area for each course.",
+      "C",
+      "What details can you gather about the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for courses held in different buildings? The information includes the subject title, building name, term start date, previous subject title, next subject title, access level, and room assignable area for each course.",
+      "D",
+      "How do the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for courses in different buildings look like? The data presents the subject title, building name, term start date, previous subject title, next subject title, access level, and room assignable area for each course."
+    ],
+    "oracle_sql": "SELECT ccso.subject_title, fb.BUILDING_NAME_LONG AS building_name, at.TERM_START_DATE AS term_start_date, lag(ccso.subject_title) OVER ( ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC ) AS previous_subject_title, lead(ccso.subject_title) OVER ( ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC ) AS next_subject_title, fb.ACCESS_LEVEL_NAME AS access_level, fr.AREA AS room_assignable_area FROM ( SELECT DISTINCT subject_id, subject_title, effective_term_code, meet_place FROM COURSE_CATALOG_SUBJECT_OFFERED ) ccso JOIN ACADEMIC_TERMS at ON at.TERM_CODE = ccso.effective_term_code JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH ccso_cte AS (\n    SELECT DISTINCT subject_id, subject_title, effective_term_code, meet_place\n    FROM COURSE_CATALOG_SUBJECT_OFFERED\n),\nat_cte AS (\n    SELECT TERM_CODE, TERM_START_DATE\n    FROM ACADEMIC_TERMS\n),\nfr_cte AS (\n    SELECT FCLT_ROOM_KEY, FCLT_BUILDING_KEY, AREA\n    FROM FCLT_ROOMS\n),\nfb_cte AS (\n    SELECT FCLT_BUILDING_KEY, BUILDING_NAME_LONG, ACCESS_LEVEL_NAME\n    FROM FCLT_BUILDING\n)\nSELECT ccso.subject_title, fb.BUILDING_NAME_LONG AS building_name, at.TERM_START_DATE AS term_start_date, \n       lag(ccso.subject_title) OVER (ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC) AS previous_subject_title, \n       lead(ccso.subject_title) OVER (ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC) AS next_subject_title, \n       fb.ACCESS_LEVEL_NAME AS access_level, fr.AREA AS room_assignable_area\nFROM ccso_cte ccso\nJOIN at_cte at ON at.TERM_CODE = ccso.effective_term_code\nJOIN fr_cte fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY\nJOIN fb_cte fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY\nORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC;",
+    "sql_decomposition": [
+      {
+        "question": "What are the unique subject IDs, subject titles, effective term codes, and meeting places listed in the course catalog subject offered table?",
+        "gold-sql": "SELECT DISTINCT subject_id, subject_title, effective_term_code, meet_place FROM COURSE_CATALOG_SUBJECT_OFFERED",
+        "title": "ccso_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the unique subject IDs, subject titles, effective term codes, and meeting places listed in the course catalog subject offered table?",
+          "B",
+          "Can you provide a list of distinct subject IDs, subject titles, effective term codes, and meeting places from the course catalog subject offered table?",
+          "C",
+          "Which subject IDs, subject titles, effective term codes, and meeting places are included in the course catalog subject offered table, ensuring each entry is unique?",
+          "D",
+          "How many different subject IDs, subject titles, effective term codes, and meeting places are there in the course catalog subject offered table?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the term codes and start dates listed in the academic terms table? Can you provide the term code and the corresponding start date for each academic term?",
+        "gold-sql": "SELECT TERM_CODE, TERM_START_DATE FROM ACADEMIC_TERMS",
+        "title": "at_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the term codes and start dates listed in the academic terms table? Can you provide the term code and the corresponding start date for each academic term?",
+          "B",
+          "Could you show me a list of term codes along with their respective start dates from the academic terms table? I need to know the term code and the date when each term starts.",
+          "C",
+          "How are the term codes and start dates structured in the academic terms table? Can you display the term code and the start date for each academic term in the table?",
+          "D",
+          "In the academic terms table, what are the term codes and start dates for each term? Can you list the term code along with the start date for every academic term available?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the room key, building key, and area for each room in the FCLT_ROOMS table?",
+        "gold-sql": "SELECT FCLT_ROOM_KEY, FCLT_BUILDING_KEY, AREA FROM FCLT_ROOMS",
+        "title": "fr_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the room key, building key, and area for each room in the FCLT_ROOMS table?",
+          "B",
+          "Can you provide the room key, building key, and area for all rooms listed in the FCLT_ROOMS table?",
+          "C",
+          "How can we display the room key, building key, and area for each room stored in the FCLT_ROOMS table?",
+          "D",
+          "Which rooms in the FCLT_ROOMS table have the room key, building key, and area information available?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the facility building key, long building name, and access level name for all buildings in the FCLT_BUILDING table?",
+        "gold-sql": "SELECT FCLT_BUILDING_KEY, BUILDING_NAME_LONG, ACCESS_LEVEL_NAME FROM FCLT_BUILDING",
+        "title": "fb_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "What are the facility building key, long building name, and access level name for all buildings in the FCLT_BUILDING table?",
+          "Can you provide the facility building key, long building name, and access level name for each building listed in the FCLT_BUILDING table?",
+          "Which buildings are included in the FCLT_BUILDING table, and what are their corresponding facility building keys, long building names, and access level names?",
+          "How are the facility building keys, long building names, and access level names structured for the buildings in the FCLT_BUILDING table?"
+        ],
+        "question_ts_and_es": "What are the facility building key, long building name, and access level name for all buildings in the FCLT_BUILDING table?"
+      },
+      {
+        "question": "What are the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for academic terms, facilities, and buildings? The results are ordered by term start date and subject title.",
+        "gold-sql": "SELECT TERM_CODE, TERM_START_DATE\n    FROM ACADEMIC_TERMS\n),\nfr_cte AS (\n    SELECT FCLT_ROOM_KEY, FCLT_BUILDING_KEY, AREA\n    FROM FCLT_ROOMS\n),\nfb_cte AS (\n    SELECT FCLT_BUILDING_KEY, BUILDING_NAME_LONG, ACCESS_LEVEL_NAME\n    FROM FCLT_BUILDING\n)\nSELECT ccso.subject_title, fb.BUILDING_NAME_LONG AS building_name, at.TERM_START_DATE AS term_start_date, \n       lag(ccso.subject_title) OVER (ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC) AS previous_subject_title, \n       lead(ccso.subject_title) OVER (ORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC) AS next_subject_title, \n       fb.ACCESS_LEVEL_NAME AS access_level, fr.AREA AS room_assignable_area\nFROM ccso_cte ccso\nJOIN at_cte at ON at.TERM_CODE = ccso.effective_term_code\nJOIN fr_cte fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY\nJOIN fb_cte fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY\nORDER BY at.TERM_START_DATE ASC, ccso.subject_title ASC;",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for academic terms, facilities, and buildings? The results are ordered by term start date and subject title.",
+          "B",
+          "Can you provide a list of subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for academic terms, facilities, and buildings? The data is sorted by term start date and subject title.",
+          "C",
+          "How can we display the subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for academic terms, facilities, and buildings? The output is organized by term start date and subject title.",
+          "D",
+          "What information is available regarding subject titles, building names, term start dates, previous subject titles, next subject titles, access levels, and room assignable areas for academic terms, facilities, and buildings? The results are arranged by term start date and subject title."
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "Be aware of the filter statements.",
+    "db_id": "dw",
+    "gold-question": "What is the room, floor, building key, building street address, city, state, and postal code of Professor Summer Haynes's office?",
+    "gold-sql": "SELECT DISTINCT fac_rooms.Room, fac_rooms.floor, fac_building_address.BUILDING_KEY, BUILDINGS.BUILDING_STREET_ADDRESS, fac_building_address.CITY, fac_building_address.STATE, fac_building_address.POSTAL_CODE FROM (SELECT office_location FROM employee_directory WHERE full_name = 'Haynes, Summer') AS emp_office JOIN fac_rooms ON emp_office.office_location = fac_rooms.fac_room_key JOIN fac_building_address ON fac_rooms.building_key = fac_building_address.BUILDING_KEY JOIN BUILDINGS ON BUILDINGS.BUILDING_KEY = fac_building_address.BUILDING_KEY WHERE fac_building_address.ADDRESS_PURPOSE = 'STREET';",
+    "options": [
+      "A",
+      "What is the room number, floor, building key, street address, city, state, and postal code for the office location of employee 'Haynes, Summer' at 43 Vassar St in Cambridge, MA?",
+      "B",
+      "Can you provide details about the office location of employee 'Haynes, Summer' at 43 Vassar St in Cambridge, MA, including the room number, floor, building key, and postal code?",
+      "C",
+      "Which room on the 2nd floor of building 46 at 43 Vassar St in Cambridge, MA, is assigned to employee 'Haynes, Summer'?",
+      "D",
+      "What are the specific details of the office location for employee 'Haynes, Summer' at 43 Vassar St in Cambridge, MA, such as the room number, floor, and postal code?"
+    ],
+    "oracle_sql": "SELECT fac_rooms.Room, fac_rooms.floor, fac_building_address.BUILDING_KEY, BUILDINGS.BUILDING_STREET_ADDRESS, fac_building_address.CITY, fac_building_address.STATE, fac_building_address.POSTAL_CODE FROM (SELECT office_location FROM employee_directory WHERE full_name = 'Haynes, Summer') JOIN fac_rooms on office_location = fac_room_key JOIN fac_building_address on fac_rooms.building_key = fac_building_address.BUILDING_KEY JOIN BUILDINGS ON BUILDINGS.BUILDING_KEY = fac_building_address.BUILDING_KEY where fac_building_address.ADDRESS_PURPOSE = 'STREET';",
+    "question": "1. Retrieve the room number, floor, building key, building street address, city, state, and postal code for the office location of the employee named Summer Haynes.",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH emp_office AS (\n    SELECT office_location \n    FROM employee_directory \n    WHERE full_name = 'Haynes, Summer'\n),\nemp_rooms AS (\n    SELECT fac_room_key \n    FROM fac_rooms \n    WHERE fac_room_key = (SELECT office_location FROM emp_office)\n),\nbuilding_info AS (\n    SELECT fac_rooms.Room, fac_rooms.floor, fac_building_address.BUILDING_KEY, BUILDINGS.BUILDING_STREET_ADDRESS, fac_building_address.CITY, fac_building_address.STATE, fac_building_address.POSTAL_CODE\n    FROM emp_rooms\n    JOIN fac_rooms ON emp_rooms.fac_room_key = fac_rooms.fac_room_key\n    JOIN fac_building_address ON fac_rooms.building_key = fac_building_address.BUILDING_KEY\n    JOIN BUILDINGS ON BUILDINGS.BUILDING_KEY = fac_building_address.BUILDING_KEY\n    WHERE fac_building_address.ADDRESS_PURPOSE = 'STREET'\n)\nSELECT DISTINCT Room, floor, BUILDING_KEY, BUILDING_STREET_ADDRESS, CITY, STATE, POSTAL_CODE\nFROM building_info;",
+    "sql_decomposition": [
+      {
+        "question": "What is the office location for the employee with the full name 'Haynes, Summer' in the employee directory?",
+        "gold-sql": "SELECT office_location FROM employee_directory WHERE full_name = 'Haynes, Summer'",
+        "title": "emp_office",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the office location for the employee with the full name 'Haynes, Summer' in the employee directory?",
+          "B",
+          "Which office does the employee named 'Haynes, Summer' work in, according to the employee directory?",
+          "C",
+          "Can you provide the office location for the employee named 'Haynes, Summer' from the employee directory?",
+          "D",
+          "Where is the office situated for the employee with the full name 'Haynes, Summer' in the employee directory?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the facility room keys that match the office locations of employees?",
+        "gold-sql": "SELECT fac_room_key FROM fac_rooms WHERE fac_room_key = (SELECT office_location FROM emp_office)",
+        "title": "emp_rooms",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the facility room keys that match the office locations of employees?",
+          "B",
+          "Which facility room keys correspond to the office locations of employees?",
+          "C",
+          "Identify the facility room keys that align with the office locations of employees.",
+          "D",
+          "List the facility room keys that are the same as the office locations of employees."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the room details, including room number and floor, associated with each building's street address, city, state, and postal code?",
+        "gold-sql": "SELECT fac_rooms.Room, fac_rooms.floor, fac_building_address.BUILDING_KEY, BUILDINGS.BUILDING_STREET_ADDRESS, fac_building_address.CITY, fac_building_address.STATE, fac_building_address.POSTAL_CODE FROM emp_rooms JOIN fac_rooms ON emp_rooms.fac_room_key = fac_rooms.fac_room_key JOIN fac_building_address ON fac_rooms.building_key = fac_building_address.BUILDING_KEY JOIN BUILDINGS ON BUILDINGS.BUILDING_KEY = fac_building_address.BUILDING_KEY WHERE fac_building_address.ADDRESS_PURPOSE = 'STREET'",
+        "title": "building_info",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the room details, including room number and floor, associated with each building's street address, city, state, and postal code?",
+          "B",
+          "Can you provide a list of room numbers and floors along with the building key, street address, city, state, and postal code for buildings with street addresses?",
+          "C",
+          "How can we retrieve the room information such as room number and floor, along with the building key, street address, city, state, and postal code for buildings designated for 'STREET' purposes?",
+          "D",
+          "Which rooms, including their room numbers and floors, are linked to building details like building key, street address, city, state, and postal code for buildings with 'STREET' as the address purpose?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the unique combinations of Room, floor, Building Key, Building Street Address, City, State, and Postal Code available in the building information dataset?",
+        "gold-sql": "SELECT DISTINCT Room, floor, BUILDING_KEY, BUILDING_STREET_ADDRESS, CITY, STATE, POSTAL_CODE\nFROM building_info;",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the unique combinations of Room, floor, Building Key, Building Street Address, City, State, and Postal Code available in the building information dataset?",
+          "B",
+          "Can you provide a list of distinct rooms along with their corresponding floor numbers, building keys, street addresses, cities, states, and postal codes from the building information table?",
+          "C",
+          "How many different rooms are there in each building, and what are their respective floor numbers, building keys, street addresses, cities, states, and postal codes in the building information dataset?",
+          "D",
+          "Which unique room numbers are associated with different floors, building keys, street addresses, cities, states, and postal codes in the building information table?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "List all buildings with their names, building numbers, building height, street address, city, state, HR department name, assignable square footage, total and average square footage, ordered in descending order of assignable, total, and average square footage.",
+    "gold-sql": "SELECT DISTINCT new.BUILDING_NAME, new.BUILDING_NUMBER, fb.BUILDING_HEIGHT, new.BUILDING_STREET_ADDRESS, fba.CITY, fba.STATE, new.HR_DEPARTMENT_NAME, new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, new.Total_Square_Footage, new.Avg_Square_Footage_Per_Room FROM (SELECT b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, SUM(fr.AREA) AS Total_Square_Footage, AVG(fr.AREA) AS Avg_Square_Footage_Per_Room FROM BUILDINGS b JOIN FAC_BUILDING fb ON b.BUILDING_KEY = fb.FAC_BUILDING_KEY JOIN FAC_ROOMS fr ON fb.FAC_BUILDING_KEY = fr.BUILDING_KEY JOIN FAC_ORGANIZATION fo ON fr.ORGANIZATION_KEY = fo.ORGANIZATION_KEY GROUP BY b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE) new JOIN FAC_BUILDING_ADDRESS fba ON new.FAC_BUILDING_KEY = fba.BUILDING_KEY JOIN FAC_BUILDING fb ON new.FAC_BUILDING_KEY = fb.FAC_BUILDING_KEY WHERE fba.ADDRESS_PURPOSE = 'STREET' ORDER BY new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE DESC, new.Total_Square_Footage DESC, new.Avg_Square_Footage_Per_Room DESC;",
+    "options": [
+      "A",
+      "What are the **building name**, **building number**, **building height**, **street address**, **city**, **state**, **department name**, **assignable square footage**, **total square footage**, and **average square footage per room** for buildings with a **street address** purpose? The results are sorted by **assignable square footage**, **total square footage**, and **average square footage per room** in descending order.",
+      "B",
+      "Can you provide the **building name**, **building number**, **building height**, **street address**, **city**, **state**, **department name**, **assignable square footage**, **total square footage**, and **average square footage per room** for buildings with an **address purpose** of 'STREET'? Please display the data sorted by **assignable square footage**, **total square footage**, and **average square footage per room** in descending order.",
+      "C",
+      "What are the details of buildings, including **building name**, **building number**, **building height**, **street address**, **city**, **state**, **department name**, **assignable square footage**, **total square footage**, and **average square footage per room** for buildings with an **address purpose** of 'STREET'? Sort the results based on **assignable square footage**, **total square footage**, and **average square footage per room** in descending order.",
+      "D",
+      "How can we list the **building name**, **building number**, **building height**, **street address**, **city**, **state**, **department name**, **assignable square footage**, **total square footage**, and **average square footage per room** for buildings that have an **address purpose** of 'STREET'? The output should be sorted by **assignable square footage**, **total square footage**, and **average square footage per room** in descending order."
+    ],
+    "oracle_sql": "SELECT DISTINCT new.BUILDING_NAME, new.BUILDING_NUMBER, fb.BUILDING_HEIGHT, new.BUILDING_STREET_ADDRESS, fba.CITY, fba.STATE, new.HR_DEPARTMENT_NAME, new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, new.Total_Square_Footage, new.Avg_Square_Footage_Per_Room FROM (SELECT b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, SUM(fr.AREA) AS Total_Square_Footage, AVG(fr.AREA) AS Avg_Square_Footage_Per_Room FROM BUILDINGS b JOIN FAC_BUILDING fb ON b.BUILDING_KEY = fb.FAC_BUILDING_KEY JOIN FAC_ROOMS fr ON fb.FAC_BUILDING_KEY = fr.BUILDING_KEY JOIN FAC_ORGANIZATION fo ON fr.ORGANIZATION_KEY = fo.ORGANIZATION_KEY GROUP BY b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE) new JOIN FAC_BUILDING_ADDRESS fba ON new.FAC_BUILDING_KEY = fba.BUILDING_KEY JOIN FAC_BUILDING fb ON new.FAC_BUILDING_KEY = fb.FAC_BUILDING_KEY WHERE fba.ADDRESS_PURPOSE = 'STREET' ORDER BY new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE DESC, new.Total_Square_Footage DESC, new.Avg_Square_Footage_Per_Room DESC;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH BuildingData AS (\n    SELECT b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, SUM(fr.AREA) AS Total_Square_Footage, AVG(fr.AREA) AS Avg_Square_Footage_Per_Room\n    FROM BUILDINGS b\n    JOIN FAC_BUILDING fb ON b.BUILDING_KEY = fb.FAC_BUILDING_KEY\n    JOIN FAC_ROOMS fr ON fb.FAC_BUILDING_KEY = fr.BUILDING_KEY\n    JOIN FAC_ORGANIZATION fo ON fr.ORGANIZATION_KEY = fo.ORGANIZATION_KEY\n    GROUP BY b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE\n),\nBuildingAddress AS (\n    SELECT fba.BUILDING_KEY, fba.CITY, fba.STATE\n    FROM FAC_BUILDING_ADDRESS fba\n    WHERE fba.ADDRESS_PURPOSE = 'STREET'\n)\nSELECT DISTINCT new.BUILDING_NAME, new.BUILDING_NUMBER, fb.BUILDING_HEIGHT, new.BUILDING_STREET_ADDRESS, ba.CITY, ba.STATE, new.HR_DEPARTMENT_NAME, new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, new.Total_Square_Footage, new.Avg_Square_Footage_Per_Room\nFROM BuildingData new\nJOIN BuildingAddress ba ON new.FAC_BUILDING_KEY = ba.BUILDING_KEY\nJOIN FAC_BUILDING fb ON new.FAC_BUILDING_KEY = fb.FAC_BUILDING_KEY\nORDER BY new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE DESC, new.Total_Square_Footage DESC, new.Avg_Square_Footage_Per_Room DESC;\n",
+    "sql_decomposition": [
+      {
+        "question": "What are the building details, including the building name, number, street address, facility building key, HR department name, assignable square footage, total square footage, and average square footage per room for each building?",
+        "gold-sql": "SELECT b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, SUM(fr.AREA) AS Total_Square_Footage, AVG(fr.AREA) AS Avg_Square_Footage_Per_Room FROM BUILDINGS AS b JOIN FAC_BUILDING AS fb ON b.BUILDING_KEY = fb.FAC_BUILDING_KEY JOIN FAC_ROOMS AS fr ON fb.FAC_BUILDING_KEY = fr.BUILDING_KEY JOIN FAC_ORGANIZATION AS fo ON fr.ORGANIZATION_KEY = fo.ORGANIZATION_KEY GROUP BY b.BUILDING_NAME, b.BUILDING_NUMBER, b.BUILDING_STREET_ADDRESS, fb.FAC_BUILDING_KEY, fo.HR_DEPARTMENT_NAME, b.BLDG_ASSIGNABLE_SQUARE_FOOTAGE",
+        "title": "BuildingData",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the building details, including the building name, number, street address, facility building key, HR department name, assignable square footage, total square footage, and average square footage per room for each building?",
+          "B",
+          "Can you provide a list of buildings with their respective details such as building name, number, street address, facility building key, HR department name, assignable square footage, total square footage, and the average square footage per room?",
+          "C",
+          "How can we display the building information like name, number, street address, facility building key, HR department name, assignable square footage, total square footage, and average square footage per room for each building in the dataset?",
+          "D",
+          "Which buildings are listed with their corresponding details, including building name, number, street address, facility building key, HR department name, assignable square footage, total square footage, and the average square footage per room?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "",
+        "gold-sql": "SELECT fba.BUILDING_KEY, fba.CITY, fba.STATE FROM FAC_BUILDING_ADDRESS AS fba WHERE fba.ADDRESS_PURPOSE = 'STREET'",
+        "title": "BuildingAddress",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "What are the building keys, cities, and states of addresses with the purpose 'STREET' in the FAC_BUILDING_ADDRESS table?",
+        "options": [
+          "A",
+          "What are the building keys, cities, and states of addresses with the purpose 'STREET' in the FAC_BUILDING_ADDRESS table?",
+          "B",
+          "Can you provide a list of building keys, cities, and states for addresses marked with the purpose 'STREET' in the FAC_BUILDING_ADDRESS table?",
+          "C",
+          "Which building keys, cities, and states are associated with addresses labeled as 'STREET' in the FAC_BUILDING_ADDRESS table?",
+          "D",
+          "Show the building keys, cities, and states for addresses that have the purpose 'STREET' in the FAC_BUILDING_ADDRESS table."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the unique building names, building numbers, building heights, street addresses, cities, states, HR department names, assignable square footages, total square footages, and average square footages per room of the buildings with their corresponding addresses, sorted by assignable square footage, total square footage, and average square footage per room in descending order?",
+        "gold-sql": "SELECT fba.BUILDING_KEY, fba.CITY, fba.STATE\n    FROM FAC_BUILDING_ADDRESS fba\n    WHERE fba.ADDRESS_PURPOSE = 'STREET'\n)\nSELECT DISTINCT new.BUILDING_NAME, new.BUILDING_NUMBER, fb.BUILDING_HEIGHT, new.BUILDING_STREET_ADDRESS, ba.CITY, ba.STATE, new.HR_DEPARTMENT_NAME, new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE, new.Total_Square_Footage, new.Avg_Square_Footage_Per_Room\nFROM BuildingData new\nJOIN BuildingAddress ba ON new.FAC_BUILDING_KEY = ba.BUILDING_KEY\nJOIN FAC_BUILDING fb ON new.FAC_BUILDING_KEY = fb.FAC_BUILDING_KEY\nORDER BY new.BLDG_ASSIGNABLE_SQUARE_FOOTAGE DESC, new.Total_Square_Footage DESC, new.Avg_Square_Footage_Per_Room DESC;\n",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the unique building names, building numbers, building heights, street addresses, cities, states, HR department names, assignable square footages, total square footages, and average square footages per room of the buildings with their corresponding addresses, sorted by assignable square footage, total square footage, and average square footage per room in descending order?",
+          "B",
+          "Can you provide a list of building names, building numbers, building heights, street addresses, cities, states, HR department names, assignable square footages, total square footages, and average square footages per room for buildings, ordered by assignable square footage, total square footage, and average square footage per room in descending order?",
+          "C",
+          "What are the names, numbers, heights, addresses, cities, states, HR department names, assignable square footages, total square footages, and average square footages per room of buildings, sorted by assignable square footage, total square footage, and average square footage per room in descending order?",
+          "D",
+          "How can we list the building names, numbers, heights, addresses, cities, states, HR department names, assignable square footages, total square footages, and average square footages per room for buildings, ordered by assignable square footage, total square footage, and average square footage per room in descending order?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": false,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "List each academic year, the term code, and the number of newly introduced subjects in this term. Display the academic year only if it differs from the previous entry. Include a grand total (the corresponding year field should be 'TOTAL') stating the total number of subjects across all academic years.",
+    "gold-sql": "SELECT CASE WHEN LAG(ACADEMIC_YEAR) OVER (ORDER BY ata.TERM_CODE) = ACADEMIC_YEAR THEN NULL ELSE ACADEMIC_YEAR END AS ACADEMIC_YEAR, ata.TERM_CODE, COUNT(DISTINCT si) AS distinct_subject_count FROM ACADEMIC_TERMS_ALL ata LEFT OUTER JOIN (SELECT CASE WHEN LAG(subject_id) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = subject_id THEN NULL ELSE subject_id END AS si, CASE WHEN LAG(TERM_CODE) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = TERM_CODE THEN NULL ELSE term_code END AS term_code FROM course_catalog_subject_offered) AS a ON ata.TERM_CODE = a.TERM_CODE GROUP BY ata.TERM_CODE, ACADEMIC_YEAR UNION ALL SELECT 'TOTAL', NULL, COUNT(DISTINCT SUBJECT_ID) AS total_distinct_subject_count FROM course_catalog_subject_offered;",
+    "options": [
+      "A",
+      "What is the count of distinct subject IDs for each term code in the academic terms table? The output includes the academic year, term code, and the count of distinct subject IDs. If the academic year remains the same as the previous row, the academic year is displayed as NULL. The results are grouped by term code and academic year.",
+      "B",
+      "How many unique subject IDs are associated with each term code in the academic terms table? The output consists of the academic year, term code, and the count of distinct subject IDs. If the academic year is the same as the previous row, the academic year is replaced with NULL. The final results are grouped by term code and academic year.",
+      "C",
+      "Can you provide the count of unique subject IDs for each term code in the academic terms table? The result set displays the academic year, term code, and the count of distinct subject IDs. If the academic year matches the previous row, the academic year is shown as NULL. The output is grouped by term code and academic year.",
+      "D",
+      "What is the number of distinct subject IDs per term code in the academic terms table? The output includes the academic year, term code, and the count of distinct subject IDs. If the academic year is the same as the previous row, the academic year is replaced with NULL. The results are grouped by term code and academic year."
+    ],
+    "oracle_sql": "select CASE WHEN Lag(ACADEMIC_YEAR)over (order by ata.TERM_CODE) =ACADEMIC_YEAR THEN NULL ELSE ACADEMIC_YEAR end AS ACADEMIC_YEAR,ata.TERM_CODE, COUNT(distinct si) from ACADEMIC_TERMS_ALL ata LEFT OUTER JOIN (select * from (select CASE WHEN LAG(subject_id) over(ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = subject_id then NULL else subject_id end as si, case when LAG(TERM_CODE) over (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) =TERM_CODE then null else term_code end as term_code from course_catalog_subject_offered) where si is not null) a ON ata.TERM_CODE=a.TERM_CODE GROUP BY ata.TERM_CODE, ACADEMIC_YEAR UNION ALL SELECT 'TOTAL', NULL, COUNT(DISTINCT SUBJECT_ID) FROM COURSE_CATALOG_SUBJECT_OFFERED",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH CTE1 AS (\n    SELECT \n        CASE WHEN LAG(ACADEMIC_YEAR) OVER (ORDER BY ata.TERM_CODE) = ACADEMIC_YEAR THEN NULL ELSE ACADEMIC_YEAR END AS ACADEMIC_YEAR, \n        ata.TERM_CODE, \n        COUNT(DISTINCT si) AS distinct_subject_count \n    FROM ACADEMIC_TERMS_ALL ata \n    LEFT OUTER JOIN (\n        SELECT \n            CASE WHEN LAG(subject_id) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = subject_id THEN NULL ELSE subject_id END AS si, \n            CASE WHEN LAG(TERM_CODE) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = TERM_CODE THEN NULL ELSE term_code END AS term_code \n        FROM course_catalog_subject_offered\n    ) AS a ON ata.TERM_CODE = a.TERM_CODE \n    GROUP BY ata.TERM_CODE, ACADEMIC_YEAR\n),\nCTE2 AS (\n    SELECT 'TOTAL' AS ACADEMIC_YEAR, NULL AS TERM_CODE, COUNT(DISTINCT SUBJECT_ID) AS total_distinct_subject_count \n    FROM course_catalog_subject_offered\n)\nSELECT ACADEMIC_YEAR, TERM_CODE, distinct_subject_count \nFROM CTE1\nUNION ALL\nSELECT ACADEMIC_YEAR, TERM_CODE, total_distinct_subject_count \nFROM CTE2;\n",
+    "sql_decomposition": [
+      {
+        "question": "What is the distribution of distinct subject counts for each academic term in the dataset? Display the academic year, term code, and the number of distinct subjects offered in each term. Are there any terms where no subjects are offered?",
+        "gold-sql": "SELECT CASE WHEN LAG(ACADEMIC_YEAR) OVER (ORDER BY ata.TERM_CODE) = ACADEMIC_YEAR THEN NULL ELSE ACADEMIC_YEAR END AS ACADEMIC_YEAR, ata.TERM_CODE, COUNT(DISTINCT si) AS distinct_subject_count FROM ACADEMIC_TERMS_ALL AS ata LEFT OUTER JOIN (SELECT CASE WHEN LAG(subject_id) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = subject_id THEN NULL ELSE subject_id END AS si, CASE WHEN LAG(TERM_CODE) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = TERM_CODE THEN NULL ELSE term_code END AS term_code FROM course_catalog_subject_offered) AS a ON ata.TERM_CODE = a.TERM_CODE GROUP BY ata.TERM_CODE, ACADEMIC_YEAR",
+        "title": "CTE1",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the distribution of distinct subject counts for each academic term in the dataset? Display the academic year, term code, and the number of distinct subjects offered in each term. Are there any terms where no subjects are offered?",
+          "B",
+          "How many distinct subjects are offered in each academic term? Show the academic year, term code, and the count of unique subjects for each term. Are there any terms with zero subjects offered?",
+          "C",
+          "Can you provide a breakdown of the number of distinct subjects offered in each academic term? Include the academic year, term code, and the count of unique subjects for each term. Are there any terms where no subjects are offered?",
+          "D",
+          "What is the count of unique subjects offered in each academic term? Include the academic year, term code, and the number of distinct subjects for each term. Are there any terms where no subjects are available?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "This query aims to calculate the total number of distinct subject IDs offered in the course catalog. The 'total_distinct_subject_count' is derived by counting the unique occurrences of 'SUBJECT_ID' in the 'course_catalog_subject_offered' table. The final result shows that there are 6845 distinct subject IDs offered in the course catalog.",
+        "gold-sql": "SELECT 'TOTAL' AS ACADEMIC_YEAR, NULL AS TERM_CODE, COUNT(DISTINCT SUBJECT_ID) AS total_distinct_subject_count FROM course_catalog_subject_offered",
+        "title": "CTE2",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "This query aims to calculate the total number of distinct subject IDs offered in the course catalog.",
+          "The 'total_distinct_subject_count' is derived by counting the unique occurrences of 'SUBJECT_ID' in the 'course_catalog_subject_offered' table.",
+          "The final result shows that there are 6845 distinct subject IDs offered in the course catalog.",
+          "B",
+          "What is the total count of unique subject IDs available in the course catalog?",
+          "The output displays 'ACADEMIC_YEAR' as 'TOTAL', 'TERM_CODE' as NULL, and 'total_distinct_subject_count' representing the distinct count of subject IDs.",
+          "The 'total_distinct_subject_count' is calculated by counting the unique occurrences of 'SUBJECT_ID' in the 'course_catalog_subject_offered' table.",
+          "The query result reveals that there are 6845 distinct subject IDs listed in the course catalog.",
+          "C",
+          "How many different subject IDs are there in the course catalog?",
+          "The output includes 'ACADEMIC_YEAR' labeled as 'TOTAL', 'TERM_CODE' with NULL, and 'total_distinct_subject_count' indicating the count of unique subject IDs.",
+          "The 'total_distinct_subject_count' is computed by counting the distinct occurrences of 'SUBJECT_ID' in the 'course_catalog_subject_offered' table.",
+          "The query outcome specifies a total of 6845 distinct subject IDs available in the course catalog.",
+          "D",
+          "What is the total number of unique subject IDs listed in the course catalog?",
+          "The result set consists of 'ACADEMIC_YEAR' denoted as 'TOTAL', 'TERM_CODE' as NULL, and 'total_distinct_subject_count' showing the count of distinct subject IDs.",
+          "The 'total_distinct_subject_count' is determined by counting the unique 'SUBJECT_ID' entries in the 'course_catalog_subject_offered' table.",
+          "The query output highlights that there are 6845 distinct subject IDs offered in the course catalog."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What is the count of distinct subject IDs for each academic year and term code in the course catalog subject offered table? How does this count change compared to the previous academic year and term code?",
+        "gold-sql": "SELECT \n            CASE WHEN LAG(subject_id) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = subject_id THEN NULL ELSE subject_id END AS si, \n            CASE WHEN LAG(TERM_CODE) OVER (ORDER BY SUBJECT_ID, TERM_CODE ASC, ACADEMIC_YEAR ASC) = TERM_CODE THEN NULL ELSE term_code END AS term_code \n        FROM course_catalog_subject_offered\n    ) AS a ON ata.TERM_CODE = a.TERM_CODE \n    GROUP BY ata.TERM_CODE, ACADEMIC_YEAR\n),\nCTE2 AS (\n    SELECT 'TOTAL' AS ACADEMIC_YEAR, NULL AS TERM_CODE, COUNT(DISTINCT SUBJECT_ID) AS total_distinct_subject_count \n    FROM course_catalog_subject_offered\n)\nSELECT ACADEMIC_YEAR, TERM_CODE, distinct_subject_count \nFROM CTE1\nUNION ALL\nSELECT ACADEMIC_YEAR, TERM_CODE, total_distinct_subject_count \nFROM CTE2;\n",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What is the count of distinct subject IDs for each academic year and term code in the course catalog subject offered table? How does this count change compared to the previous academic year and term code?",
+          "B",
+          "Can you provide the academic year, term code, and the count of distinct subject IDs for each combination in the course catalog subject offered table? Additionally, what is the total count of distinct subject IDs across all academic years?",
+          "C",
+          "How many unique subject IDs are there for each academic year and term code in the course catalog subject offered table? Could you also show the total count of distinct subject IDs for all academic years combined?",
+          "D",
+          "For every academic year and term code in the course catalog subject offered table, what is the number of distinct subject IDs? How does this count compare to the total count of distinct subject IDs across all academic years?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  },
+  {
+    "adjusted": true,
+    "comment": "",
+    "db_id": "dw",
+    "gold-question": "For each course, list its title, name of the building of the course location, duration (in terms of days), and a running average of the duration (in terms of days) using a window of two preceding and two following courses (partitioned by academic year and sorted by course start date).",
+    "gold-sql": "select distinct ccso.subject_title, building_name, ccso.duration, avg(duration) over (partition by ccso.academic_year order by ccso.term_start_date rows between 2 preceding and 2 following) from (select distinct subject_title, term_start_date, term_end_date-term_start_date as duration, cis.academic_year, meet_place from academic_terms join COURSE_CATALOG_SUBJECT_OFFERED cis on cis.effective_term_code=academic_terms.term_code) ccso JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY;",
+    "options": [
+      "A",
+      "What are the subject titles, building names, durations, and the average duration over a specific academic year for courses offered? The output includes the subject title, building name, duration of the course, and the average duration calculated over a window of 5 terms (2 preceding, current, and 2 following).",
+      "B",
+      "Can you provide a list of subject titles, building names, course durations, and the average duration for courses offered in different academic years? The result displays the subject title, building name, course duration, and the average duration computed over a range of 5 terms (2 preceding, current, and 2 following).",
+      "C",
+      "Which courses have specific subject titles, building names, durations, and the average duration over a particular academic year? The output showcases the subject title, building name, course duration, and the average duration calculated across 5 terms (2 preceding, current, and 2 following).",
+      "D",
+      "How do the subject titles, building names, course durations, and the average duration vary for courses offered in different academic years? The result presents the subject title, building name, course duration, and the average duration derived from a window of 5 terms (2 preceding, current, and 2 following)."
+    ],
+    "oracle_sql": "select distinct ccso.subject_title, building_name, ccso.duration, avg(duration) over (partition by ccso.academic_year order by ccso.term_start_date rows between 2 preceding and 2 following) from (select distinct subject_title, term_start_date, term_end_date-term_start_date as duration, cis.academic_year, meet_place from academic_terms join COURSE_CATALOG_SUBJECT_OFFERED cis on cis.effective_term_code=academic_terms.term_code) ccso JOIN FCLT_ROOMS fr ON ccso.MEET_PLACE = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY;",
+    "question": "",
+    "sql": "",
+    "question_ts_and_es": "A",
+    "sql_in_cte": "WITH ccso_cte AS (\n    SELECT DISTINCT subject_title, term_start_date, term_end_date - term_start_date AS duration, cis.academic_year, meet_place\n    FROM academic_terms\n    JOIN COURSE_CATALOG_SUBJECT_OFFERED cis ON cis.effective_term_code = academic_terms.term_code\n),\navg_duration_cte AS (\n    SELECT subject_title, building_name, duration, AVG(duration) OVER (PARTITION BY academic_year ORDER BY term_start_date ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) AS avg_duration\n    FROM ccso_cte\n    JOIN FCLT_ROOMS fr ON ccso_cte.meet_place = fr.FCLT_ROOM_KEY\n    JOIN FCLT_BUILDING fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY\n)\nSELECT DISTINCT subject_title, building_name, duration, avg_duration\nFROM avg_duration_cte;\n",
+    "sql_decomposition": [
+      {
+        "question": "What are the subject titles, start dates, durations, academic years, and meeting places for courses offered in the academic terms? The output includes the subject title, term start date, duration (calculated as the term end date minus the term start date), academic year, and meeting place.",
+        "gold-sql": "SELECT DISTINCT subject_title, term_start_date, term_end_date - term_start_date AS duration, cis.academic_year, meet_place FROM academic_terms JOIN COURSE_CATALOG_SUBJECT_OFFERED AS cis ON cis.effective_term_code = academic_terms.term_code",
+        "title": "ccso_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the subject titles, start dates, durations, academic years, and meeting places for courses offered in the academic terms? The output includes the subject title, term start date, duration (calculated as the term end date minus the term start date), academic year, and meeting place.",
+          "B",
+          "Can you provide a list of subject titles, term start dates, durations, academic years, and meeting places for courses offered in the academic terms? The duration is calculated as the difference between the term end date and the term start date.",
+          "C",
+          "Which subject titles, term start dates, durations, academic years, and meeting places are associated with courses offered in the academic terms? The duration represents the length of each term, calculated as the term end date minus the term start date.",
+          "D",
+          "How do the subject titles, term start dates, durations, academic years, and meeting places for courses offered in the academic terms relate to each other? The duration is derived by subtracting the term start date from the term end date."
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the subject titles, building names, durations, and the average duration of classes for each academic year? The average duration is calculated based on the durations of classes within a window of 2 preceding and 2 following terms.",
+        "gold-sql": "SELECT subject_title, building_name, duration, AVG(duration) OVER (PARTITION BY academic_year ORDER BY term_start_date ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) AS avg_duration FROM ccso_cte JOIN FCLT_ROOMS AS fr ON ccso_cte.meet_place = fr.FCLT_ROOM_KEY JOIN FCLT_BUILDING AS fb ON fb.FCLT_BUILDING_KEY = fr.FCLT_BUILDING_KEY",
+        "title": "avg_duration_cte",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the subject titles, building names, durations, and the average duration of classes for each academic year? The average duration is calculated based on the durations of classes within a window of 2 preceding and 2 following terms.",
+          "B",
+          "How do the subject titles, building names, and durations of classes vary across different academic years? Additionally, what is the average duration of classes within a window of 2 preceding and 2 following terms for each academic year?",
+          "C",
+          "Can you provide a list of subject titles, building names, durations, and the average duration of classes for each academic year? The average duration is computed by considering the durations of classes within a window of 2 preceding and 2 following terms.",
+          "D",
+          "What is the relationship between subject titles, building names, and class durations across different academic years? How is the average duration of classes calculated within a window of 2 preceding and 2 following terms for each academic year?"
+        ],
+        "question_ts_and_es": "A"
+      },
+      {
+        "question": "What are the unique subject titles, building names, durations, and average durations from the table?",
+        "gold-sql": "SELECT DISTINCT subject_title, building_name, duration, avg_duration\nFROM avg_duration_cte;\n",
+        "title": "main",
+        "db_id": "dw",
+        "adjusted": false,
+        "comment": "",
+        "options": [
+          "A",
+          "What are the unique subject titles, building names, durations, and average durations from the table?",
+          "B",
+          "Can you show me the subject titles, building names, durations, and average durations without any duplicates?",
+          "C",
+          "Which subject titles, building names, durations, and average durations are listed in the table without repetition?",
+          "D",
+          "How can I retrieve a list of subject titles, building names, durations, and average durations without any duplicates?"
+        ],
+        "question_ts_and_es": "A"
+      }
+    ]
+  }
+]

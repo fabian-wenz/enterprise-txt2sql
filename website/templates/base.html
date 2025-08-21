@@ -110,15 +110,21 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ api_key: apiKey, user_id: userId }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);  // Show success message from Flask
-            hidePopup();  // Close the popup
-        })
-        .catch(error => console.error("Error sending data:", error));
+                },
+                body: JSON.stringify({ api_key: apiKey, user_id: userId }),
+            })
+            .then(response => {
+                // Try to parse JSON safely
+                return response.json().catch(() => ({}));
+            })
+            .then(data => {
+                if (data.message) alert(data.message);
+                hidePopup();  // Always hide popup after attempt
+            })
+            .catch(error => {
+                console.error("Error sending data:", error);
+                hidePopup();  // Still hide popup if something fails
+            });
     }
 </script>
 
