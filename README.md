@@ -107,7 +107,7 @@ Then open your browser and go to:
 ## 📜 Paper
 
 > **BENCHPRESS: An Annotation System for Rapid Text-to-SQL Benchmark Curation**  
-> Fabian Wenz*, Peter Baile Chen*, Moe Kayali, Michael Stonebraker, Cagatay Demiralp  
+> Peter Baile Chen*, Fabian Wenz, Moe Kayali, Michael Stonebraker, Cagatay Demiralp  
 > _To appear at CIDR 2026_  
 > [📄 View on arXiv](https://arxiv.org/abs/2409.02038)
 
