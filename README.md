@@ -22,7 +22,7 @@ This system was developed as part of the BENCHPRESS project and supports benchma
 ## 📺 Demo & Deployment
 
 - **Live Demo:** _Coming soon_ <!-- [Coming soon] or [deployment link if hosted] -->
-- **Video Walkthrough:** [▶ Watch on YouTube](https://www.youtube.com/your-demo-video-url)
+- **Video Walkthrough:** [▶ Watch on YouTube](https://www.youtube.com/coming soon)
 - **Poster Presentation:** _NEDB 2025 Poster (Link coming soon)_
 
 ---
@@ -82,11 +82,11 @@ Then open your browser and go to:
 
 ```text
 .
-├── data/                # Sample SQL logs and generated benchmark data
-├── scripts/             # Preprocessing, clustering, and evaluation scripts
-├── app.py               # Main entry point for the UI
-├── config.py         # Prompts and LLM interaction
 ├── demo/                # Screenshots and videos for README
+├── website/             # Preprocessing, clustering, and evaluation scripts
+  ├── data/                # Sample SQL logs and generated benchmark data
+  ├── app.py               # Main entry point for the UI
+  ├── config.py            # Prompts and LLM interaction
 ├── requirements.txt     # Python dependencies
 └── README.md            # This file
 ```
