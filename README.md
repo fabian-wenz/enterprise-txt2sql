@@ -23,7 +23,7 @@ This system was developed as part of the BENCHPRESS project and supports benchma
 
 - **Live Demo:** _Coming soon_ <!-- [Coming soon] or [deployment link if hosted] -->
 - **Video Walkthrough:** [▶ Watch on YouTube](https://www.youtube.com/coming soon)
-- **Poster Presentation:** _NEDB 2025 Poster (Link coming soon)_
+- **Poster Presentation:** [View the _NEDB 2025 Poster_(PDF)](demo/BENCHPRESS-NEDB-poster.pdf)
 
 ---
 
@@ -107,9 +107,9 @@ Then open your browser and go to:
 ## 📜 Paper
 
 > **BENCHPRESS: An Annotation System for Rapid Text-to-SQL Benchmark Curation**  
-> Peter Baile Chen*, Fabian Wenz, Moe Kayali, Michael Stonebraker, Cagatay Demiralp  
-> _To appear at CIDR 2026_  
-> [📄 View on arXiv](https://arxiv.org/abs/2409.02038)
+> Fabian Wenz*, Peter Baile Chen, Moe Kayali, Michael Stonebraker, Cagatay Demiralp  
+> _Submitted to CIDR 2026_  
+> [📄 coming soon on](https://)
 
 ---
 
