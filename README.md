@@ -66,14 +66,18 @@ Then open your browser and go to:
 
 ## 🧠 Annotation Workflow
 
-1. **Input SQL logs** – Upload or load logs from disk  
-2. **Preprocessing** – Deduplicate and cluster queries  
-3. **Generation** – Generate natural language questions via LLMs  
-4. **Verification** – Manually or semi-automatically check the NL-SQL pairs  
-5. **Export** – Export benchmark-ready datasets for evaluation or training
+1. **Project Setup**: Create a new annotation project for a specific enterprise workload.
+2. **Data Ingestion**: Upload SQL logs and schema files, or select a public benchmark (Bird, FIBEN, Spider, Beaver).
+3. **Task Configuration**: Select annotation direction (SQL→NL) and a language model (e.g., GPT-4o, GPT-3.5, DeepSeek).
+3.5. **(Optional) Decomposition**: Split nested SQL into simpler subqueries using CTEs.
+4. **Context Retrieval**: Retrieve similar annotated examples and relevant tables using dense embeddings.
+5. **Candidate Generation**: LLM generates 4 NL candidates using retrieval-augmented few-shot prompting.
+5.5. **(Optional) Recomposition**: Merge subquery descriptions into a single coherent explanation.
+6. **Human Feedback**: Annotators rank, edit, or discard LLM outputs.
+7. **Review & Export**: Export final annotations for training or evaluation; optionally auto-evaluate if ground truth exists.
 
 <p align="center">
-  <img src="demo/workflow.png" width="700" alt="Annotation Workflow">
+  <img src="demo/workflow.jpeg" width="700" alt="Annotation Workflow">
 </p>
 
 ---
