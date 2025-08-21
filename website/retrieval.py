@@ -63,7 +63,8 @@ def rank_sentences_more(ref_embedding, sentence_list, sentence_embeddings, nl_qu
     :param nl_questions: List of corresponding NL questions.
     :return: List of tuples (SQL query, NL question, similarity score), sorted by similarity.
     """
-
+    if sentence_embeddings == []:
+        return []
     # Compute cosine similarities
     similarities = np.dot(sentence_embeddings, ref_embedding) / (
         np.linalg.norm(sentence_embeddings, axis=1) * np.linalg.norm(ref_embedding)

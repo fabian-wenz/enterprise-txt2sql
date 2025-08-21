@@ -28,6 +28,7 @@
 <form method="POST" action="{{ url_for('save_and_next_annotation', annotation_id=annotation_id) }}?type=decomposed_sql" id="annotation-form">
 
 {% for annotation in annotations.sql_decomposition %}
+    {% set outer_index = loop.index %}
 <div id="annotation-container">
     <div class="options-section">
         <p class="visualized-text">This is one part of the SQL expressed at the top. For the upcoming prompt relevant examples and relevant tables will be provided. Please modify the selection if needed.</p>
@@ -43,9 +44,9 @@
         <p>Suggestions:</p>
             <div id="suggested_tables">
                 {% for option in annotation.suggested_tables %}
-                <div class="option" data-option-id="{{ loop.index }}">
-                    <input type="checkbox" id="suggested_tables-{{ loop.index }}" name="selected_suggested_tables{{annotation.title}}" value="{{ option }}" checked>
-                    <label for="suggested_tables-{{ loop.index }}" class="option-button">
+                <div class="option" data-option-id="{{ outer_index }}-{{ loop.index }}">
+                    <input type="checkbox" id="suggested_tables-{{ outer_index}}-{{ loop.index }}" name="selected_suggested_tables{{annotation.title}}" value="{{ option }}" checked>
+                    <label for="suggested_tables-{{ outer_index}}-{{ loop.index }}" class="option-button">
                         {{ option }}
                     </label>
                 </div>
@@ -54,9 +55,9 @@
         <p>Additional tables:</p>
             <div id="tables">
                 {% for option in annotation.tables %}
-                <div class="option" data-option-id="{{ loop.index }}">
-                    <input type="checkbox" id="tables-{{ loop.index }}" name="selected_tables{{annotation.title}}" value="{{ option }}" {% if annotation.annotation | trim | lower == option | trim | lower %}checked{% endif %}>
-                    <label for="tables-{{ loop.index }}" class="option-button">
+                <div class="option" data-option-id="{{ outer_index}}-{{ loop.index }}">
+                    <input type="checkbox" id="tables-{{ outer_index}}-{{ loop.index }}" name="selected_tables{{annotation.title}}" value="{{ option }}" {% if annotation.annotation | trim | lower == option | trim | lower %}checked{% endif %}>
+                    <label for="tables-{{ outer_index}}-{{ loop.index }}" class="option-button">
                         {{ option }}
                     </label>
                 </div>
@@ -69,9 +70,9 @@
         <p>Suggestions:</p>
         <div id="suggested_examples">
             {% for option in annotation.suggested_examples %}
-            <div class="option" data-option-id="{{ loop.index }}">
-                <input type="checkbox" id="suggested_example-{{ loop.index }}" name="selected_suggested_examples{{annotation.title}}" value="{{ option }}" checked>
-                <label for="suggested_example-{{ loop.index }}" class="option-button">{{ option }}</label>
+            <div class="option" data-option-id="{{ outer_index }}-{{ loop.index }}">
+                <input type="checkbox" id="suggested_example-{{ outer_index}}-{{ loop.index }}" name="selected_suggested_examples{{annotation.title}}" value="{{ option }}" checked>
+                <label for="suggested_example-{{ outer_index}}-{{ loop.index }}" class="option-button">{{ option }}</label>
             </div>
             {% endfor %}
         </div>
@@ -79,8 +80,8 @@
         <div id="examples">
             {% for option in annotation.examples %}
             <div class="option" data-option-id="{{ loop.index }}">
-                <input type="checkbox" id="example-{{ loop.index }}" name="selected_examples{{annotation.title}}" value="{{ option }}">
-                <label for="example-{{ loop.index }}" class="option-button">{{ option }}</label>
+                <input type="checkbox" id="example-{{ outer_index }}-{{ loop.index }}" name="selected_examples{{annotation.title}}" value="{{ option }}">
+                <label for="example-{{ outer_index }}-{{ loop.index }}" class="option-button">{{ option }}</label>
             </div>
             {% endfor %}
         </div>
