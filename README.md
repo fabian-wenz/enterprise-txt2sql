@@ -69,10 +69,10 @@ Then open your browser and go to:
 1. **Project Setup**: Create a new annotation project for a specific enterprise workload.
 2. **Data Ingestion**: Upload SQL logs and schema files, or select a public benchmark (Bird, FIBEN, Spider, Beaver).
 3. **Task Configuration**: Select annotation direction (SQL→NL) and a language model (e.g., GPT-4o, GPT-3.5, DeepSeek).
-3.5. **(Optional) Decomposition**: Split nested SQL into simpler subqueries using CTEs.
+4. **(Optional) Decomposition**: Split nested SQL into simpler subqueries using CTEs.
 4. **Context Retrieval**: Retrieve similar annotated examples and relevant tables using dense embeddings.
 5. **Candidate Generation**: LLM generates 4 NL candidates using retrieval-augmented few-shot prompting.
-5.5. **(Optional) Recomposition**: Merge subquery descriptions into a single coherent explanation.
+6. **(Optional) Recomposition**: Merge subquery descriptions into a single coherent explanation.
 6. **Human Feedback**: Annotators rank, edit, or discard LLM outputs.
 7. **Review & Export**: Export final annotations for training or evaluation; optionally auto-evaluate if ground truth exists.
 
@@ -89,6 +89,7 @@ Then open your browser and go to:
 ├── demo/                # Screenshots and videos for README
 ├── website/             # Preprocessing, clustering, and evaluation scripts
   ├── data/                # Sample SQL logs and generated benchmark data
+  ├── templates/           # HTML templates for visualizinf the website
   ├── app.py               # Main entry point for the UI
   ├── config.py            # Prompts and LLM interaction
 ├── requirements.txt     # Python dependencies
