@@ -13,6 +13,12 @@
     </nav>
 {% endblock %}
 {% block content %}
+
+<style>
+    table { width: 50%; border-collapse: collapse; margin: 20px auto; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #007BFF; color: white; }
+</style>
     <p class="visualized-text" style="font-size: 12px;">Percentage of already annotated data:</p>
     <div class="progress-container">
          <div class="progress-bar" id="progress-bar" style="width: {{ annotation.percentage }}%">
@@ -34,7 +40,21 @@
     <label for="comment-box" class="comment-label">
     <textarea id="comment-box" class="comment-box" name="sql_in_cte">{{ annotation.sql_in_cte }}</textarea>
     </label>
-    </form>
+    </form><br/>
+    <table>
+        <tr>
+            {% for col in annotation.column_names %}
+            <th>{{ col }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in annotation.rows %}
+        <tr>
+            {% for value in row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
     </div>
     </div>
 
@@ -59,6 +79,7 @@
     </div>
 
 </div>
+
 <script>
     // Get the comment-box element
 const textarea = document.getElementById('comment-box');

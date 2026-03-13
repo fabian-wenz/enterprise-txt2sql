@@ -169,7 +169,7 @@ def generate_candidate(model, api_key, prompt,prompt_txt, sql, tables, examples,
     # Make the API call to generate natural language questions
     response = client.chat.completions.create(
         model=model,
-        temperature=0,  # Zero temperature ensures correctness and consistency
+        #temperature=0,  # Zero temperature ensures correctness and consistency
         messages=[
             {
                 "role": "system",
@@ -274,7 +274,7 @@ def generate_combined_candidate(model, api_key, sql_in_cte, nl_annotations, exam
     # Make the API call to generate natural language questions
     response = client.chat.completions.create(
         model=model,
-        temperature=0,  # Zero temperature ensures correctness and consistency
+        #temperature=0,  # Zero temperature ensures correctness and consistency
         messages=[
             {
                 "role": "user",
@@ -307,7 +307,7 @@ def generate_improved_prompt(model, api_key, prompt_text, options, selected_opti
     # Construct the GPT request
     response = client.chat.completions.create(
         model=model,
-        temperature=0,  # Slight creativity while maintaining accuracy
+        #temperature=0,  # Slight creativity while maintaining accuracy
         messages=[
             {
                 "role": "system",

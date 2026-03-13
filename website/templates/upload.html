@@ -27,7 +27,10 @@
                 </div>
                 {% endfor %}
 
-                <p>or upload your own files: (temporarily under construction)</p>
+                <!--<p>• INTEL</p>
+                <p>• BEAVER</p><br><br>-->
+
+                <p>or upload your own files:</p>
                 <div class="option" data-option-id="4">
                     <input type="radio" id="option-4" name="selected_option" value="OwnUpload"{% if annotation.temp | trim | lower == "OwnUpload" | trim | lower %}checked{% endif %}>
                     <label for="option-4" class="option-button">Upload files below</label>
@@ -45,6 +48,7 @@
                     </div>
                 </div>
             </div>
+
         </form>
     </div>
 

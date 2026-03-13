@@ -60,8 +60,8 @@
 
             document.getElementById("editableAPIkey").value = apiKey;
             document.getElementById("editableUserId").value = userId;
-            document.getElementById("api_key_display").innerText = "API Key: " + apiKey;
-            document.getElementById("user_id_display").innerText = "User ID: " + userId; // Display user ID
+            document.getElementById("api_key_display").innerText = "API Key: " ;//+ apiKey;
+            document.getElementById("user_id_display").innerText = "User ID: " ;//+ userId; // Display user ID
 
             // Send API Key and User ID to Flask (only once)
             fetch("/save_api_key_and_user_id", {

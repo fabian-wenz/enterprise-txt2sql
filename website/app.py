@@ -245,7 +245,13 @@ def save_and_next():
         MODEL = request.form.get('selected_model')
         OVERALL_TIME = time.time()
         SINGLE_TIME = time.time()
-        return redirect(url_for("retrieval", annotation_id=1))
+        logdata = load_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()))
+        id = 0
+        for i in range(len(logdata)):
+            id = i
+            if len(logdata[i]["question"])==0:
+                break
+        return redirect(url_for("retrieval", annotation_id=id+1))
     html_file = os.path.basename(type)
     print(type)
     print(html_file)
@@ -409,6 +415,22 @@ def decomposition(annotation_id):
             num_annotated+=1
     annotation['percentage'] = round(num_annotated / data_length *100,2)
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
+    conn = sqlite3.connect("./data/"+DATABASE.lower()+"/database/"+annotation['db_id'] + "/"+annotation['db_id'] + ".sqlite")
+    cursor = conn.cursor()
+
+    # Execute a SELECT query
+    try:
+        cursor.execute(annotation['gold-sql'].replace("FIBEN.", ""))
+        annotation['rows'] = cursor.fetchall()
+        annotation['rows'] = annotation['rows'][:min(10, len(annotation['rows']))]
+        annotation['column_names'] = [desc[0] for desc in cursor.description]
+
+        # Close the connection
+        conn.close()
+    except Exception as e:
+        print(e)
+        annotation['rows'] =[[str(e)]]
+        annotation['column_names'] = ["ERROR"]
     return render_template("decomposition.html", annotation=annotation, annotation_id=annotation_id, data_length=data_length)
 
 @app.route('/decomposed_retrieval/<int:annotation_id>')
@@ -434,7 +456,7 @@ def decomposed_retrieval(annotation_id):
         #schema["schema_embedding"] = schema["schema_embedding"].apply(lambda x: np.array(x))
         most_relevant_tables_ = rank_sentences(annotations['sql_decomposition'][i]['sql_embedding'], list(schema['schema']), list(schema["schema_embedding"]))
         try:
-            most_relevant_tables = Parser(annotations['sql_decomposition'][i]['gold-sql']).tables
+            most_relevant_tables = [t.upper() for t in Parser(annotations['sql_decomposition'][i]['gold-sql']).tables]
             len_tables = len(most_relevant_tables)
         except Exception as e:
             print(str(e))
@@ -443,13 +465,12 @@ def decomposed_retrieval(annotation_id):
         for t in most_relevant_tables_:
             if t[0].split(',')[0] not in most_relevant_tables:
                 most_relevant_tables.append(t[0].split(',')[0])
-        annotations['sql_decomposition'][i]['gold_sql'] = sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper')
+        annotations['sql_decomposition'][i]['gold_sql'] = sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper').lstrip()
         annotations['sql_decomposition'][i]['suggested_examples']=most_relevant_examples[:2]
         annotations['sql_decomposition'][i]['examples']=most_relevant_examples[3:(min(5, len(most_relevant_examples)-5))]
-        annotations['sql_decomposition'][i]['tables']=most_relevant_tables[len_tables:(min(len_tables+2, len(most_relevant_tables)-len_tables))]
+        annotations['sql_decomposition'][i]['tables']=[t[3:] if t.startswith("DW-") else t for t in most_relevant_tables[len_tables:(min(len_tables+2, len(most_relevant_tables)-len_tables))]]
         tables = retrieve_filenames(SCHEMA_FOLDER.format(DATABASE=DATABASE.lower()))
-        if annotation.get("db_id") == "dw":
-            tables = [t[3:] for t in tables]
+        tables = [t.split("-",1)[-1] for t in tables]
         annotations['sql_decomposition'][i]['suggested_tables']=most_relevant_tables[:len_tables]
         annotations['sql_decomposition'][i]['suggested_tables'] = list(set(annotations['sql_decomposition'][i]['suggested_tables']) & set(tables))
     annotations['percentage'] = round(num_annotated / data_length *100,2)
@@ -472,7 +493,7 @@ def recompose_sql_annotation(annotation_id):
     annotation['column'] = ['c']
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
     logdata_=pd.DataFrame(logdata)
-    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['sql_embedding'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['gold-question'][i] for i in range(data_length) if not logdata['question'][i] == ""])
+    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['sql_embedding'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['gold-question'][i] for i in range(data_length) if not logdata_['question'][i] == ""])
     most_relevant_examples = [{'sql':x[0],'question':x[1]} for x in most_relevant_examples_]
     nl_annotations = {}
     for i in range(len(annotation['sql_decomposition'])):
@@ -494,7 +515,10 @@ def recompose_sql_annotation(annotation_id):
         print(e)
         annotation_['rows'] =[[str(e)]]
         annotation_['column_names'] = ["ERROR"]
-    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_examples[1]["question"], PROMPT_TXT, annotation_['rows'], annotation_['column_names'])
+    most_relevant_example = (most_relevant_examples[0]["question"] if len(most_relevant_examples) > 0 else "")
+    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_example, PROMPT_TXT, annotation_['rows'], annotation_['column_names'])
+    logdata[annotation_id - 1] = annotation
+    save_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()), logdata)
     return render_template("recompose_sql_annotation.html", annotation=annotation, annotation_id=annotation_id, data_length=data_length)
 
 @app.route('/retrieval/<int:annotation_id>')
@@ -596,4 +620,4 @@ def upload():
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)
