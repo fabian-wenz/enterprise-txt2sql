@@ -10,3 +10,4 @@ __pycache__
 *.sql
 *.zip
 website/trash/*
+website/data/fiben/database/database.zip
