@@ -103,8 +103,18 @@ def submit():
 
     # Redirect back to the homepage after submission
     return redirect(url_for("index"))
+
 @app.route("/save_api_key_and_user_id", methods=["POST"])
 def save_api_key_and_user_id():
+    CONFIG_FILE = "config.json"
+
+    # Load existing config if it exists
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r") as f:
+            config = json.load(f)
+    else:
+        config = {}
+
     global API_KEY, SQL_FILE, DATABASE
     data = request.json
     api_key = data.get("api_key")
@@ -113,15 +123,22 @@ def save_api_key_and_user_id():
     if not api_key:
         return jsonify({"message": "API Key is missing!"}), 400
 
-    API_KEY = api_key  # Store in memory (or a database)
+    API_KEY = api_key
     print("Received API Key:", API_KEY)
 
-    #file_path = Path("./data/user/queries_"+user_id+'.json')
-    file_path = Path(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json')
+    # ---- SAVE API KEY + USER ID INTO CONFIG ----
+    config["api_key"] = api_key
+    config["user_id"] = user_id
+    config["database"] = DATABASE
+    with open(CONFIG_FILE, "w") as f:
+        json.dump(config, f, indent=4)
+    # --------------------------------------------
+
+    file_path = Path(SQL_FILE.format(DATABASE=DATABASE.lower()) + ".json")
     output_path = Path("./data/user/queries_" + user_id + ".json")
 
     if not output_path.exists():
-        with open(file_path, 'r') as f_in:
+        with open(file_path, "r") as f_in:
             data = json.load(f_in)
 
         first_15 = data[:15]
@@ -132,15 +149,14 @@ def save_api_key_and_user_id():
 
         new_data = first_15 + last_15
 
-        with open(output_path, 'w') as f_out:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, "w") as f_out:
             json.dump(new_data, f_out, indent=2)
-    #if not file_path.exists():
-    #    with open(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json', 'r') as f_in, open("./data/user/queries_"+user_id+'.json', 'w') as f_out:
-    #        f_out.write(f_in.read())
-    SQL_FILE = "./data/user/queries_"+user_id
+
+    SQL_FILE = "./data/user/queries_" + user_id
 
     return jsonify({"message": "API Key saved successfully!"})
-
 @app.route('/decomposed_sql_annotation/<int:annotation_id>')
 def decomposed_sql_annotation(annotation_id):
 
@@ -198,6 +214,13 @@ def sql_annotation(annotation_id):
     annotation_ = annotation
     annotation_['percentage'] = round(num_annotated / data_length *100,2)
     annotation_['gold_sql'] = sqlparse.format(annotation_['gold-sql'], reindent=True, keyword_case='upper')
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).resolve().parent
+
+    db_path = BASE_DIR / "data" / DATABASE.lower() / "database" / annotation_['db_id'] / f"{annotation_['db_id']}.sqlite"
+
+    print("Opening DB:", db_path)    
     conn = sqlite3.connect("./data/"+DATABASE.lower()+"/database/"+annotation_['db_id'] + "/"+annotation_['db_id'] + ".sqlite")
     cursor = conn.cursor()
 
@@ -547,35 +570,12 @@ def retrieval(annotation_id):
 #    annotation['tables']=['table11', 'table12', 'table13']
 #    annotation['suggested_tables']=['table1', 'table2', 'table3']
 #    return render_template('correction.html', annotation=annotation, annotation_id=annotation_id, data_length=10)
-@app.route('/review/')
+from handlers.review import _review
+
+@app.route('/review')
 def review():
-    logdata = pd.read_json(SQL_FILE.format(DATABASE=DATABASE.lower())+".json")
-    """
-    Computes BLEU, ROUGE, METEOR, and BERTScore for two lists of NL queries.
-    Returns a list of scores for each pair.
-    """
-    logdata = logdata[logdata['question']!=""]
-    generated_list = logdata["question"]
-    reference_list = logdata["gold-question"]
-    if len(reference_list) != len(generated_list):
-        raise ValueError("Both lists must have the same length.")
-
-    results = {"BLEU": [], "ROUGE": [],  "BERTScore": []}
-
-    for ref, gen in zip(reference_list, generated_list):
-        if not ref or not gen:
-            scores = {"BLEU": 0.0, "ROUGE": 0.0,  "BERTScore": 0.0}
-        else:
-
-            scores = evaluate_nl_accuracy(ref, gen)
-
-        results['BLEU'].append(float(scores['BLEU']))
-        results['ROUGE'].append(float(scores['ROUGE']))
-        results['BERTScore'].append(float(scores['BERTScore']))
-
-    result = {"adjusted": sum(logdata[logdata["adjusted"]==True]["adjusted"]), "annotated": len(generated_list),"bleu": round(np.mean(results['BLEU'])*100,2), "rouge": round(np.mean(results['ROUGE'])*100,2),  "bert": round(np.mean(results['BERTScore'])*100, 2)}
-    print(result)
-    return render_template('review.html', annotation=result)
+    return _review()
+    
 @app.route('/feedback/<int:annotation_id>')
 def feedback(annotation_id):
     global PROMPT_TXT,API_KEY, MODEL, SQL_FILE, DATABASE
@@ -596,4 +596,4 @@ def upload():
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(port=8000, debug=True)
