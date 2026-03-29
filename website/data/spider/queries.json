@@ -1,16 +1,21 @@
 [
     {
         "adjusted": true,
+        "column_names": [
+            "count(*)"
+        ],
         "comment": "look at the having createria in the sql statement it means more than.",
         "db_id": "concert_singer",
         "gold-question": "How many singers do we have?",
         "gold-sql": "SELECT count(*) FROM singer",
+        "gold_sql": "SELECT count(*)\nFROM singer",
         "options": [
-            "How many singers are there in the database?",
-            "What is the total number of singers in the singer table?",
-            "Can you provide the count of all the singers in the database?",
-            "How many records are there in the singer table?"
+            "How many total singers are there in the database?",
+            "What is the total count of singers recorded?",
+            "Can you tell me the number of singers present in the dataset?",
+            "How many entries exist in the singer table?"
         ],
+        "percentage": 4.18,
         "query_toks": [
             "SELECT",
             "count",
@@ -424,6 +429,11 @@
             "we",
             "have",
             "?"
+        ],
+        "rows": [
+            [
+                6
+            ]
         ],
         "sql": "",
         "sql-json": {
@@ -849,24 +859,31 @@
             -0.0157173164
         ],
         "time": {
-            "annotation": 0,
+            "annotation": 41.34019088745117,
             "decomposition": 0,
-            "feedback": 0,
-            "retrieval": 22.816232204437256
+            "feedback": 16.546147108078003,
+            "retrieval": 2.3287723064422607
         }
     },
     {
         "adjusted": false,
+        "column_names": [
+            "Name",
+            "Country",
+            "Age"
+        ],
         "comment": "",
         "db_id": "concert_singer",
         "gold-question": "Show name, country, age for all singers ordered by age from the oldest to the youngest.",
         "gold-sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC",
+        "gold_sql": "SELECT name,\n       country,\n       age\nFROM singer\nORDER BY age DESC",
         "options": [
-            "1. What are the names, countries, and ages of all singers, sorted by age in descending order?",
-            "2. Show the names, countries, and ages of singers, arranging them by age from highest to lowest.",
-            "3. Can you display the names, countries, and ages of singers, with the list sorted by age in descending order?",
-            "4. How can I see the names, countries, and ages of singers, with the data ordered by age from oldest to youngest?"
+            "Can you provide the names, countries, and ages of all singers, arranged from the oldest to the youngest?",
+            "List the name, country, and age of each singer, sorting the results by age in descending order so that the oldest singers appear first.",
+            "What are the names, countries, and ages of the singers, with the results sorted to show the oldest individuals at the top?",
+            "Show me the details of singers, including their name, country, and age, organized from the most senior to the least senior based on their age."
         ],
+        "percentage": 4.18,
         "query_toks": [
             "SELECT",
             "name",
@@ -1302,6 +1319,38 @@
             "the",
             "youngest",
             "."
+        ],
+        "rows": [
+            [
+                "Joe Sharp",
+                "Netherlands",
+                52
+            ],
+            [
+                "John Nizinik",
+                "France",
+                43
+            ],
+            [
+                "Rose White",
+                "France",
+                41
+            ],
+            [
+                "Timbaland",
+                "United States",
+                32
+            ],
+            [
+                "Justin Brown",
+                "France",
+                29
+            ],
+            [
+                "Tribal King",
+                "France",
+                25
+            ]
         ],
         "sql": "",
         "sql-json": {
@@ -1767,7 +1816,7 @@
             "annotation": 0,
             "decomposition": 0,
             "feedback": 0,
-            "retrieval": 0
+            "retrieval": 57.75641894340515
         }
     },
     {
@@ -19361,12 +19410,22 @@
         }
     },
     {
-        "adjusted": "",
+        "adjusted": false,
+        "column_names": [
+            "Name"
+        ],
         "comment": "",
         "db_id": "concert_singer",
         "gold-question": "List all singer names in concerts in year 2014.",
         "gold-sql": "SELECT T2.name FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id JOIN concert AS T3 ON T1.concert_id  =  T3.concert_id WHERE T3.year  =  2014",
-        "options": "",
+        "gold_sql": "SELECT T2.name\nFROM singer_in_concert AS T1\nJOIN singer AS T2 ON T1.singer_id = T2.singer_id\nJOIN concert AS T3 ON T1.concert_id = T3.concert_id\nWHERE T3.year = 2014",
+        "options": [
+            "Which singers performed in concerts during the year 2014? Please provide their names.",
+            "Can you list the names of all artists who participated in concerts that took place in 2014?",
+            "Show me the names of singers who were featured in concerts in the year 2014.",
+            "What are the names of the singers who took part in concerts held in 2014?"
+        ],
+        "percentage": 3.82,
         "query_toks": [
             "SELECT",
             "T2.name",
@@ -19435,7 +19494,7 @@
             "=",
             "value"
         ],
-        "question": "",
+        "question": "Which singers performed in concerts during the year 2014? Please provide their names.",
         "question_embedding": [
             0.0165527016,
             -0.0086953463,
@@ -19833,6 +19892,26 @@
             "year",
             "2014",
             "."
+        ],
+        "rows": [
+            [
+                "Timbaland"
+            ],
+            [
+                "Justin Brown"
+            ],
+            [
+                "John Nizinik"
+            ],
+            [
+                "Justin Brown"
+            ],
+            [
+                "Tribal King"
+            ],
+            [
+                "Rose White"
+            ]
         ],
         "sql": "",
         "sql-json": {
@@ -20322,10 +20401,10 @@
             -0.0157173164
         ],
         "time": {
-            "annotation": 0,
+            "annotation": 34.966434955596924,
             "decomposition": 0,
             "feedback": 0,
-            "retrieval": 0
+            "retrieval": 107.39748787879944
         }
     },
     {
@@ -21231,12 +21310,23 @@
         }
     },
     {
-        "adjusted": "",
+        "adjusted": false,
+        "column_names": [
+            "Name",
+            "Location"
+        ],
         "comment": "",
         "db_id": "concert_singer",
         "gold-question": "Find the name and location of the stadiums which some concerts happened in the years of both 2014 and 2015.",
         "gold-sql": "SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2014 INTERSECT SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2015",
-        "options": "",
+        "gold_sql": "SELECT T2.name,\n       T2.location\nFROM concert AS T1\nJOIN stadium AS T2 ON T1.stadium_id = T2.stadium_id\nWHERE T1.Year = 2014 INTERSECT\nSELECT T2.name,\n       T2.location\nFROM concert AS T1\nJOIN stadium AS T2 ON T1.stadium_id = T2.stadium_id\nWHERE T1.Year = 2015",
+        "options": [
+            "What are the names and locations of stadiums that hosted concerts in both 2014 and 2015?",
+            "Can you provide a list of stadium names along with their locations where concerts took place in both the years 2014 and 2015?",
+            "Show me the names and locations of the stadiums that had concerts in both 2014 and 2015.",
+            "Which stadiums hosted concerts in 2014 and also in 2015, along with their respective locations?"
+        ],
+        "percentage": 4.0,
         "query_toks": [
             "SELECT",
             "T2.name",
@@ -21343,7 +21433,7 @@
             "=",
             "value"
         ],
-        "question": "",
+        "question": "What are the names and locations of stadiums that hosted concerts in both 2014 and 2015?",
         "question_embedding": [
             0.1025646999,
             0.0016169655,
@@ -21752,6 +21842,12 @@
             "and",
             "2015",
             "."
+        ],
+        "rows": [
+            [
+                "Somerset Park",
+                "Ayr United"
+            ]
         ],
         "sql": "",
         "sql-json": {
@@ -22316,10 +22412,10 @@
             -0.0157173164
         ],
         "time": {
-            "annotation": 0,
+            "annotation": 14.715736865997314,
             "decomposition": 0,
             "feedback": 0,
-            "retrieval": 0
+            "retrieval": 77.90255808830261
         }
     },
     {

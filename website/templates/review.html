@@ -10,155 +10,84 @@
         <a href="{{ url_for('review') }}" class="step active" data-step="7">Review</a>
     </nav>
 {% endblock %}
+
 {% block content %}
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            width: 60%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-    </style>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        width: 60%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        color: #333;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+    th {
+        background-color: #007BFF;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>
 
-    <div class="container">
-        <h2>Text-to-SQL Model Performance</h2>
-        <p>Performance evaluation across different accuracy metrics.</p>
+<div class="container">
+    <h2>Text-to-SQL Model Performance</h2>
+    <p>Performance evaluation across different accuracy metrics.</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>BLEU Score</td>
-                    <td>{{annotation.bleu}}%</td>
-                </tr>
-                <tr>
-                    <td>ROUGE Score</td>
-                    <td>{{annotation.rouge}}%</td>
-                </tr>
-                <tr>
-                    <td>BERTScore</td>
-                    <td>{{annotation.bert}}%</td>
-                </tr>
-                <tr>
-                    <td># annotated</td>
-                    <td>{{annotation.annotated}}</td>
-                </tr>
-                <tr>
-                    <td># adjusted</td>
-                    <td>{{annotation.adjusted}}</td>
-                </tr>
-            </tbody>
-            <!--<tbody>
-                <tr>
-                    <td>Loose Accuracy</td>
-                    <td>85.4%</td>
-                </tr>
-                <tr>
-                    <td>Column Accuracy</td>
-                    <td>92.1%</td>
-                </tr>
-                <tr>
-                    <td>Row Accuracy</td>
-                    <td>88.6%</td>
-                </tr>
-                <tr>
-                    <td>Column Name Accuracy</td>
-                    <td>94.3%</td>
-                </tr>
-                <tr>
-                    <td>Calculation Accuracy</td>
-                    <td>79.8%</td>
-                </tr>
-                <tr>
-                    <td>Exact Accuracy</td>
-                    <td>73.5%</td>
-                </tr>
-            </tbody>-->
-        </table>
-        <!--<div class="nav-buttons">
-            <a href="{{ url_for('index') }}">
-                <button>automate</button>
-            </a>
-            <a><button type="submit">download</button></a>
-
-        </div>-->
-        <div class="nav-buttons">
-
-            <!-- Automate button -->
-            <button type="button" onclick="showPopup()" style="display: inline-block; width: auto; background-color: #7b3fe4; color: white; padding: 8px 14px; border-radius: 6px; text-decoration: none;">
-                ⚙️ Automate
-            </button>
-
-            <!-- Overlay -->
-            <div id="overlay" class="overlay" style="display:none;" onclick="hidePopup()"></div>
-
-            <!-- Popup -->
-            <div id="popup" class="popup" style="display:none;">
-                <button class="close" type="button" onclick="hidePopup()">&times;</button>
-                <h2 style="text-align: center; color: black;">Confirm Automation</h2>
-                <p style="text-align: center; color: black;">
-                    Are you sure you want to automate the rest of the queries with your current prompt?
-                </p>
-
-                <div style="text-align: center; margin-top: 15px;">
-                    <button type="button" onclick="hidePopup()">Cancel</button>
-                    <button type="submit" name="action" value="automate">Yes, automate</button>
-                </div>
-            </div>
-
-            <script>
-            function showPopup() {
-                document.getElementById("overlay").style.display = "block";
-                document.getElementById("popup").style.display = "block";
-            }
-
-            function hidePopup() {
-                document.getElementById("overlay").style.display = "none";
-                document.getElementById("popup").style.display = "none";
-            }
-            </script>
-
-            <button type="submit"
-                    style="display: inline-block; width: auto; background-color: #2d7df6; color: white; padding: 8px 14px; border-radius: 6px; border: none;">
-                ⬇️ Download
-            </button>
-        </div>
-    </div>
-
-
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>BLEU Score</td>
+                <td>{{ annotation.bleu }}%</td>
+            </tr>
+            <tr>
+                <td>ROUGE Score</td>
+                <td>{{ annotation.rouge }}%</td>
+            </tr>
+            <tr>
+                <td>BERTScore</td>
+                <td>{{ annotation.bert }}%</td>
+            </tr>
+            <tr>
+                <td>Back Translation (Execution)</td>
+                <td>{{ annotation.back_translation }}%</td>
+            </tr>
+            <tr>
+                <td># annotated</td>
+                <td>{{ annotation.annotated }}</td>
+            </tr>
+            <tr>
+                <td># adjusted</td>
+                <td>{{ annotation.adjusted }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

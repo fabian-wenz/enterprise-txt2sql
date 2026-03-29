@@ -103,8 +103,18 @@ def submit():
 
     # Redirect back to the homepage after submission
     return redirect(url_for("index"))
+
 @app.route("/save_api_key_and_user_id", methods=["POST"])
 def save_api_key_and_user_id():
+    CONFIG_FILE = "config.json"
+
+    # Load existing config if it exists
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r") as f:
+            config = json.load(f)
+    else:
+        config = {}
+
     global API_KEY, SQL_FILE, DATABASE
     data = request.json
     api_key = data.get("api_key")
@@ -113,15 +123,22 @@ def save_api_key_and_user_id():
     if not api_key:
         return jsonify({"message": "API Key is missing!"}), 400
 
-    API_KEY = api_key  # Store in memory (or a database)
+    API_KEY = api_key
     print("Received API Key:", API_KEY)
 
-    #file_path = Path("./data/user/queries_"+user_id+'.json')
-    file_path = Path(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json')
+    # ---- SAVE API KEY + USER ID INTO CONFIG ----
+    config["api_key"] = api_key
+    config["user_id"] = user_id
+    config["database"] = DATABASE
+    with open(CONFIG_FILE, "w") as f:
+        json.dump(config, f, indent=4)
+    # --------------------------------------------
+
+    file_path = Path(SQL_FILE.format(DATABASE=DATABASE.lower()) + ".json")
     output_path = Path("./data/user/queries_" + user_id + ".json")
 
     if not output_path.exists():
-        with open(file_path, 'r') as f_in:
+        with open(file_path, "r") as f_in:
             data = json.load(f_in)
 
         first_15 = data[:15]
@@ -132,15 +149,14 @@ def save_api_key_and_user_id():
 
         new_data = first_15 + last_15
 
-        with open(output_path, 'w') as f_out:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, "w") as f_out:
             json.dump(new_data, f_out, indent=2)
-    #if not file_path.exists():
-    #    with open(SQL_FILE.format(DATABASE=DATABASE.lower())+'.json', 'r') as f_in, open("./data/user/queries_"+user_id+'.json', 'w') as f_out:
-    #        f_out.write(f_in.read())
-    SQL_FILE = "./data/user/queries_"+user_id
+
+    SQL_FILE = "./data/user/queries_" + user_id
 
     return jsonify({"message": "API Key saved successfully!"})
-
 @app.route('/decomposed_sql_annotation/<int:annotation_id>')
 def decomposed_sql_annotation(annotation_id):
 
@@ -198,6 +214,13 @@ def sql_annotation(annotation_id):
     annotation_ = annotation
     annotation_['percentage'] = round(num_annotated / data_length *100,2)
     annotation_['gold_sql'] = sqlparse.format(annotation_['gold-sql'], reindent=True, keyword_case='upper')
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).resolve().parent
+
+    db_path = BASE_DIR / "data" / DATABASE.lower() / "database" / annotation_['db_id'] / f"{annotation_['db_id']}.sqlite"
+
+    print("Opening DB:", db_path)    
     conn = sqlite3.connect("./data/"+DATABASE.lower()+"/database/"+annotation_['db_id'] + "/"+annotation_['db_id'] + ".sqlite")
     cursor = conn.cursor()
 
@@ -251,13 +274,7 @@ def save_and_next():
         MODEL = request.form.get('selected_model')
         OVERALL_TIME = time.time()
         SINGLE_TIME = time.time()
-        logdata = load_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()))
-        id = 0
-        for i in range(len(logdata)):
-            id = i
-            if len(logdata[i]["question"])==0:
-                break
-        return redirect(url_for("retrieval", annotation_id=id+1))
+        return redirect(url_for("retrieval", annotation_id=1))
     html_file = os.path.basename(type)
     print(type)
     print(html_file)
@@ -421,22 +438,6 @@ def decomposition(annotation_id):
             num_annotated+=1
     annotation['percentage'] = round(num_annotated / data_length *100,2)
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
-    conn = sqlite3.connect("./data/"+DATABASE.lower()+"/database/"+annotation['db_id'] + "/"+annotation['db_id'] + ".sqlite")
-    cursor = conn.cursor()
-
-    # Execute a SELECT query
-    try:
-        cursor.execute(annotation['gold-sql'].replace("FIBEN.", ""))
-        annotation['rows'] = cursor.fetchall()
-        annotation['rows'] = annotation['rows'][:min(10, len(annotation['rows']))]
-        annotation['column_names'] = [desc[0] for desc in cursor.description]
-
-        # Close the connection
-        conn.close()
-    except Exception as e:
-        print(e)
-        annotation['rows'] =[[str(e)]]
-        annotation['column_names'] = ["ERROR"]
     return render_template("decomposition.html", annotation=annotation, annotation_id=annotation_id, data_length=data_length)
 
 @app.route('/decomposed_retrieval/<int:annotation_id>')
@@ -462,7 +463,7 @@ def decomposed_retrieval(annotation_id):
         #schema["schema_embedding"] = schema["schema_embedding"].apply(lambda x: np.array(x))
         most_relevant_tables_ = rank_sentences(annotations['sql_decomposition'][i]['sql_embedding'], list(schema['schema']), list(schema["schema_embedding"]))
         try:
-            most_relevant_tables = [t.upper() for t in Parser(annotations['sql_decomposition'][i]['gold-sql']).tables]
+            most_relevant_tables = Parser(annotations['sql_decomposition'][i]['gold-sql']).tables
             len_tables = len(most_relevant_tables)
         except Exception as e:
             print(str(e))
@@ -471,12 +472,13 @@ def decomposed_retrieval(annotation_id):
         for t in most_relevant_tables_:
             if t[0].split(',')[0] not in most_relevant_tables:
                 most_relevant_tables.append(t[0].split(',')[0])
-        annotations['sql_decomposition'][i]['gold_sql'] = sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper').lstrip()
+        annotations['sql_decomposition'][i]['gold_sql'] = sqlparse.format(annotations['sql_decomposition'][i]['gold-sql'], reindent=True, keyword_case='upper')
         annotations['sql_decomposition'][i]['suggested_examples']=most_relevant_examples[:2]
         annotations['sql_decomposition'][i]['examples']=most_relevant_examples[3:(min(5, len(most_relevant_examples)-5))]
-        annotations['sql_decomposition'][i]['tables']=[t[3:] if t.startswith("DW-") else t for t in most_relevant_tables[len_tables:(min(len_tables+2, len(most_relevant_tables)-len_tables))]]
+        annotations['sql_decomposition'][i]['tables']=most_relevant_tables[len_tables:(min(len_tables+2, len(most_relevant_tables)-len_tables))]
         tables = retrieve_filenames(SCHEMA_FOLDER.format(DATABASE=DATABASE.lower()))
-        tables = [t.split("-",1)[-1] for t in tables]
+        if annotation.get("db_id") == "dw":
+            tables = [t[3:] for t in tables]
         annotations['sql_decomposition'][i]['suggested_tables']=most_relevant_tables[:len_tables]
         annotations['sql_decomposition'][i]['suggested_tables'] = list(set(annotations['sql_decomposition'][i]['suggested_tables']) & set(tables))
     annotations['percentage'] = round(num_annotated / data_length *100,2)
@@ -499,7 +501,7 @@ def recompose_sql_annotation(annotation_id):
     annotation['column'] = ['c']
     annotation['gold_sql'] = sqlparse.format(annotation['gold-sql'], reindent=True, keyword_case='upper').strip()
     logdata_=pd.DataFrame(logdata)
-    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['sql_embedding'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['gold-question'][i] for i in range(data_length) if not logdata_['question'][i] == ""])
+    most_relevant_examples_ = rank_sentences_more(annotation['sql_embedding'],[logdata_['gold-sql'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['sql_embedding'][i] for i in range(data_length) if not logdata_['question'][i] == ""], [logdata_['gold-question'][i] for i in range(data_length) if not logdata['question'][i] == ""])
     most_relevant_examples = [{'sql':x[0],'question':x[1]} for x in most_relevant_examples_]
     nl_annotations = {}
     for i in range(len(annotation['sql_decomposition'])):
@@ -521,10 +523,7 @@ def recompose_sql_annotation(annotation_id):
         print(e)
         annotation_['rows'] =[[str(e)]]
         annotation_['column_names'] = ["ERROR"]
-    most_relevant_example = (most_relevant_examples[0]["question"] if len(most_relevant_examples) > 0 else "")
-    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_example, PROMPT_TXT, annotation_['rows'], annotation_['column_names'])
-    logdata[annotation_id - 1] = annotation
-    save_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()), logdata)
+    annotation['options'] = generate_combined_candidate(MODEL, API_KEY, annotation['sql_in_cte'], nl_annotations, most_relevant_examples[1]["question"], PROMPT_TXT, annotation_['rows'], annotation_['column_names'])
     return render_template("recompose_sql_annotation.html", annotation=annotation, annotation_id=annotation_id, data_length=data_length)
 
 @app.route('/retrieval/<int:annotation_id>')
@@ -577,35 +576,12 @@ def retrieval(annotation_id):
 #    annotation['tables']=['table11', 'table12', 'table13']
 #    annotation['suggested_tables']=['table1', 'table2', 'table3']
 #    return render_template('correction.html', annotation=annotation, annotation_id=annotation_id, data_length=10)
-@app.route('/review/')
+from handlers.review import _review
+
+@app.route('/review')
 def review():
-    logdata = pd.read_json(SQL_FILE.format(DATABASE=DATABASE.lower())+".json")
-    """
-    Computes BLEU, ROUGE, METEOR, and BERTScore for two lists of NL queries.
-    Returns a list of scores for each pair.
-    """
-    logdata = logdata[logdata['question']!=""]
-    generated_list = logdata["question"]
-    reference_list = logdata["gold-question"]
-    if len(reference_list) != len(generated_list):
-        raise ValueError("Both lists must have the same length.")
-
-    results = {"BLEU": [], "ROUGE": [],  "BERTScore": []}
-
-    for ref, gen in zip(reference_list, generated_list):
-        if not ref or not gen:
-            scores = {"BLEU": 0.0, "ROUGE": 0.0,  "BERTScore": 0.0}
-        else:
-
-            scores = evaluate_nl_accuracy(ref, gen)
-
-        results['BLEU'].append(float(scores['BLEU']))
-        results['ROUGE'].append(float(scores['ROUGE']))
-        results['BERTScore'].append(float(scores['BERTScore']))
-
-    result = {"adjusted": sum(logdata[logdata["adjusted"]==True]["adjusted"]), "annotated": len(generated_list),"bleu": round(np.mean(results['BLEU'])*100,2), "rouge": round(np.mean(results['ROUGE'])*100,2),  "bert": round(np.mean(results['BERTScore'])*100, 2)}
-    print(result)
-    return render_template('review.html', annotation=result)
+    return _review()
+    
 @app.route('/feedback/<int:annotation_id>')
 def feedback(annotation_id):
     global PROMPT_TXT,API_KEY, MODEL, SQL_FILE, DATABASE
@@ -626,4 +602,4 @@ def upload():
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(port=8000, debug=True)
