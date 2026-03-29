@@ -109,6 +109,56 @@
                 </tr>
             </tbody>-->
         </table>
+        <!--<div class="nav-buttons">
+            <a href="{{ url_for('index') }}">
+                <button>automate</button>
+            </a>
+            <a><button type="submit">download</button></a>
+
+        </div>-->
+        <div class="nav-buttons">
+
+            <!-- Automate button -->
+            <button type="button" onclick="showPopup()" style="display: inline-block; width: auto; background-color: #7b3fe4; color: white; padding: 8px 14px; border-radius: 6px; text-decoration: none;">
+                ⚙️ Automate
+            </button>
+
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" style="display:none;" onclick="hidePopup()"></div>
+
+            <!-- Popup -->
+            <div id="popup" class="popup" style="display:none;">
+                <button class="close" type="button" onclick="hidePopup()">&times;</button>
+                <h2 style="text-align: center; color: black;">Confirm Automation</h2>
+                <p style="text-align: center; color: black;">
+                    Are you sure you want to automate the rest of the queries with your current prompt?
+                </p>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="hidePopup()">Cancel</button>
+                    <button type="submit" name="action" value="automate">Yes, automate</button>
+                </div>
+            </div>
+
+            <script>
+            function showPopup() {
+                document.getElementById("overlay").style.display = "block";
+                document.getElementById("popup").style.display = "block";
+            }
+
+            function hidePopup() {
+                document.getElementById("overlay").style.display = "none";
+                document.getElementById("popup").style.display = "none";
+            }
+            </script>
+
+            <button type="submit"
+                    style="display: inline-block; width: auto; background-color: #2d7df6; color: white; padding: 8px 14px; border-radius: 6px; border: none;">
+                ⬇️ Download
+            </button>
+        </div>
     </div>
+
+
 
 {% endblock %}

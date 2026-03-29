@@ -13,7 +13,9 @@
 {% endblock %}
 {% block content %}
     <h2>Select a Dataset and Queryset:</h2>
-    <p>Choose a dataset out of the given ones:</p>
+    <p>Choose one of the available datasets below.</p>
+    <p>You may also upload your own SQL query set in JSON format instead of using the default queries.</p>
+
 
     <div class="options-section">
         <form method="POST" action="{{ url_for('save_and_next') }}?type=upload" id="annotation-form">
@@ -24,6 +26,8 @@
                     <label for="option-{{ loop.index }}" class="option-button">
                         {{ option }}
                     </label>
+                    <p><em>Optional:</em> Upload your own SQL queries (JSON):</p>
+                    <input type="file" id="sql_file-{{ loop.index }}" name="sql_file" accept=".json">
                 </div>
                 {% endfor %}
 
@@ -31,9 +35,9 @@
                 <p>• BEAVER</p><br><br>-->
 
                 <p>or upload your own files:</p>
-                <div class="option" data-option-id="4">
-                    <input type="radio" id="option-4" name="selected_option" value="OwnUpload"{% if annotation.temp | trim | lower == "OwnUpload" | trim | lower %}checked{% endif %}>
-                    <label for="option-4" class="option-button">Upload files below</label>
+                <div class="option" data-option-id="upload">
+                    <input type="radio" id="option-upload" name="selected_option" value="OwnUpload"{% if annotation.temp | trim | lower == "OwnUpload" | trim | lower %}checked{% endif %}>
+                    <label for="option-upload" class="option-button">Upload files below</label>
 
 
                     <div class="file-upload-container">

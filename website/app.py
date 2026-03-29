@@ -235,6 +235,12 @@ def save_and_next():
     type = request.args.get('type')
     if type == 'upload':
         DATABASE = request.form.get('selected_option')
+        db= DATABASE
+        if db == "OwnUpload":
+            schema_file = request.files.get("schema_file")
+            database_file = request.files.get("database_file")
+            sql_file = request.files.get("sql_file")
+            print("final")
         logdata = load_json_data(SQL_FILE.format(DATABASE=DATABASE.lower()))
         data_length = len(logdata)
         REL_TABLES = ['']*data_length
